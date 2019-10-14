@@ -71,9 +71,10 @@
         "parameters": "off"
       }
     }],
-    "no-multiple-empty-lines": [ "error", { 
+    "no-multiple-empty-lines": [ "error", {
         "max": 1
-    }]
+    }],
+    "linebreak-style": "off"
   },
   "globals": {
     "performance": true
