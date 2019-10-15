@@ -1,3 +1,5 @@
 {
-  "javascript.validate.enable": false
+  "javascript.validate.enable": false,
+  "liveServer.settings.root": "/debug",
+  "liveServer.settings.mount": [["/dist", "./dist"]]
 }
