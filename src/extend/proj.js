@@ -335,7 +335,7 @@ export function equivalent(projection1, projection2) {
 }
 
 /**
- * 通过坐标系获取转换方法
+ * 通过坐标系获取转换方法（如果不存在返回默认坐标系转换方法）
  *
  * Searches in the list of transform functions for the function for converting
  * coordinates from the source projection to the destination projection.
