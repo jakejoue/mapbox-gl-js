@@ -30,3 +30,15 @@ export function rateLimit(fn: Function, interval: Number, target: any): Function
 
     return proxy;
 }
+
+/**
+ * 判断一个对象是否存在
+ * @param {*} object 对象
+ */
+export function isEmpty(object) {
+    let property;
+    for (property in object) {
+        return false;
+    }
+    return !property;
+}

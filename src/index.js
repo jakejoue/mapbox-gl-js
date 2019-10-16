@@ -23,6 +23,10 @@ import {setRTLTextPlugin} from './source/rtl_text_plugin';
 import WorkerPool from './util/worker_pool';
 import {clearTileCache} from './util/tile_request_cache';
 
+// huangwei-191015 proj 引用坐标系相关
+import * as proj from './extend/proj';
+import * as extent from './extend/extent';
+
 const exported = {
     version,
     supported,
@@ -42,6 +46,10 @@ const exported = {
     MercatorCoordinate,
     Evented,
     config,
+
+    // huangwei-191015 proj 导入坐标系相关
+    proj,
+    extent,
 
     /**
      * Gets and sets the map's [access token](https://www.mapbox.com/help/define-access-token/).
