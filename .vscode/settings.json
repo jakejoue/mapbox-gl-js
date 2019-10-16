@@ -1,5 +1,5 @@
 {
   "javascript.validate.enable": false,
   "liveServer.settings.root": "/debug",
-  "liveServer.settings.mount": [["/dist", "./dist"]]
+  "liveServer.settings.mount": [["/dist", "./dist"],["/test", "./test"]]
 }

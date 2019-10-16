@@ -28,6 +28,9 @@ import TaskQueue from '../util/task_queue';
 import webpSupported from '../util/webp_supported';
 import { setCacheLimits } from '../util/tile_request_cache';
 
+// huangwei-1015-renderInterval 频率间隔限制（去除过于快的中间帧）
+import { rateLimit } from '../extend/util/util';
+
 import type {PointLike} from '@mapbox/point-geometry';
 import type { RequestTransformFunction } from '../util/mapbox';
 import type {LngLatLike} from '../geo/lng_lat';
@@ -94,7 +97,13 @@ type MapOptions = {
     renderWorldCopies?: boolean,
     maxTileCacheSize?: number,
     transformRequest?: RequestTransformFunction,
-    accessToken: string
+    accessToken: string,
+
+    // huangwei-1015-renderInterval 渲染间隔时长
+    renderInterval: number,
+
+    // huangwei-1015-skipzoom 是否zoomend和moveed后才发起请求
+    skipLevelOfZooming: boolean
 };
 
 const defaultMinZoom = 0;
@@ -133,7 +142,13 @@ const defaultOptions = {
     transformRequest: null,
     accessToken: null,
     fadeDuration: 300,
-    crossSourceCollisions: true
+    crossSourceCollisions: true,
+
+    // huangwei-1015-renderInterval
+    renderInterval: 0,
+
+    // huangwei-1015-skipzoom
+    skipLevelOfZooming: false
 };
 
 /**
@@ -275,6 +290,9 @@ class Map extends Camera {
     _localIdeographFontFamily: string;
     _requestManager: RequestManager;
 
+    // huangwei-1015-skipzoom 类型定义
+    _skipLevelOfZooming: boolean;
+
     /**
      * The map's {@link ScrollZoomHandler}, which implements zooming in and out with a scroll wheel or trackpad.
      */
@@ -340,6 +358,9 @@ class Map extends Camera {
 
         this._requestManager = new RequestManager(options.transformRequest, options.accessToken);
 
+        // huangwei-1015-skipzoom 外部赋值
+        this._skipLevelOfZooming = options.skipLevelOfZooming;
+
         if (typeof options.container === 'string') {
             this._container = window.document.getElementById(options.container);
             if (!this._container) {
@@ -368,9 +389,18 @@ class Map extends Camera {
             throw new Error(`Failed to initialize WebGL.`);
         }
 
-        this.on('move', () => this._update(false));
-        this.on('moveend', () => this._update(false));
-        this.on('zoom', () => this._update(true));
+        // huangwei-1015-renderInterval
+        this._render = rateLimit(this._render, options.renderInterval, this);
+
+        // huangwei-1015-skipzoom
+        if (!this._skipLevelOfZooming) {
+            this.on('move', () => this._update(false));
+            this.on('moveend', () => this._update(false));
+            this.on('zoom', () => this._update(true));
+        } else {
+            this.on('moveend', () => this._update(false));
+            this.on('zoomend', () => this._update(true));
+        }
 
         if (typeof window !== 'undefined') {
             window.addEventListener('online', this._onWindowOnline, false);
@@ -1750,7 +1780,11 @@ class Map extends Camera {
         // need for the current transform
         if (this.style && this._sourcesDirty) {
             this._sourcesDirty = false;
-            this.style._updateSources(this.transform);
+
+            // huangwei-1015-skipzoom 是否请求判断
+            if (this._skipLevelOfZooming ? (!this._zooming && !this._rotating && !this._moving) : true) {
+                this.style._updateSources(this.transform);
+            }
         }
 
         this._placementDirty = this.style && this.style._updatePlacement(this.painter.transform, this.showCollisionBoxes, this._fadeDuration, this._crossSourceCollisions);
