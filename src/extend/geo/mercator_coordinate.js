@@ -1,7 +1,7 @@
 // @flow
 
-import LngLat from '../extend/geo/lng_lat';
-import type {LngLatLike} from '../extend/geo/lng_lat';
+import LngLat from '../geo/lng_lat';
+import type {LngLatLike} from '../geo/lng_lat';
 
 /*
  * The circumference of the world in meters at the equator.

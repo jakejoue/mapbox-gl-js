@@ -13,7 +13,7 @@ import type {BucketParameters} from '../../data/bucket';
 import type Point from '@mapbox/point-geometry';
 import type {LayoutProps, PaintProps} from './fill_style_layer_properties';
 import type EvaluationParameters from '../evaluation_parameters';
-import type Transform from '../../geo/transform';
+import type Transform from '../../extend/geo/transform';
 import type {LayerSpecification} from '../../style-spec/types';
 
 class FillStyleLayer extends StyleLayer {

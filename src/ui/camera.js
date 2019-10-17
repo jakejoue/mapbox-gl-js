@@ -12,14 +12,14 @@ import {
 } from '../util/util';
 import { number as interpolate } from '../style-spec/util/interpolate';
 import browser from '../util/browser';
-import LngLat from '../geo/lng_lat';
-import LngLatBounds from '../geo/lng_lat_bounds';
+import LngLat from '../extend/geo/lng_lat';
+import LngLatBounds from '../extend/geo/lng_lat_bounds';
 import Point from '@mapbox/point-geometry';
 import { Event, Evented } from '../util/evented';
 
-import type Transform from '../geo/transform';
-import type {LngLatLike} from '../geo/lng_lat';
-import type {LngLatBoundsLike} from '../geo/lng_lat_bounds';
+import type Transform from '../extend/geo/transform';
+import type {LngLatLike} from '../extend/geo/lng_lat';
+import type {LngLatBoundsLike} from '../extend/geo/lng_lat_bounds';
 import type {TaskID} from '../util/task_queue';
 import type {PointLike} from '@mapbox/point-geometry';
 

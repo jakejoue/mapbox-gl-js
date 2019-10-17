@@ -9,7 +9,7 @@ import { getAnchorAlignment, WritingMode } from './shaping';
 import assert from 'assert';
 import pixelsToTileUnits from '../source/pixels_to_tile_units';
 import Point from '@mapbox/point-geometry';
-import type Transform from '../geo/transform';
+import type Transform from '../extend/geo/transform';
 import type StyleLayer from '../style/style_layer';
 
 import type Tile from '../source/tile';

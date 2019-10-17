@@ -1,6 +1,6 @@
 // @flow
 
-import MercatorCoordinate from '../geo/mercator_coordinate';
+import MercatorCoordinate from '../extend/geo/mercator_coordinate';
 import Point from '@mapbox/point-geometry';
 
 import { OverscaledTileID } from '../source/tile_id';

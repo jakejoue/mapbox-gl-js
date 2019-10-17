@@ -19,7 +19,7 @@ import type Point from '@mapbox/point-geometry';
 import type {FeatureFilter} from '../style-spec/feature_filter';
 import type {TransitionParameters, PropertyValue} from './properties';
 import type EvaluationParameters, {CrossfadeParameters} from './evaluation_parameters';
-import type Transform from '../geo/transform';
+import type Transform from '../extend/geo/transform';
 import type {
     LayerSpecification,
     FilterSpecification

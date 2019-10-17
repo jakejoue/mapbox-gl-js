@@ -16,7 +16,7 @@ import { Transitionable, Transitioning, Layout, PossiblyEvaluated, DataDrivenPro
 import type { FeatureState } from '../../style-spec/expression';
 import type {Bucket, BucketParameters} from '../../data/bucket';
 import type {LayoutProps, PaintProps} from './line_style_layer_properties';
-import type Transform from '../../geo/transform';
+import type Transform from '../../extend/geo/transform';
 import type Texture from '../../render/texture';
 import type {LayerSpecification} from '../../style-spec/types';
 

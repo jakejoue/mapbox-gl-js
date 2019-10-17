@@ -1,9 +1,9 @@
 // @flow
 
-import LngLat from '../geo/lng_lat';
+import LngLat from '../extend/geo/lng_lat';
 
 import type Point from '@mapbox/point-geometry';
-import type Transform from '../geo/transform';
+import type Transform from '../extend/geo/transform';
 
 /**
  * Given a LngLat, prior projected position, and a transform, return a new LngLat shifted
