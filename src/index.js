@@ -23,7 +23,7 @@ import {setRTLTextPlugin} from './source/rtl_text_plugin';
 import WorkerPool from './util/worker_pool';
 import {clearTileCache} from './util/tile_request_cache';
 
-// huangwei-191015 proj 引用坐标系相关
+// GeoGlobal-proj-huangwei-191015 引用坐标系相关
 import * as proj from './extend/proj';
 import * as extent from './extend/extent';
 
@@ -47,7 +47,7 @@ const exported = {
     Evented,
     config,
 
-    // huangwei-191015 proj 导入坐标系相关
+    // GeoGlobal-proj-huangwei-191015 proj 导入坐标系相关
     proj,
     extent,
 

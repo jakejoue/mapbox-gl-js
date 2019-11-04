@@ -28,7 +28,7 @@ import TaskQueue from '../util/task_queue';
 import webpSupported from '../util/webp_supported';
 import { setCacheLimits } from '../util/tile_request_cache';
 
-// huangwei-191015-renderInterval 频率间隔限制（去除过于快的中间帧）
+// GeoGlobal-renderInterval-huangwei-191015 频率间隔限制（去除过于快的中间帧）
 import { rateLimit } from '../extend/util/util';
 
 import type {PointLike} from '@mapbox/point-geometry';
@@ -99,10 +99,10 @@ type MapOptions = {
     transformRequest?: RequestTransformFunction,
     accessToken: string,
 
-    // huangwei-191015-renderInterval 渲染间隔时长
+    // GeoGlobal-renderInterval-huangwei-191015
     renderInterval: number,
 
-    // huangwei-191015-skipzoom 是否zoomend和moveed后才发起请求
+    // GeoGlobal-skipzoom-huangwei-191015 是否zoomend和moveed后才发起请求
     skipLevelOfZooming: boolean
 };
 
@@ -144,10 +144,10 @@ const defaultOptions = {
     fadeDuration: 300,
     crossSourceCollisions: true,
 
-    // huangwei-191015-renderInterval
+    // GeoGlobal-renderInterval-huangwei-191015
     renderInterval: 0,
 
-    // huangwei-191015-skipzoom
+    // GeoGlobal-skipzoom-huangwei-191015
     skipLevelOfZooming: false
 };
 
@@ -290,7 +290,7 @@ class Map extends Camera {
     _localIdeographFontFamily: string;
     _requestManager: RequestManager;
 
-    // huangwei-191015-skipzoom 类型定义
+    // GeoGlobal-skipzoom-huangwei-191015 类型定义
     _skipLevelOfZooming: boolean;
 
     /**
@@ -358,7 +358,7 @@ class Map extends Camera {
 
         this._requestManager = new RequestManager(options.transformRequest, options.accessToken);
 
-        // huangwei-191015-skipzoom 外部赋值
+        // GeoGlobal-skipzoom-huangwei-191015 外部赋值
         this._skipLevelOfZooming = options.skipLevelOfZooming;
 
         if (typeof options.container === 'string') {
@@ -389,10 +389,10 @@ class Map extends Camera {
             throw new Error(`Failed to initialize WebGL.`);
         }
 
-        // huangwei-191015-renderInterval
-        this._render = rateLimit(this._render, options.renderInterval, this);
+        // GeoGlobal-renderInterval-huangwei-191015
+        this.triggerRepaint = rateLimit(this.triggerRepaint, options.renderInterval, this);
 
-        // huangwei-191015-skipzoom
+        // GeoGlobal-skipzoom-huangwei-191015
         if (!this._skipLevelOfZooming) {
             this.on('move', () => this._update(false));
             this.on('moveend', () => this._update(false));
@@ -1781,8 +1781,8 @@ class Map extends Camera {
         if (this.style && this._sourcesDirty) {
             this._sourcesDirty = false;
 
-            // huangwei-191015-skipzoom 是否请求判断
-            if (this._skipLevelOfZooming ? (!this._zooming && !this._rotating && !this._moving) : true) {
+            // GeoGlobal-skipzoom-huangwei-191015 是否请求判断
+            if (this._skipLevelOfZooming ? (!this.isZooming() && !this.isRotating()) : true) {
                 this.style._updateSources(this.transform);
             }
         }

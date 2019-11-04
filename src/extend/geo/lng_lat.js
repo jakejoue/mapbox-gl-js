@@ -32,7 +32,7 @@ class LngLat {
         this.lng = +lng;
         this.lat = +lat;
 
-        // huangwei-1015-proj 取消范围限制
+        // GeoGlobal-proj-huangwei-191015 取消范围限制
         // if (this.lat > 90 || this.lat < -90) {
         //     throw new Error('Invalid LngLat latitude value: must be between -90 and 90');
         // }
