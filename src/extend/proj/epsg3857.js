@@ -1,6 +1,5 @@
 // @flow
 
-import { cosh } from '../math.js';
 import Projection from './Projection.js';
 import Units from './Units.js';
 
@@ -26,42 +25,16 @@ export const EXTENT = [
     HALF_SIZE, HALF_SIZE
 ];
 
-/**
- * @const
- */
-export const WORLD_EXTENT = [-180, -85, 180, 85];
-
-/**
- * @classdesc
- * Projection object for web/spherical Mercator (EPSG:3857).
- */
 class EPSG3857Projection extends Projection {
-
-    /**
-     * @param {string} code Code.
-     */
     constructor(code) {
         super({
             code,
             units: Units.METERS,
             extent: EXTENT,
-            global: true,
-            worldExtent: WORLD_EXTENT,
-            getPointResolution(resolution, point) {
-                return resolution / cosh(point[1] / RADIUS);
-            }
         });
-
     }
-
 }
 
-/**
- * Projections equal to EPSG:3857.
- *
- * @const
- * @type {Array<import("./Projection.js").default>}
- */
 export const PROJECTIONS = [
     new EPSG3857Projection('EPSG:3857'),
     new EPSG3857Projection('EPSG:102100'),
@@ -71,66 +44,3 @@ export const PROJECTIONS = [
     new EPSG3857Projection('urn:ogc:def:crs:EPSG::3857'),
     new EPSG3857Projection('http://www.opengis.net/gml/srs/epsg.xml#3857')
 ];
-
-/**
- * Transformation from EPSG:4326 to EPSG:3857.
- *
- * @param {Array<number>} input Input array of coordinate values.
- * @param {Array<number>=} optOutput Output array of coordinate values.
- * @param {number=} optDimension Dimension (default is `2`).
- * @return {Array<number>} Output array of coordinate values.
- */
-export function fromEPSG4326(input, optOutput, optDimension) {
-    const length = input.length;
-    const dimension = optDimension > 1 ? optDimension : 2;
-    let output = optOutput;
-    if (output === undefined) {
-        if (dimension > 2) {
-            // preserve values beyond second dimension
-            output = input.slice();
-        } else {
-            output = new Array(length);
-        }
-    }
-    const halfSize = HALF_SIZE;
-    for (let i = 0; i < length; i += dimension) {
-        output[i] = halfSize * input[i] / 180;
-        let y = RADIUS *
-            Math.log(Math.tan(Math.PI * (+input[i + 1] + 90) / 360));
-        if (y > halfSize) {
-            y = halfSize;
-        } else if (y < -halfSize) {
-            y = -halfSize;
-        }
-        output[i + 1] = y;
-    }
-    return output;
-}
-
-/**
- * Transformation from EPSG:3857 to EPSG:4326.
- *
- * @param {Array<number>} input Input array of coordinate values.
- * @param {Array<number>=} optOutput Output array of coordinate values.
- * @param {number=} optDimension Dimension (default is `2`).
- * @return {Array<number>} Output array of coordinate values.
- */
-export function toEPSG4326(input, optOutput, optDimension) {
-    const length = input.length;
-    const dimension = optDimension > 1 ? optDimension : 2;
-    let output = optOutput;
-    if (output === undefined) {
-        if (dimension > 2) {
-            // preserve values beyond second dimension
-            output = input.slice();
-        } else {
-            output = new Array(length);
-        }
-    }
-    for (let i = 0; i < length; i += dimension) {
-        output[i] = 180 * input[i] / HALF_SIZE;
-        output[i + 1] = 360 * Math.atan(
-            Math.exp(input[i + 1] / RADIUS)) / Math.PI - 90;
-    }
-    return output;
-}

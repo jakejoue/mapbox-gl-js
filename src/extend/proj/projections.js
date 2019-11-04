@@ -1,32 +1,26 @@
 // @flow
 
 /**
- * 存储全局坐标系
- *
- * @type {Object<string, import("./Projection.js").default>}
+ * 全局变量存储
  */
 let cache = {};
 
 /**
- * Clear the projections cache.
+ * 清空坐标系
  */
 export function clear() {
     cache = {};
 }
 
 /**
- * Get a cached projection by code.
- * @param {string} code The code for the projection.
- * @return {import("./Projection.js").default} The projection (if cached).
+ * 通过code获取坐标系
  */
 export function get(code) {
     return cache[code] || null;
 }
 
 /**
- * Add a projection to the cache.
- * @param {string} code The projection code.
- * @param {import("./Projection.js").default} projection The projection to cache.
+ * 添加坐标系
  */
 export function add(code, projection) {
     cache[code] = projection;
