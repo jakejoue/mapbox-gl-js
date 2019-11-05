@@ -83,7 +83,8 @@ class Transform {
     }
 
     clone(): Transform {
-        const clone = new Transform(this._minZoom, this._maxZoom, this._renderWorldCopies);
+        // GeoGlobal-proj-huangwei-191105
+        const clone = new Transform(this.projcetion, this._minZoom, this._maxZoom, this._renderWorldCopies);
         clone.tileSize = this.tileSize;
         clone.latRange = this.latRange;
         clone.width = this.width;
