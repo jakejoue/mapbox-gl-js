@@ -254,6 +254,15 @@ class ScrollZoomHandler {
             const fromScale = typeof this._targetZoom === 'number' ? tr.zoomScale(this._targetZoom) : tr.scale;
             this._targetZoom = Math.min(tr.maxZoom, Math.max(tr.minZoom, tr.scaleZoom(fromScale * scale)));
 
+            // GeoGlobal-intZoom-huangwei-191015
+            if (this._map._isIntScrollZoom) {
+                if (this._delta > 0) {
+                    this._targetZoom = Math.ceil(this._targetZoom);//向上取整,有小数就整数部分加1
+                } else if (this._delta < 0) {
+                    this._targetZoom = Math.floor(this._targetZoom);//向下取整,小数直接去掉
+                }
+            }
+
             // if this is a mouse wheel, refresh the starting zoom and easing
             // function we're using to smooth out the zooming between wheel
             // events

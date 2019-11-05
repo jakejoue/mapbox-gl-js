@@ -183,7 +183,8 @@ class ImageSource extends Evented implements Source {
         // may be outside the tile, because raster tiles aren't clipped when rendering.
 
         // transform the geo coordinates into (zoom 0) tile space coordinates
-        const cornerCoords = coordinates.map(MercatorCoordinate.fromLngLat);
+        // GeoGlobal-coord-huangwei-191105
+        const cornerCoords = coordinates.map(coord => MercatorCoordinate.fromLngLat(coord, 0, this.map.projection));
 
         // Compute the coordinates of the tile we'll use to hold this image's
         // render data

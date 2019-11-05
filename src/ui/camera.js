@@ -738,7 +738,8 @@ class Camera extends Evented {
                     Math.max(0.5, finalScale);
                 const speedup = Math.pow(base, 1 - k);
                 const newCenter = tr.unproject(from.add(delta.mult(k * speedup)).mult(scale));
-                tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap() : newCenter, pointAtOffset);
+                // GeoGlobal-worldcopy-huangwei-191105
+                tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap(this.transform.projection) : newCenter, pointAtOffset);
             }
 
             this._fireMoveEvents(eventData);
@@ -1002,7 +1003,8 @@ class Camera extends Evented {
             }
 
             const newCenter = k === 1 ? center : tr.unproject(from.add(delta.mult(u(s))).mult(scale));
-            tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap() : newCenter, pointAtOffset);
+            // GeoGlobal-worldcopy-huangwei-191105
+            tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap(this.transform.projection) : newCenter, pointAtOffset);
 
             this._fireMoveEvents(eventData);
 
@@ -1077,13 +1079,17 @@ class Camera extends Evented {
     // If a path crossing the antimeridian would be shorter, extend the final coordinate so that
     // interpolating between the two endpoints will cross it.
     _normalizeCenter(center: LngLat) {
+        // GeoGlobal-worldcopy-huangwei-191105
+        const maxExtent = this.transform.projection.getMaxExtent();
+        const half = maxExtent / 2;
+
         const tr = this.transform;
         if (!tr.renderWorldCopies || tr.lngRange) return;
 
         const delta = center.lng - tr.center.lng;
         center.lng +=
-            delta > 180 ? -360 :
-            delta < -180 ? 360 : 0;
+            delta > half ? -maxExtent :
+            delta < -half ? maxExtent : 0;
     }
 }
 

@@ -1,7 +1,6 @@
 // @flow
 
-import { PROJECTIONS as EPSG3857_PROJECTIONS } from './proj/epsg3857.js';
-import { PROJECTIONS as EPSG4326_PROJECTIONS } from './proj/epsg4326.js';
+import { PROJECTIONS } from './proj/epsg.js';
 import Units from './proj/Units.js';
 import Projection from './proj/Projection.js';
 import { add as addProj, clear as clearProj, get as getProj } from './proj/projections.js';
@@ -43,9 +42,4 @@ export function clearAllProjections() {
 /**
  * 添加默认坐标系
  */
-function addCommon() {
-    addProjections(EPSG3857_PROJECTIONS);
-    addProjections(EPSG4326_PROJECTIONS);
-}
-
-addCommon();
+addProjections(PROJECTIONS);

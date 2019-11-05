@@ -426,7 +426,9 @@ class SourceCache extends Evented {
         // This enables us to reuse the tiles at more ideal locations and prevent flickering.
         const prevLng = this._prevLng === undefined ? lng : this._prevLng;
         const lngDifference = lng - prevLng;
-        const worldDifference = lngDifference / 360;
+
+        // GeoGlobal-worldcopy-huangwei-191105
+        const worldDifference = lngDifference / this.map.projection.getMaxExtent();
         const wrapDelta = Math.round(worldDifference);
         this._prevLng = lng;
 
@@ -774,9 +776,10 @@ class SourceCache extends Evented {
             const scale = Math.pow(2, transform.zoom - tile.tileID.overscaledZ);
             const queryPadding = maxPitchScaleFactor * tile.queryPadding * EXTENT / tile.tileSize / scale;
 
+            // GeoGlobal-coord-huangwei-191105
             const tileSpaceBounds = [
-                tileID.getTilePoint(new MercatorCoordinate(minX, minY)),
-                tileID.getTilePoint(new MercatorCoordinate(maxX, maxY))
+                tileID.getTilePoint(new MercatorCoordinate(minX, minY, 0, this.map.projection)),
+                tileID.getTilePoint(new MercatorCoordinate(maxX, maxY, 0, this.map.projection))
             ];
 
             if (tileSpaceBounds[0].x - queryPadding < EXTENT && tileSpaceBounds[0].y - queryPadding < EXTENT &&

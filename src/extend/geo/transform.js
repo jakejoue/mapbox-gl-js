@@ -2,7 +2,8 @@
 
 import LngLat from './lng_lat';
 import LngLatBounds from './lng_lat_bounds';
-import MercatorCoordinate, { mercatorXfromLng, mercatorYfromLat, mercatorZfromAltitude } from './mercator_coordinate';
+// GeoGlobal-coord-huangwei-191105
+import MercatorCoordinate from './mercator_coordinate';
 import Point from '@mapbox/point-geometry';
 import { wrap, clamp } from '../../util/util';
 import { number as interpolate } from '../../style-spec/util/interpolate';
@@ -23,12 +24,14 @@ import type { OverscaledTileID, CanonicalTileID } from '../../source/tile_id';
  */
 class Transform {
     // GeoGlobal-proj-huangwei-191105
-    projcetion: Projection;
+    projection: Projection;
 
     tileSize: number;
     tileZoom: number;
     lngRange: ?[number, number];
     latRange: ?[number, number];
+    // GeoGlobal-coord-huangwei-191105
+    minValidLatitude: number;
     maxValidLatitude: number;
     scale: number;
     width: number;
@@ -57,12 +60,15 @@ class Transform {
     _posMatrixCache: { [number]: Float32Array };
     _alignedPosMatrixCache: { [number]: Float32Array };
 
-    constructor(projcetion: Projection, minZoom: ?number, maxZoom: ?number, renderWorldCopies: boolean | void) {
+    constructor(projection: Projection, minZoom: ?number, maxZoom: ?number, renderWorldCopies: boolean | void) {
         // GeoGlobal-proj-huangwei-191105
-        this.projcetion = projcetion;
+        this.projection = projection;
 
         this.tileSize = 512; // constant
-        this.maxValidLatitude = 85.051129; // constant
+
+        // GeoGlobal-coord-huangwei-191105
+        // this.maxValidLatitude = 85.051129; // constant
+        [this.minValidLatitude, this.maxValidLatitude] = this.projection.getValidlatRange();
 
         this._renderWorldCopies = renderWorldCopies === undefined ? true : renderWorldCopies;
         this._minZoom = minZoom || 0;
@@ -84,7 +90,7 @@ class Transform {
 
     clone(): Transform {
         // GeoGlobal-proj-huangwei-191105
-        const clone = new Transform(this.projcetion, this._minZoom, this._maxZoom, this._renderWorldCopies);
+        const clone = new Transform(this.projection, this._minZoom, this._maxZoom, this._renderWorldCopies);
         clone.tileSize = this.tileSize;
         clone.latRange = this.latRange;
         clone.width = this.width;
@@ -265,7 +271,8 @@ class Transform {
         if (options.minzoom !== undefined && z < options.minzoom) return [];
         if (options.maxzoom !== undefined && z > options.maxzoom) z = options.maxzoom;
 
-        const centerCoord = MercatorCoordinate.fromLngLat(this.center);
+        // GeoGlobal-coord-huangwei-191105
+        const centerCoord = MercatorCoordinate.fromLngLat(this.center, 0, this.projection);
         const numTiles = Math.pow(2, z);
         const centerPoint = new Point(numTiles * centerCoord.x - 0.5, numTiles * centerCoord.y - 0.5);
         const cornerCoords = [
@@ -293,14 +300,15 @@ class Transform {
     scaleZoom(scale: number) { return Math.log(scale) / Math.LN2; }
 
     project(lnglat: LngLat) {
-        const lat = clamp(lnglat.lat, -this.maxValidLatitude, this.maxValidLatitude);
+        const lat = clamp(lnglat.lat, this.minValidLatitude, this.maxValidLatitude);
         return new Point(
-            mercatorXfromLng(lnglat.lng) * this.worldSize,
-            mercatorYfromLat(lat) * this.worldSize);
+            this.projection.getTransform().mercatorXfromLng(lnglat.lng) * this.worldSize,
+            this.projection.getTransform().mercatorYfromLat(lat) * this.worldSize);
     }
 
     unproject(point: Point): LngLat {
-        return new MercatorCoordinate(point.x / this.worldSize, point.y / this.worldSize).toLngLat();
+        // GeoGlobal-coord-huangwei-191105
+        return new MercatorCoordinate(point.x / this.worldSize, point.y / this.worldSize, 0, this.projection).toLngLat();
     }
 
     get point(): Point { return this.project(this.center); }
@@ -309,12 +317,16 @@ class Transform {
         const a = this.pointCoordinate(point);
         const b = this.pointCoordinate(this.centerPoint);
         const loc = this.locationCoordinate(lnglat);
+        // GeoGlobal-coord-huangwei-191105
         const newCenter = new MercatorCoordinate(
             loc.x - (a.x - b.x),
-            loc.y - (a.y - b.y));
+            loc.y - (a.y - b.y),
+            0,
+            this.projection);
         this.center = this.coordinateLocation(newCenter);
         if (this._renderWorldCopies) {
-            this.center = this.center.wrap();
+            // GeoGlobal-worldcopy-huangwei-191105
+            this.center = this.center.wrap(this.projection);
         }
     }
 
@@ -343,7 +355,8 @@ class Transform {
      * @returns {Coordinate}
      */
     locationCoordinate(lnglat: LngLat) {
-        return MercatorCoordinate.fromLngLat(lnglat);
+        // GeoGlobal-coord-huangwei-191105
+        return MercatorCoordinate.fromLngLat(lnglat, 0, this.projection);
     }
 
     /**
@@ -378,9 +391,12 @@ class Transform {
 
         const t = z0 === z1 ? 0 : (targetZ - z0) / (z1 - z0);
 
+        // GeoGlobal-coord-huangwei-191105
         return new MercatorCoordinate(
             interpolate(x0, x1, t) / this.worldSize,
-            interpolate(y0, y1, t) / this.worldSize);
+            interpolate(y0, y1, t) / this.worldSize,
+            0,
+            this.projection);
     }
 
     /**
@@ -426,7 +442,7 @@ class Transform {
             this._constrain();
         } else {
             this.lngRange = null;
-            this.latRange = [-this.maxValidLatitude, this.maxValidLatitude];
+            this.latRange = [this.minValidLatitude, this.maxValidLatitude];
         }
     }
 
@@ -463,25 +479,30 @@ class Transform {
 
         this._constraining = true;
 
-        let minY = -90;
-        let maxY = 90;
-        let minX = -180;
-        let maxX = 180;
+        // let minY = -90;
+        // let maxY = 90;
+        // let minX = -180;
+        // let maxX = 180;
+        // GeoGlobal-coord-huangwei-191105
+        let [ minY, maxY, minX, maxX] = this.projection.getExtent();
+
         let sy, sx, x2, y2;
         const size = this.size,
             unmodified = this._unmodified;
 
         if (this.latRange) {
             const latRange = this.latRange;
-            minY = mercatorYfromLat(latRange[1]) * this.worldSize;
-            maxY = mercatorYfromLat(latRange[0]) * this.worldSize;
+            // GeoGlobal-coord-huangwei-191105
+            minY = this.projection.getTransform().mercatorYfromLat(latRange[1]) * this.worldSize;
+            maxY = this.projection.getTransform().mercatorYfromLat(latRange[0]) * this.worldSize;
             sy = maxY - minY < size.y ? size.y / (maxY - minY) : 0;
         }
 
         if (this.lngRange) {
             const lngRange = this.lngRange;
-            minX = mercatorXfromLng(lngRange[0]) * this.worldSize;
-            maxX = mercatorXfromLng(lngRange[1]) * this.worldSize;
+            // GeoGlobal-coord-huangwei-191105
+            minX = this.projection.getTransform().mercatorXfromLng(lngRange[0]) * this.worldSize;
+            maxX = this.projection.getTransform().mercatorXfromLng(lngRange[1]) * this.worldSize;
             sx = maxX - minX < size.x ? size.x / (maxX - minX) : 0;
         }
 
@@ -571,7 +592,8 @@ class Transform {
         this.mercatorMatrix = mat4.scale([], m, [this.worldSize, this.worldSize, this.worldSize]);
 
         // scale vertically to meters per pixel (inverse of ground resolution):
-        mat4.scale(m, m, [1, 1, mercatorZfromAltitude(1, this.center.lat) * this.worldSize, 1]);
+        // GeoGlobal-coord-huangwei-191105
+        mat4.scale(m, m, [1, 1, this.projection.getTransform().mercatorZfromAltitude(1, this.center.lat) * this.worldSize, 1]);
 
         this.projMatrix = m;
 

@@ -81,6 +81,9 @@ type PainterOptions = {
  * @private
  */
 class Painter {
+    // GeoGlobal-proj-huangwei-191105
+    projection: Projection;
+
     context: Context;
     transform: Transform;
     _tileTextures: { [number]: Array<Texture> };
@@ -121,6 +124,9 @@ class Painter {
     symbolFadeChange: number;
 
     constructor(gl: WebGLRenderingContext, transform: Transform) {
+        // GeoGlobal-proj-huangwei-191105
+        this.projection = transform.projection;
+
         this.context = new Context(gl);
         this.transform = transform;
         this._tileTextures = {};
@@ -136,7 +142,8 @@ class Painter {
 
         this.emptyProgramConfiguration = new ProgramConfiguration();
 
-        this.crossTileSymbolIndex = new CrossTileSymbolIndex();
+        // GeoGlobal-worldcopy-huangwei-191105
+        this.crossTileSymbolIndex = new CrossTileSymbolIndex(this.projection.getMaxExtent());
     }
 
     /*

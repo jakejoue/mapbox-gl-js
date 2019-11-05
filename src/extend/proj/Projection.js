@@ -1,6 +1,8 @@
 // @flow
 
-import Units from './Units.js';
+import Units from './Units';
+import CoordTransform, { transform } from './CoordTransform';
+
 import { getHeight, getWidth } from '../extent';
 import { register } from '../../util/web_worker_transfer';
 
@@ -9,7 +11,8 @@ export type ProjectionOption = {
     units: Units,
     extent: Array<number>,
     resolutions?: Array<number>,
-    tileSize?: number
+    tileSize?: number,
+    validlatRange?: Array<number>
 }
 
 class Projection {
@@ -18,7 +21,11 @@ class Projection {
     extent_: Array<number>;
     resolutions_: Array<number>;
     tileSize_: number;
+    validlatRange_: Array<number>
+
+    // 计算属性部分
     maxExtent_: number;
+    transform_: CoordTransform;
 
     constructor(options: ProjectionOption) {
         this.code_ = options.code;
@@ -26,8 +33,26 @@ class Projection {
         this.extent_ = options.extent;
         this.resolutions_ = options.resolutions;
         this.tileSize_ = options.tileSize || 512;
+        this.validlatRange_ = options.validlatRange || [options.extent[1], options.extent[3]];
 
         this.maxExtent_ = null;
+        this.transform_ = null;
+    }
+
+    /**
+     * 获取坐标转换方法
+     */
+    getTransform(): CoordTransform {
+        // 默认坐标系（混合坐标系）
+        if (this.code_ === 'EPSG:mapbox') {
+            return transform;
+        }
+
+        // 其他坐标系
+        if (!this.transform_) {
+            this.transform_ = new CoordTransform(this);
+        }
+        return this.transform_;
     }
 
     getCode(): string {
@@ -35,7 +60,7 @@ class Projection {
     }
 
     getExtent(): Array<number> {
-        return this.extent_;
+        return [...this.extent_];
     }
 
     getUnits(): Units {
@@ -46,9 +71,13 @@ class Projection {
         return this.tileSize_;
     }
 
+    getValidlatRange(): Array<number> {
+        return this.validlatRange_;
+    }
+
     getMaxExtent(): number {
         if (!this.maxExtent_) {
-            this.maxExtent_ = Math.max(getHeight(this.extent_), getWidth(this.extent_))
+            this.maxExtent_ = Math.max(getHeight(this.extent_), getWidth(this.extent_));
         }
         return this.maxExtent_;
     }
@@ -67,7 +96,8 @@ class Projection {
             units: this.units_,
             extent: this.extent_,
             resolutions: this.resolutions_,
-            tileSize: this.tileSize_
+            tileSize: this.tileSize_,
+            validlatRange: this.validlatRange_
         });
     }
 
@@ -130,6 +160,6 @@ class Projection {
 }
 
 // web_worker序列化支持
-register('Projection', Projection, { omit: ['maxExtent_'] });
+register('Projection', Projection, { omit: ['maxExtent_', 'transform_'] });
 
 export default Projection;

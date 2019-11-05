@@ -1,5 +1,10 @@
 {
   "javascript.validate.enable": false,
   "liveServer.settings.root": "/debug",
-  "liveServer.settings.mount": [["/dist", "./dist"],["/test", "./test"]]
+  "liveServer.settings.mount": [["/dist", "./dist"],["/test", "./test"]],
+  "liveServer.settings.proxy": {
+    "enable": true,
+    "baseUri": "/proxy",
+    "proxyUri": "http://172.17.0.181:9010"
+  }
 }

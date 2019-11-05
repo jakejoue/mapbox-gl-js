@@ -47,8 +47,10 @@ class LngLat {
      * var wrapped = ll.wrap();
      * wrapped.lng; // = -73.9749
      */
-    wrap() {
-        return new LngLat(wrap(this.lng, -180, 180), this.lat);
+    wrap(projection: Projection) {
+        // GeoGlobal-worldcopy-huangwei-191105
+        const extent = projection.getExtent();
+        return new LngLat(wrap(this.lng, extent[0], extent[2]), this.lat);
     }
 
     /**

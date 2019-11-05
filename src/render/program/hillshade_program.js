@@ -106,9 +106,11 @@ function getTileLatRange(painter: Painter, tileID: OverscaledTileID) {
     // for scaling the magnitude of a points slope by its latitude
     const tilesAtZoom = Math.pow(2, tileID.canonical.z);
     const y = tileID.canonical.y;
+
+    // GeoGlobal-coord-huangwei-191105
     return [
-        new MercatorCoordinate(0, y / tilesAtZoom).toLngLat().lat,
-        new MercatorCoordinate(0, (y + 1) / tilesAtZoom).toLngLat().lat];
+        new MercatorCoordinate(0, y / tilesAtZoom, 0, painter.projection).toLngLat().lat,
+        new MercatorCoordinate(0, (y + 1) / tilesAtZoom, 0, painter.projection).toLngLat().lat];
 }
 
 export {

@@ -135,8 +135,9 @@ class CrossTileSymbolLayerIndex {
      * To prevent labels from flashing out and in we adjust the tileID values in the indexes
      * so that they match the new wrapped version of the map.
      */
-    handleWrapJump(lng: number) {
-        const wrapDelta = Math.round((lng - this.lng) / 360);
+    // GeoGlobal-worldcopy-huangwei-191105
+    handleWrapJump(lng: number, maxExtent: number) {
+        const wrapDelta = Math.round((lng - this.lng) / maxExtent);
         if (wrapDelta !== 0) {
             for (const zoom in this.indexes) {
                 const zoomIndexes = this.indexes[zoom];
@@ -244,12 +245,15 @@ class CrossTileSymbolIndex {
     crossTileIDs: CrossTileIDs;
     maxBucketInstanceId: number;
     bucketsInCurrentPlacement: {[number]: boolean};
+    maxExtent: number;
 
-    constructor() {
+    // GeoGlobal-worldcopy-huangwei-191105
+    constructor(maxExtent: number) {
         this.layerIndexes = {};
         this.crossTileIDs = new CrossTileIDs();
         this.maxBucketInstanceId = 0;
         this.bucketsInCurrentPlacement = {};
+        this.maxExtent = maxExtent;
     }
 
     addLayer(styleLayer: StyleLayer, tiles: Array<Tile>, lng: number) {
@@ -261,7 +265,8 @@ class CrossTileSymbolIndex {
         let symbolBucketsChanged = false;
         const currentBucketIDs = {};
 
-        layerIndex.handleWrapJump(lng);
+        // GeoGlobal-worldcopy-huangwei-191105
+        layerIndex.handleWrapJump(lng, this.maxExtent);
 
         for (const tile of tiles) {
             const symbolBucket = ((tile.getBucket(styleLayer): any): SymbolBucket);

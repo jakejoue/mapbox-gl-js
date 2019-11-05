@@ -71,7 +71,8 @@ class RasterTileSource extends Evented implements Source {
                 this.fire(new ErrorEvent(err));
             } else if (tileJSON) {
                 extend(this, tileJSON);
-                if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
+                // GeoGlobal-coord-huangwei-191105
+                if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.map.projection, this.minzoom, this.maxzoom);
 
                 postTurnstileEvent(tileJSON.tiles);
                 postMapLoadEvent(tileJSON.tiles, this.map._getMapId(), this.map._requestManager._skuToken);
