@@ -94,8 +94,11 @@ export class RequestManager {
     normalizeSpriteURL(url: string, format: string, extension: string, accessToken?: string): string {
         const urlObject = parseUrl(url);
         if (!isMapboxURL(url)) {
-            urlObject.path += `${format}${extension}`;
-            return formatUrl(urlObject);
+            // urlObject.path += `${format}${extension}`;
+            // return formatUrl(urlObject);
+            // GeoGlobal-projext-huangwei-191105 修改获取字体和图片的url拼接方式
+            const url = formatUrl(urlObject);
+            return url + format + extension;
         }
         urlObject.path = `/styles/v1${urlObject.path}/sprite${format}${extension}`;
         return this._makeAPIURL(urlObject, this._customAccessToken || accessToken);
