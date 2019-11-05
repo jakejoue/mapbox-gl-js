@@ -182,6 +182,9 @@ class Style extends Evented {
                 }
             }
         });
+
+        // GeoGlobal-proj-huangwei-191105 同步子线程坐标系
+        this.dispatcher.broadcast('setProjection', map.projection);
     }
 
     loadURL(url: string, options: {

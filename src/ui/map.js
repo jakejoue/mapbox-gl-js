@@ -30,6 +30,8 @@ import { setCacheLimits } from '../util/tile_request_cache';
 
 // GeoGlobal-renderInterval-huangwei-191015 频率间隔限制（去除过于快的中间帧）
 import { rateLimit } from '../extend/util/util';
+// GeoGlobal-proj-huangwei-191105
+import { Projection, get } from '../extend/proj.js';
 
 import type {PointLike} from '@mapbox/point-geometry';
 import type { RequestTransformFunction } from '../util/mapbox';
@@ -101,9 +103,10 @@ type MapOptions = {
 
     // GeoGlobal-renderInterval-huangwei-191015
     renderInterval: number,
-
     // GeoGlobal-skipzoom-huangwei-191015 是否zoomend和moveed后才发起请求
-    skipLevelOfZooming: boolean
+    skipLevelOfZooming: boolean,
+    // GeoGlobal-proj-huangwei-191105 坐标系参数
+    projection: string
 };
 
 const defaultMinZoom = 0;
@@ -146,9 +149,10 @@ const defaultOptions = {
 
     // GeoGlobal-renderInterval-huangwei-191015
     renderInterval: 0,
-
     // GeoGlobal-skipzoom-huangwei-191015
-    skipLevelOfZooming: false
+    skipLevelOfZooming: false,
+    // GeoGlobal-proj-huangwei-191105
+    projection: 'EPSG:3857'
 };
 
 /**
@@ -292,6 +296,8 @@ class Map extends Camera {
 
     // GeoGlobal-skipzoom-huangwei-191015 类型定义
     _skipLevelOfZooming: boolean;
+    // GeoGlobal-proj-huangwei-191105
+    projection: Projection;
 
     /**
      * The map's {@link ScrollZoomHandler}, which implements zooming in and out with a scroll wheel or trackpad.
@@ -333,12 +339,21 @@ class Map extends Camera {
     constructor(options: MapOptions) {
         options = extend({}, defaultOptions, options);
 
+        // GeoGlobal-proj-huangwei-191105
+        const projection = get(options.projection);
+        if (!projection) {
+            throw new Error(`can not find projcetion:`, options.projection);
+        }
+
         if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
             throw new Error(`maxZoom must be greater than minZoom`);
         }
-
-        const transform = new Transform(options.minZoom, options.maxZoom, options.renderWorldCopies);
+        // GeoGlobal-proj-huangwei-191105 传递坐标系
+        const transform = new Transform(projection, options.minZoom, options.maxZoom, options.renderWorldCopies);
         super(transform, options);
+
+        // GeoGlobal-proj-huangwei-191105 保存坐标系
+        this.projection = projection;
 
         this._interactive = options.interactive;
         this._maxTileCacheSize = options.maxTileCacheSize;

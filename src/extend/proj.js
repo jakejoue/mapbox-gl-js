@@ -27,7 +27,10 @@ export function addProjections(projections: Array<Projection>) {
  * 查询坐标系
  */
 export function get(projectionLike: String | Projection): Projection {
-    return typeof projectionLike === 'string' ? getProj(projectionLike) : (projectionLike || null);
+    const projection = typeof projectionLike === 'string' ?
+        getProj(projectionLike) : (projectionLike || null);
+
+    return projection ? projection.clone() : null;
 }
 
 /**

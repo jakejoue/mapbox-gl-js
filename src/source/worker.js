@@ -23,6 +23,9 @@ import type {WorkerGlobalScopeInterface} from '../util/web_worker';
 import type {Callback} from '../types/callback';
 import type {LayerSpecification} from '../style-spec/types';
 
+// GeoGlobal-proj-huangwei-191105
+import Projection from '../extend/proj/Projection';
+
 /**
  * @private
  */
@@ -34,6 +37,9 @@ export default class Worker {
     workerSources: { [string]: { [string]: { [string]: WorkerSource } } };
     demWorkerSources: { [string]: { [string]: RasterDEMTileWorkerSource } };
     referrer: ?string;
+
+    // GeoGlobal-proj-huangwei-191105 存放当前地图所用坐标系
+    projcetions: { [string]: Projection };
 
     constructor(self: WorkerGlobalScopeInterface) {
         this.self = self;
@@ -65,6 +71,9 @@ export default class Worker {
             globalRTLTextPlugin['processBidirectionalText'] = rtlTextPlugin.processBidirectionalText;
             globalRTLTextPlugin['processStyledBidirectionalText'] = rtlTextPlugin.processStyledBidirectionalText;
         };
+
+        // GeoGlobal-proj-huangwei-191105 初始化坐标系容器
+        this.projcetions = {};
     }
 
     setReferrer(mapID: string, referrer: string) {
@@ -199,6 +208,11 @@ export default class Worker {
 
     enforceCacheSizeLimit(mapId: string, limit: number) {
         enforceCacheSizeLimit(limit);
+    }
+
+    // GeoGlobal-proj-huangwei-191105 同步坐标系方法
+    setProjection(mapId: string, projection: Projection) {
+        this.projcetions[mapId] = projection;
     }
 }
 

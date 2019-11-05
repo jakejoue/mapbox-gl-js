@@ -2,8 +2,9 @@
 
 import Units from './Units.js';
 import { getHeight, getWidth } from '../extent';
+import { register } from '../../util/web_worker_transfer';
 
-type ProjectionOption = {
+export type ProjectionOption = {
     code: string,
     units: Units,
     extent: Array<number>,
@@ -26,7 +27,7 @@ class Projection {
         this.resolutions_ = options.resolutions;
         this.tileSize_ = options.tileSize || 512;
 
-        this.maxExtent_ = Math.max(getHeight(this.extent_), getWidth(this.extent_));
+        this.maxExtent_ = null;
     }
 
     getCode(): string {
@@ -46,11 +47,28 @@ class Projection {
     }
 
     getMaxExtent(): number {
+        if (!this.maxExtent_) {
+            this.maxExtent_ = Math.max(getHeight(this.extent_), getWidth(this.extent_))
+        }
         return this.maxExtent_;
+    }
+
+    setResolutions(resolutions: Array<number>) {
+        this.resolutions_ = resolutions;
     }
 
     setTileSize(tileSize: number) {
         this.tileSize_ = tileSize;
+    }
+
+    clone(): Projection {
+        return new Projection({
+            code: this.code_,
+            units: this.units_,
+            extent: this.extent_,
+            resolutions: this.resolutions_,
+            tileSize: this.tileSize_
+        });
     }
 
     /**
@@ -110,5 +128,8 @@ class Projection {
         return Math.log(scale) / Math.LN2;
     }
 }
+
+// web_worker序列化支持
+register('Projection', Projection, { omit: ['maxExtent_'] });
 
 export default Projection;

@@ -2,14 +2,17 @@
 
 import LngLat from './lng_lat';
 import LngLatBounds from './lng_lat_bounds';
-import MercatorCoordinate, {mercatorXfromLng, mercatorYfromLat, mercatorZfromAltitude} from './mercator_coordinate';
+import MercatorCoordinate, { mercatorXfromLng, mercatorYfromLat, mercatorZfromAltitude } from './mercator_coordinate';
 import Point from '@mapbox/point-geometry';
 import { wrap, clamp } from '../../util/util';
-import {number as interpolate} from '../../style-spec/util/interpolate';
+import { number as interpolate } from '../../style-spec/util/interpolate';
 import tileCover from '../../util/tile_cover';
 import { UnwrappedTileID } from '../../source/tile_id';
 import EXTENT from '../../data/extent';
 import { vec4, mat4, mat2 } from 'gl-matrix';
+
+// GeoGlobal-proj-huangwei-191105
+import { Projection } from '../proj';
 
 import type { OverscaledTileID, CanonicalTileID } from '../../source/tile_id';
 
@@ -19,6 +22,9 @@ import type { OverscaledTileID, CanonicalTileID } from '../../source/tile_id';
  * @private
  */
 class Transform {
+    // GeoGlobal-proj-huangwei-191105
+    projcetion: Projection;
+
     tileSize: number;
     tileZoom: number;
     lngRange: ?[number, number];
@@ -48,10 +54,13 @@ class Transform {
     _maxZoom: number;
     _center: LngLat;
     _constraining: boolean;
-    _posMatrixCache: {[number]: Float32Array};
-    _alignedPosMatrixCache: {[number]: Float32Array};
+    _posMatrixCache: { [number]: Float32Array };
+    _alignedPosMatrixCache: { [number]: Float32Array };
 
-    constructor(minZoom: ?number, maxZoom: ?number, renderWorldCopies: boolean | void) {
+    constructor(projcetion: Projection, minZoom: ?number, maxZoom: ?number, renderWorldCopies: boolean | void) {
+        // GeoGlobal-proj-huangwei-191105
+        this.projcetion = projcetion;
+
         this.tileSize = 512; // constant
         this.maxValidLatitude = 85.051129; // constant
 
@@ -192,7 +201,7 @@ class Transform {
      * @param {boolean} options.roundZoom
      * @returns {number} zoom level
      */
-    coveringZoomLevel(options: {roundZoom?: boolean, tileSize: number}) {
+    coveringZoomLevel(options: { roundZoom?: boolean, tileSize: number }) {
         return (options.roundZoom ? Math.round : Math.floor)(
             this.zoom + this.scaleZoom(this.tileSize / options.tileSize)
         );
@@ -285,8 +294,8 @@ class Transform {
     project(lnglat: LngLat) {
         const lat = clamp(lnglat.lat, -this.maxValidLatitude, this.maxValidLatitude);
         return new Point(
-                mercatorXfromLng(lnglat.lng) * this.worldSize,
-                mercatorYfromLat(lat) * this.worldSize);
+            mercatorXfromLng(lnglat.lng) * this.worldSize,
+            mercatorYfromLat(lat) * this.worldSize);
     }
 
     unproject(point: Point): LngLat {
@@ -300,8 +309,8 @@ class Transform {
         const b = this.pointCoordinate(this.centerPoint);
         const loc = this.locationCoordinate(lnglat);
         const newCenter = new MercatorCoordinate(
-                loc.x - (a.x - b.x),
-                loc.y - (a.y - b.y));
+            loc.x - (a.x - b.x),
+            loc.y - (a.y - b.y));
         this.center = this.coordinateLocation(newCenter);
         if (this._renderWorldCopies) {
             this.center = this.center.wrap();
@@ -576,7 +585,7 @@ class Transform {
             dx = x - Math.round(x) + angleCos * xShift + angleSin * yShift,
             dy = y - Math.round(y) + angleCos * yShift + angleSin * xShift;
         const alignedM = new Float64Array(m);
-        mat4.translate(alignedM, alignedM, [ dx > 0.5 ? dx - 1 : dx, dy > 0.5 ? dy - 1 : dy, 0 ]);
+        mat4.translate(alignedM, alignedM, [dx > 0.5 ? dx - 1 : dx, dy > 0.5 ? dy - 1 : dy, 0]);
         this.alignedProjMatrix = alignedM;
 
         m = mat4.create();
