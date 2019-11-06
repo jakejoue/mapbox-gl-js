@@ -196,8 +196,10 @@ function isMapboxHTTPURL(url: string): boolean {
     return mapboxHTTPURLRe.test(url);
 }
 
+// GeoGlobal-cache-huangwei-191106
 function hasCacheDefeatingSku(url: string) {
-    return url.indexOf('sku=') > 0 && isMapboxHTTPURL(url);
+    // return url.indexOf('sku=') > 0 && isMapboxHTTPURL(url);
+    return (url.indexOf('sku=') > 0 && isMapboxHTTPURL(url)) || !isMapboxHTTPURL(url);
 }
 
 const urlRe = /^(\w+):\/\/([^/?]*)(\/[^?]+)?\??(.+)?/;

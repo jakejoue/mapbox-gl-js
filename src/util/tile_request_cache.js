@@ -2,6 +2,7 @@
 
 import { warnOnce, parseCacheControl } from './util';
 import window from './window';
+import { isMapboxHTTPURL } from './mapbox';
 
 import type Dispatcher from './dispatcher';
 
@@ -66,9 +67,16 @@ export function cachePut(request: Request, response: Response, requestTime: numb
     });
 }
 
+// GeoGlobal-cache-huangwei-191106
 function stripQueryParameters(url: string) {
-    const start = url.indexOf('?');
-    return start < 0 ? url : url.slice(0, start);
+    if (isMapboxHTTPURL(url)) {
+        const start = url.indexOf('?');
+        return start < 0 ? url : url.slice(0, start);
+    } else {
+        // 去除可能存在的proxy
+        const urlArr = url.split('?');
+        return urlArr.length > 2 ? urlArr.slice(1).join('?') : url;
+    }
 }
 
 export function cacheGet(request: Request, callback: (error: ?any, response: ?Response, fresh: ?boolean) => void) {
