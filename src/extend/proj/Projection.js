@@ -30,10 +30,10 @@ class Projection {
     constructor(options: ProjectionOption) {
         this.code_ = options.code;
         this.units_ = options.units;
-        this.extent_ = options.extent;
-        this.resolutions_ = options.resolutions;
+        this.extent_ = [...options.extent];
+        this.resolutions_ = [...options.resolutions];
         this.tileSize_ = options.tileSize || 512;
-        this.validlatRange_ = options.validlatRange || [options.extent[1], options.extent[3]];
+        this.validlatRange_ = [...options.validlatRange] || [options.extent[1], options.extent[3]];
 
         this.maxExtent_ = null;
         this.transform_ = null;
@@ -59,12 +59,16 @@ class Projection {
         return this.code_;
     }
 
+    getUnits(): Units {
+        return this.units_;
+    }
+
     getExtent(): Array<number> {
         return [...this.extent_];
     }
 
-    getUnits(): Units {
-        return this.units_;
+    getResolutions(): Array<number> {
+        return [...this.resolutions_];
     }
 
     getTileSize(): number {
@@ -72,7 +76,7 @@ class Projection {
     }
 
     getValidlatRange(): Array<number> {
-        return this.validlatRange_;
+        return [...this.validlatRange_];
     }
 
     getMaxExtent(): number {
@@ -83,11 +87,15 @@ class Projection {
     }
 
     setResolutions(resolutions: Array<number>) {
-        this.resolutions_ = resolutions;
+        this.resolutions_ = [...resolutions];
     }
 
     setTileSize(tileSize: number) {
         this.tileSize_ = tileSize;
+    }
+
+    setValidlatRange(validlatRange: Array<number>) {
+        this.validlatRange_ = [...validlatRange];
     }
 
     clone(): Projection {
