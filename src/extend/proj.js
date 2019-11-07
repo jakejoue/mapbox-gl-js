@@ -37,6 +37,8 @@ export function get(projectionLike: String | Projection): Projection {
  */
 export function clearAllProjections() {
     clearProj();
+    // 保留默认坐标系
+    addProjections(PROJECTIONS);
 }
 
 /**
