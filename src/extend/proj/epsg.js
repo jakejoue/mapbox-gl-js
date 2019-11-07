@@ -31,8 +31,8 @@ const EPSG4326 = new Projection({
 const EPSGMAPBOX = new Projection({
     code: 'EPSG:mapbox',
     units: Units.DEGREES,
-    extent: [-180, -90, 180, 90],
-    validlatRange: [-85.051129, 85.051129]
+    extent: [-180, -85, 180, 85],
+    validlatRange: [-85, 85]
 });
 
 // 导出默认坐标系

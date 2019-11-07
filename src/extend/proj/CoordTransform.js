@@ -43,9 +43,9 @@ const transform = {
     // 一些静态变量
     maxExtent: 360,
     minX: -180,
-    minY: -85.051129,
+    minY: -85,
     maxX: 180,
-    maxY: 85.051129,
+    maxY: 85,
     // 方法
     circumferenceAtLatitude,
     mercatorXfromLng,

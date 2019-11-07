@@ -3,20 +3,23 @@
 // GeoGlobal-coord-huangwei-191105
 import LngLatBounds from '../extend/geo/lng_lat_bounds';
 import Projection from '../extend/proj/Projection';
+import { equals } from '../extend/extent';
 
 import type { CanonicalTileID } from './tile_id';
 
 class TileBounds {
-    bounds: LngLatBounds;
     projection: Projection;
     minzoom: number;
     maxzoom: number;
+    isEquals: boolean;
+    bounds: LngLatBounds;
 
     constructor(bounds: [number, number, number, number], projection: Projection, minzoom: ?number, maxzoom: ?number) {
         this.projection = projection;
-        this.bounds = LngLatBounds.convert(this.validateBounds(bounds));
         this.minzoom = minzoom || 0;
         this.maxzoom = maxzoom || 24;
+        this.isEquals = equals(this.validateBounds(bounds), projection.getExtent());
+        this.bounds = LngLatBounds.convert(this.validateBounds(bounds));
     }
 
     validateBounds(bounds: [number, number, number, number]) {
@@ -30,6 +33,11 @@ class TileBounds {
     }
 
     contains(tileID: CanonicalTileID) {
+        // bounds为地图范围直接返回true
+        if (this.isEquals) {
+            return true;
+        }
+
         const worldSize = Math.pow(2, tileID.z);
         const level = {
             minX: Math.floor(this.projection.getTransform().mercatorXfromLng(this.bounds.getWest()) * worldSize),
