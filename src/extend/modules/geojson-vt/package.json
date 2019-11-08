@@ -15,7 +15,7 @@
     "url": "git://github.com/mapbox/geojson-vt.git"
   },
   "module": "src/index.js",
-  "main": "geojson-vt-dev.js",
+  "main": "src/index.js",
   "jsdelivr": "geojson-vt.js",
   "unpkg": "geojson-vt.js",
   "devDependencies": {
