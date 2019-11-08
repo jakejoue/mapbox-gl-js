@@ -11,6 +11,7 @@ import type {CollisionBoxArray} from '../data/array_types';
 import type DEMData from '../data/dem_data';
 import type { StyleGlyph } from '../style/style_glyph';
 import type { StyleImage } from '../style/style_image';
+import type { Projection } from '../extend/proj';
 
 export type TileParameters = {
     source: string,
@@ -67,6 +68,9 @@ export type WorkerDEMTileCallback = (err: ?Error, result: ?DEMData) => void;
  * @param layerIndex
  */
 export interface WorkerSource {
+    // GeoGlobal-coord-workerproj-191108
+    projection: Projection;
+
     // Disabled due to https://github.com/facebook/flow/issues/5208
     // constructor(actor: Actor, layerIndex: StyleLayerIndex): WorkerSource;
 

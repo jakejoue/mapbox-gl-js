@@ -189,7 +189,8 @@ export default class Worker {
                 }
             };
 
-            this.workerSources[mapId][type][source] = new (this.workerSourceTypes[type]: any)((actor: any), this.getLayerIndex(mapId));
+            // GeoGlobal-coord-workerproj-191108
+            this.workerSources[mapId][type][source] = new (this.workerSourceTypes[type]: any)((actor: any), this.projcetions[mapId], this.getLayerIndex(mapId));
         }
 
         return this.workerSources[mapId][type][source];

@@ -8,6 +8,9 @@ import WorkerTile from './worker_tile';
 import { extend } from '../util/util';
 import performance from '../util/performance';
 
+// GeoGlobal-coord-workerproj-191108
+import { Projection } from '../extend/proj';
+
 import type {
     WorkerSource,
     WorkerTileParameters,
@@ -76,14 +79,22 @@ class VectorTileWorkerSource implements WorkerSource {
     loading: { [string]: WorkerTile };
     loaded: { [string]: WorkerTile };
 
+    // GeoGlobal-coord-workerproj-191108
+    projection: Projection;
+
     /**
      * @param [loadVectorData] Optional method for custom loading of a VectorTile
      * object based on parameters passed from the main-thread Source. See
      * {@link VectorTileWorkerSource#loadTile}. The default implementation simply
      * loads the pbf at `params.url`.
      */
-    constructor(actor: Actor, layerIndex: StyleLayerIndex, loadVectorData: ?LoadVectorData) {
+    // GeoGlobal-coord-workerproj-191108
+    constructor(actor: Actor, projection: Projection, layerIndex: StyleLayerIndex, loadVectorData: ?LoadVectorData) {
         this.actor = actor;
+
+        // GeoGlobal-coord-workerproj-191108
+        this.projection = projection;
+
         this.layerIndex = layerIndex;
         this.loadVectorData = loadVectorData || loadVectorTile;
         this.loading = {};

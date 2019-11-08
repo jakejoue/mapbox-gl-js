@@ -8,10 +8,14 @@ import GeoJSONWrapper from './geojson_wrapper';
 import vtpbf from 'vt-pbf';
 import Supercluster from 'supercluster';
 // import geojsonvt from 'geojson-vt';
+// GeoGlobal-coord-npms-191108
 import geojsonvt from '../extend/modules/geojson-vt';
 import assert from 'assert';
 import VectorTileWorkerSource from './vector_tile_worker_source';
 import { createExpression } from '../style-spec/expression';
+
+// GeoGlobal-coord-workerproj-191108
+import { Projection } from '../extend/proj';
 
 import type {
     WorkerTileParameters,
@@ -105,8 +109,9 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * GeoJSON based on parameters passed from the main-thread Source.
      * See {@link GeoJSONWorkerSource#loadGeoJSON}.
      */
-    constructor(actor: Actor, layerIndex: StyleLayerIndex, loadGeoJSON: ?LoadGeoJSON) {
-        super(actor, layerIndex, loadGeoJSONTile);
+    // GeoGlobal-coord-workerproj-191108
+    constructor(actor: Actor, projection: Projection, layerIndex: StyleLayerIndex, loadGeoJSON: ?LoadGeoJSON) {
+        super(actor, projection, layerIndex, loadGeoJSONTile);
         if (loadGeoJSON) {
             this.loadGeoJSON = loadGeoJSON;
         }
