@@ -6,7 +6,9 @@ import performance from '../util/performance';
 import rewind from '@mapbox/geojson-rewind';
 import GeoJSONWrapper from './geojson_wrapper';
 import vtpbf from 'vt-pbf';
-import Supercluster from 'supercluster';
+// GeoGlobal-coord-npms-191108
+// import Supercluster from 'supercluster';
+import Supercluster from '../extend/modules/supercluster';
 // import geojsonvt from 'geojson-vt';
 // GeoGlobal-coord-npms-191108
 import geojsonvt from '../extend/modules/geojson-vt';
