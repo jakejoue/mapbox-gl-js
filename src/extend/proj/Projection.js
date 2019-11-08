@@ -6,6 +6,8 @@ import CoordTransform, { transform } from './CoordTransform';
 import { getHeight, getWidth } from '../extent';
 import { register } from '../../util/web_worker_transfer';
 
+import { deepCopy } from '../util/util';
+
 export type ProjectionOption = {
     code: string,
     units: Units,
@@ -28,12 +30,14 @@ class Projection {
     transform_: CoordTransform;
 
     constructor(options: ProjectionOption) {
+        options = deepCopy(options);
+
         this.code_ = options.code;
         this.units_ = options.units;
-        this.extent_ = [...options.extent];
-        this.resolutions_ = [...options.resolutions];
+        this.extent_ = options.extent;
+        this.resolutions_ = options.resolutions;
         this.tileSize_ = options.tileSize || 512;
-        this.validlatRange_ = [...options.validlatRange] || [options.extent[1], options.extent[3]];
+        this.validlatRange_ = options.validlatRange || [options.extent[1], options.extent[3]];
 
         this.maxExtent_ = null;
         this.transform_ = null;

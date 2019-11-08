@@ -42,3 +42,84 @@ export function isEmpty(object) {
     }
     return !property;
 }
+
+/**
+ * typeOf
+ * @param {*} obj
+ */
+export function typeOf(obj) {
+    const toString = Object.prototype.toString;
+    const map = {
+        '[object Boolean]': 'boolean',
+        '[object Number]': 'number',
+        '[object String]': 'string',
+        '[object Function]': 'function',
+        '[object Array]': 'array',
+        '[object Date]': 'date',
+        '[object RegExp]': 'regExp',
+        '[object Undefined]': 'undefined',
+        '[object Null]': 'null',
+        '[object Object]': 'object'
+    };
+    return map[toString.call(obj)];
+}
+
+/**
+ * 对象深赋值
+ * @param {Object} data
+ */
+export function deepCopy(
+    data,
+    { valueProcessors = [], keyProcessors = [], ignores = [] } = {}
+) {
+    const t = typeOf(data);
+    let o;
+
+    if (t === 'array') {
+        o = [];
+    } else if (t === 'object') {
+        o = {};
+    } else {
+        return data;
+    }
+
+    if (t === 'array') {
+        for (let i = 0; i < data.length; i++) {
+            o.push(
+                deepCopy(data[i], {
+                    keyProcessors,
+                    valueProcessors,
+                    ignores
+                })
+            );
+        }
+    } else if (t === 'object') {
+        for (const i in data) {
+            // ignores
+            if (ignores.includes(i)) {
+                o[i] = data[i];
+                continue;
+            }
+            // key
+            let key = i;
+            keyProcessors.forEach(processor => {
+                key = processor(key);
+            });
+            // data
+            let _data = data[i];
+            valueProcessors.forEach(processor => {
+                _data = processor(_data, key);
+            });
+            // 已经处理过的数据，不再copy
+            o[key] =
+                _data === data[i] ?
+                    deepCopy(_data, {
+                        keyProcessors,
+                        valueProcessors,
+                        ignores
+                    }) :
+                    _data;
+        }
+    }
+    return o;
+}
