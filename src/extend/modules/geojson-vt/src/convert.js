@@ -158,18 +158,18 @@ function getConverter(projection) {
         convertLines,
         projectX(x) {
             if (this.projection) {
-                return this.projection.getTransform().mercatorXfromLng(x)
+                return this.projection.getTransform().mercatorXfromLng(x);
             }
             return x / 360 + 0.5;
         },
         projectY(y) {
             if (this.projection) {
-                return this.projection.getTransform().mercatorYfromLat(y)
+                return this.projection.getTransform().mercatorYfromLat(y);
             }
             var sin = Math.sin(y * Math.PI / 180);
             var y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
             return y2 < 0 ? 0 : y2 > 1 ? 1 : y2;
         }
     }
-    return converter
+    return converter;
 }

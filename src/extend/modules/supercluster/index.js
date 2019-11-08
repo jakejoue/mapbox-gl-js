@@ -17,9 +17,12 @@ const defaultOptions = {
 };
 
 export default class Supercluster {
-    constructor(options) {
+    constructor(options, projection) {
         this.options = extend(Object.create(defaultOptions), options);
         this.trees = new Array(this.options.maxZoom + 1);
+
+        // GeoGlobal-coord-workerproj-191108
+        this.projection = projection;
     }
 
     load(points) {
