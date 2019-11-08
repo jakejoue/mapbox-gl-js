@@ -136,18 +136,6 @@ function convertLines(rings, out, tolerance, isPolygon) {
 }
 /* ************* 非直接调用 ************* */
 
-/*
-function projectX(x) {
-    return x / 360 + 0.5;
-}
-
-function projectY(y) {
-    var sin = Math.sin(y * Math.PI / 180);
-    var y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
-    return y2 < 0 ? 0 : y2 > 1 ? 1 : y2;
-}
-*/
-
 // GeoGlobal-coord-workerproj-191108
 function getConverter(projection) {
     const converter = {
@@ -163,11 +151,13 @@ function getConverter(projection) {
             return x / 360 + 0.5;
         },
         projectY(y) {
+            var y2;
             if (this.projection) {
-                return this.projection.getTransform().mercatorYfromLat(y);
+                y2 = this.projection.getTransform().mercatorYfromLat(y);
+            } else {
+                var sin = Math.sin(y * Math.PI / 180);
+                y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
             }
-            var sin = Math.sin(y * Math.PI / 180);
-            var y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
             return y2 < 0 ? 0 : y2 > 1 ? 1 : y2;
         }
     }

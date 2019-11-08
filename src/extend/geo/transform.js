@@ -484,7 +484,7 @@ class Transform {
         // let minX = -180;
         // let maxX = 180;
         // GeoGlobal-coord-huangwei-191105
-        let [ minY, maxY, minX, maxX] = this.projection.getExtent();
+        let [minX, minY, maxX, maxY] = this.projection.getExtent();
 
         let sy, sx, x2, y2;
         const size = this.size,

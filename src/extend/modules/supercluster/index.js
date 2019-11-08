@@ -17,20 +17,21 @@ const defaultOptions = {
 };
 
 export default class Supercluster {
+    // GeoGlobal-coord-workerproj-191108
     constructor(options, projection) {
         this.options = extend(Object.create(defaultOptions), options);
         this.trees = new Array(this.options.maxZoom + 1);
 
         // GeoGlobal-coord-workerproj-191108
-        this.projection = projection;
+        this.converter = getConverter(projection);
     }
 
     load(points) {
-        const {log, minZoom, maxZoom, nodeSize} = this.options;
+        const { log, minZoom, maxZoom, nodeSize } = this.options;
 
         if (log) console.time('total time');
 
-        const timerId = `prepare ${  points.length  } points`;
+        const timerId = `prepare ${points.length} points`;
         if (log) console.time(timerId);
 
         this.points = points;
@@ -39,7 +40,7 @@ export default class Supercluster {
         let clusters = [];
         for (let i = 0; i < points.length; i++) {
             if (!points[i].geometry) continue;
-            clusters.push(createPointCluster(points[i], i));
+            clusters.push(this.converter.createPointCluster(points[i], i));
         }
         this.trees[maxZoom + 1] = new KDBush(clusters, getX, getY, nodeSize, Float32Array);
 
@@ -63,14 +64,28 @@ export default class Supercluster {
     }
 
     getClusters(bbox, zoom) {
-        let minLng = ((bbox[0] + 180) % 360 + 360) % 360 - 180;
-        const minLat = Math.max(-90, Math.min(90, bbox[1]));
-        let maxLng = bbox[2] === 180 ? 180 : ((bbox[2] + 180) % 360 + 360) % 360 - 180;
-        const maxLat = Math.max(-90, Math.min(90, bbox[3]));
+        const [minY, maxY, minX, maxX] = this.converter.projection.getExtent();
+        const maxExtent = this.converter.projection.getMaxExtent()
 
-        if (bbox[2] - bbox[0] >= 360) {
-            minLng = -180;
-            maxLng = 180;
+        // let minLng = ((bbox[0] + 180) % 360 + 360) % 360 - 180;
+        // const minLat = Math.max(-90, Math.min(90, bbox[1]));
+        // let maxLng = bbox[2] === 180 ? 180 : ((bbox[2] + 180) % 360 + 360) % 360 - 180;
+        // const maxLat = Math.max(-90, Math.min(90, bbox[3]));
+
+        // const [minX, minY, maxX, maxY] = this.converter.projection.getExtent();
+        // const maxExtent = this.converter.projection.getMaxExtent();
+
+        let minLng = ((bbox[0] - minX) % maxExtent + maxExtent) % maxExtent + minX;
+        const minLat = Math.max(minY, Math.min(maxY, bbox[1]));
+        let maxLng = bbox[2] === maxX ? maxX : ((bbox[2] - minX) % maxExtent + maxExtent) % maxExtent + minX;
+        const maxLat = Math.max(minY, Math.min(maxY, bbox[3]));
+
+        if (bbox[2] - bbox[0] >= maxExtent) {
+            minLng = minX;
+            maxLng = maxX;
+            // if (bbox[2] - bbox[0] >= 360) {
+            //     minLng = -180;
+            //     maxLng = 180;
         } else if (minLng > maxLng) {
             const easternHem = this.getClusters([minLng, minLat, 180, maxLat], zoom);
             const westernHem = this.getClusters([-180, minLat, maxLng, maxLat], zoom);
@@ -78,11 +93,16 @@ export default class Supercluster {
         }
 
         const tree = this.trees[this._limitZoom(zoom)];
-        const ids = tree.range(lngX(minLng), latY(maxLat), lngX(maxLng), latY(minLat));
+        const ids = tree.range(
+            this.converter.lngX(minLng),
+            this.converter.latY(maxLat),
+            this.converter.lngX(maxLng),
+            this.converter.latY(minLat)
+        );
         const clusters = [];
         for (const id of ids) {
             const c = tree.points[id];
-            clusters.push(c.numPoints ? getClusterJSON(c) : this.points[c.index]);
+            clusters.push(c.numPoints ? this.converter.getClusterJSON(c) : this.points[c.index]);
         }
         return clusters;
     }
@@ -104,7 +124,7 @@ export default class Supercluster {
         for (const id of ids) {
             const c = index.points[id];
             if (c.parentId === clusterId) {
-                children.push(c.numPoints ? getClusterJSON(c) : this.points[c.index]);
+                children.push(c.numPoints ? this.converter.getClusterJSON(c) : this.points[c.index]);
             }
         }
 
@@ -126,7 +146,7 @@ export default class Supercluster {
     getTile(z, x, y) {
         const tree = this.trees[this._limitZoom(z)];
         const z2 = Math.pow(2, z);
-        const {extent, radius} = this.options;
+        const { extent, radius } = this.options;
         const p = radius / extent;
         const top = (y - p) / z2;
         const bottom = (y + 1 + p) / z2;
@@ -217,7 +237,7 @@ export default class Supercluster {
 
     _cluster(points, zoom) {
         const clusters = [];
-        const {radius, extent, reduce} = this.options;
+        const { radius, extent, reduce } = this.options;
         const r = radius / (extent * Math.pow(2, zoom));
 
         // loop through each point
@@ -280,6 +300,18 @@ export default class Supercluster {
     }
 }
 
+function extend(dest, src) {
+    for (const id in src) dest[id] = src[id];
+    return dest;
+}
+
+function getX(p) {
+    return p.x;
+}
+function getY(p) {
+    return p.y;
+}
+
 function createCluster(x, y, id, numPoints, properties) {
     return {
         x, // weighted cluster center
@@ -292,34 +324,11 @@ function createCluster(x, y, id, numPoints, properties) {
     };
 }
 
-function createPointCluster(p, id) {
-    const [x, y] = p.geometry.coordinates;
-    return {
-        x: lngX(x), // projected point coordinates
-        y: latY(y),
-        zoom: Infinity, // the last zoom the point was processed at
-        index: id, // index of the source feature in the original input array,
-        parentId: -1 // parent cluster id
-    };
-}
-
-function getClusterJSON(cluster) {
-    return {
-        type: 'Feature',
-        id: cluster.id,
-        properties: getClusterProperties(cluster),
-        geometry: {
-            type: 'Point',
-            coordinates: [xLng(cluster.x), yLat(cluster.y)]
-        }
-    };
-}
-
 function getClusterProperties(cluster) {
     const count = cluster.numPoints;
     const abbrev =
-        count >= 10000 ? `${Math.round(count / 1000)  }k` :
-        count >= 1000 ? `${Math.round(count / 100) / 10  }k` : count;
+        count >= 10000 ? `${Math.round(count / 1000)}k` :
+            count >= 1000 ? `${Math.round(count / 100) / 10}k` : count;
     return extend(extend({}, cluster.properties), {
         cluster: true,
         cluster_id: cluster.id,
@@ -328,33 +337,59 @@ function getClusterProperties(cluster) {
     });
 }
 
-// longitude/latitude to spherical mercator in [0..1] range
-function lngX(lng) {
-    return lng / 360 + 0.5;
-}
-function latY(lat) {
-    const sin = Math.sin(lat * Math.PI / 180);
-    const y = (0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI);
-    return y < 0 ? 0 : y > 1 ? 1 : y;
-}
-
-// spherical mercator to longitude/latitude
-function xLng(x) {
-    return (x - 0.5) * 360;
-}
-function yLat(y) {
-    const y2 = (180 - y * 360) * Math.PI / 180;
-    return 360 * Math.atan(Math.exp(y2)) / Math.PI - 90;
-}
-
-function extend(dest, src) {
-    for (const id in src) dest[id] = src[id];
-    return dest;
-}
-
-function getX(p) {
-    return p.x;
-}
-function getY(p) {
-    return p.y;
+// 获取转换方法
+function getConverter(projection) {
+    return {
+        projection,
+        lngX(lng) {
+            if (this.projection) {
+                return this.projection.getTransform().mercatorXfromLng(lng);
+            }
+            return lng / 360 + 0.5;
+        },
+        latY(lat) {
+            let y;
+            if (this.projection) {
+                return this.projection.getTransform().mercatorYfromLat(lat);
+            } else {
+                const sin = Math.sin(lat * Math.PI / 180);
+                y = (0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI);
+            }
+            return y < 0 ? 0 : y > 1 ? 1 : y;
+        },
+        xLng(x) {
+            if (this.projection) {
+                return this.projection.getTransform().lngFromMercatorX(x);
+            }
+            return (x - 0.5) * 360;
+        },
+        yLat(y) {
+            if (this.projection) {
+                return this.projection.getTransform().latFromMercatorY(y);
+            }
+            const y2 = (180 - y * 360) * Math.PI / 180;
+            return 360 * Math.atan(Math.exp(y2)) / Math.PI - 90;
+        },
+        createPointCluster(p, id) {
+            const [x, y] = p.geometry.coordinates;
+            return {
+                x: this.lngX(x), // projected point coordinates
+                y: this.latY(y),
+                zoom: Infinity, // the last zoom the point was processed at
+                index: id, // index of the source feature in the original input array,
+                parentId: -1 // parent cluster id
+            };
+        },
+        getClusterJSON(cluster) {
+            return {
+                type: 'Feature',
+                id: cluster.id,
+                properties: getClusterProperties(cluster),
+                geometry: {
+                    type: 'Point',
+                    coordinates: [this.xLng(cluster.x), this.yLat(cluster.y)]
+                }
+            };
+        }
+    }
 }
