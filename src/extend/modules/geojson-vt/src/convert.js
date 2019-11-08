@@ -4,24 +4,28 @@ import createFeature from './feature';
 
 // converts GeoJSON feature into an intermediate projected JSON vector format with simplification data
 
-export default function convert(data, options) {
+// GeoGlobal-coord-workerproj-191108
+export default function convert(data, options, projection) {
+    const converter = getConverter(projection);
+
     var features = [];
     if (data.type === 'FeatureCollection') {
         for (var i = 0; i < data.features.length; i++) {
-            convertFeature(features, data.features[i], options, i);
+            converter.convertFeature(features, data.features[i], options, i);
         }
 
     } else if (data.type === 'Feature') {
-        convertFeature(features, data, options);
+        converter.convertFeature(features, data, options);
 
     } else {
         // single geometry or a geometry collection
-        convertFeature(features, {geometry: data}, options);
+        converter.convertFeature(features, { geometry: data }, options);
     }
 
     return features;
 }
 
+/* ************* 非直接调用（指定this变量） ************* */
 function convertFeature(features, geojson, options, index) {
     if (!geojson.geometry) return;
 
@@ -36,36 +40,36 @@ function convertFeature(features, geojson, options, index) {
         id = index || 0;
     }
     if (type === 'Point') {
-        convertPoint(coords, geometry);
+        this.convertPoint(coords, geometry);
 
     } else if (type === 'MultiPoint') {
         for (var i = 0; i < coords.length; i++) {
-            convertPoint(coords[i], geometry);
+            this.convertPoint(coords[i], geometry);
         }
 
     } else if (type === 'LineString') {
-        convertLine(coords, geometry, tolerance, false);
+        this.convertLine(coords, geometry, tolerance, false);
 
     } else if (type === 'MultiLineString') {
         if (options.lineMetrics) {
             // explode into linestrings to be able to track metrics
             for (i = 0; i < coords.length; i++) {
                 geometry = [];
-                convertLine(coords[i], geometry, tolerance, false);
+                this.convertLine(coords[i], geometry, tolerance, false);
                 features.push(createFeature(id, 'LineString', geometry, geojson.properties));
             }
             return;
         } else {
-            convertLines(coords, geometry, tolerance, false);
+            this.convertLines(coords, geometry, tolerance, false);
         }
 
     } else if (type === 'Polygon') {
-        convertLines(coords, geometry, tolerance, true);
+        this.convertLines(coords, geometry, tolerance, true);
 
     } else if (type === 'MultiPolygon') {
         for (i = 0; i < coords.length; i++) {
             var polygon = [];
-            convertLines(coords[i], polygon, tolerance, true);
+            this.convertLines(coords[i], polygon, tolerance, true);
             geometry.push(polygon);
         }
     } else if (type === 'GeometryCollection') {
@@ -85,8 +89,8 @@ function convertFeature(features, geojson, options, index) {
 }
 
 function convertPoint(coords, out) {
-    out.push(projectX(coords[0]));
-    out.push(projectY(coords[1]));
+    out.push(this.projectX(coords[0]));
+    out.push(this.projectY(coords[1]));
     out.push(0);
 }
 
@@ -95,8 +99,8 @@ function convertLine(ring, out, tolerance, isPolygon) {
     var size = 0;
 
     for (var j = 0; j < ring.length; j++) {
-        var x = projectX(ring[j][0]);
-        var y = projectY(ring[j][1]);
+        var x = this.projectX(ring[j][0]);
+        var y = this.projectY(ring[j][1]);
 
         out.push(x);
         out.push(y);
@@ -126,11 +130,13 @@ function convertLine(ring, out, tolerance, isPolygon) {
 function convertLines(rings, out, tolerance, isPolygon) {
     for (var i = 0; i < rings.length; i++) {
         var geom = [];
-        convertLine(rings[i], geom, tolerance, isPolygon);
+        this.convertLine(rings[i], geom, tolerance, isPolygon);
         out.push(geom);
     }
 }
+/* ************* 非直接调用 ************* */
 
+/*
 function projectX(x) {
     return x / 360 + 0.5;
 }
@@ -139,4 +145,31 @@ function projectY(y) {
     var sin = Math.sin(y * Math.PI / 180);
     var y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
     return y2 < 0 ? 0 : y2 > 1 ? 1 : y2;
+}
+*/
+
+// GeoGlobal-coord-workerproj-191108
+function getConverter(projection) {
+    const converter = {
+        projection,
+        convertFeature,
+        convertPoint,
+        convertLine,
+        convertLines,
+        projectX(x) {
+            if (this.projection) {
+                return this.projection.getTransform().mercatorXfromLng(x)
+            }
+            return x / 360 + 0.5;
+        },
+        projectY(y) {
+            if (this.projection) {
+                return this.projection.getTransform().mercatorYfromLat(y)
+            }
+            var sin = Math.sin(y * Math.PI / 180);
+            var y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
+            return y2 < 0 ? 0 : y2 > 1 ? 1 : y2;
+        }
+    }
+    return converter
 }

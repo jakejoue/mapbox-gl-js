@@ -180,7 +180,8 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
                 try {
                     this._geoJSONIndex = params.cluster ?
                         new Supercluster(getSuperclusterOptions(params)).load(data.features) :
-                        geojsonvt(data, params.geojsonVtOptions);
+                        // GeoGlobal-coord-workerproj-191108
+                        geojsonvt(data, params.geojsonVtOptions, this.projection);
                 } catch (err) {
                     return callback(err);
                 }

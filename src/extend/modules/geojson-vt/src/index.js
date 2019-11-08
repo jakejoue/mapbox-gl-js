@@ -5,11 +5,15 @@ import wrap from './wrap';           // date line processing
 import transform from './transform'; // coordinate transformation
 import createTile from './tile';     // final simplified tile generation
 
-export default function geojsonvt(data, options) {
-    return new GeoJSONVT(data, options);
+// GeoGlobal-coord-workerproj-191108
+export default function geojsonvt(data, options, projection) {
+    return new GeoJSONVT(data, options, projection);
 }
 
-function GeoJSONVT(data, options) {
+function GeoJSONVT(data, options, projection) {
+    // GeoGlobal-coord-workerproj-191108
+    this.projection = projection;
+
     options = this.options = extend(Object.create(this.options), options);
 
     var debug = options.debug;
@@ -19,7 +23,8 @@ function GeoJSONVT(data, options) {
     if (options.maxZoom < 0 || options.maxZoom > 24) throw new Error('maxZoom should be in the 0-24 range');
     if (options.promoteId && options.generateId) throw new Error('promoteId and generateId cannot be used together.');
 
-    var features = convert(data, options);
+    // GeoGlobal-coord-workerproj-191108
+    var features = convert(data, options, projection);
 
     this.tiles = {};
     this.tileCoords = [];
