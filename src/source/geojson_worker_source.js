@@ -9,8 +9,8 @@ import vtpbf from 'vt-pbf';
 // GeoGlobal-coord-npms-191108
 // import Supercluster from 'supercluster';
 import Supercluster from '../extend/modules/supercluster';
-// import geojsonvt from 'geojson-vt';
 // GeoGlobal-coord-npms-191108
+// import geojsonvt from 'geojson-vt';
 import geojsonvt from '../extend/modules/geojson-vt';
 import assert from 'assert';
 import VectorTileWorkerSource from './vector_tile_worker_source';
@@ -180,9 +180,9 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
                 rewind(data, true);
 
                 try {
+                    // GeoGlobal-coord-workerproj-191108
                     this._geoJSONIndex = params.cluster ?
-                        new Supercluster(getSuperclusterOptions(params)).load(data.features) :
-                        // GeoGlobal-coord-workerproj-191108
+                        new Supercluster(getSuperclusterOptions(params), this.projection).load(data.features) :
                         geojsonvt(data, params.geojsonVtOptions, this.projection);
                 } catch (err) {
                     return callback(err);
