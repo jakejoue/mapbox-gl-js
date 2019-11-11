@@ -29,28 +29,30 @@
         <script>
             var map = (window.map = new mapboxgl.Map({
                 container: "map",
-                zoom: 12.5,
-                minZoom: 1,
-                projection: "EPSG:3857",
-                center: [12723074.215081718, 3576589.173505064],
+                zoom: 2,
+                minZoom: 2,
+                projection: "EPSG:baidu",
+                center: [0, 0],
                 style: {
                     version: 8,
                     sources: {},
                     layers: []
                 },
-                hash: true,
+                hash: false,
                 renderWorldCopies: true,
                 isIntScrollZoom: true,
                 skipLevelOfZooming: true
             }));
 
             map.on("load", () => {
+                map.showTileBoundaries = true
                 map.addSource(
                     "sourceId_vec_bc5d53c0-f645-11e9-8857-f543029c4471",
                     {
                         type: "raster",
+                        rasterType: "baidu",
                         tiles: [
-                            "http://t2.tianditu.gov.cn/vec_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=9aebc7723eee1ef07a73f5ddfc0c1df4"
+                            "http://online1.map.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20190410"
                         ],
                         tileSize: 256,
                         zoomOffset: 0

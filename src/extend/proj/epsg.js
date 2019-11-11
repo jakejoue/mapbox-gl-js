@@ -27,6 +27,13 @@ const EPSG4326 = new Projection({
     extent: [-180, -90, 180, 90]
 });
 
+const EPSGBAIDU = new Projection({
+    code: 'EPSG:baidu',
+    units: Units.METERS,
+    extent: [-33554432, -33554432, 33554432, 33554432],
+    validlatRange: [-HALF_SIZE, HALF_SIZE]
+});
+
 // mapbox
 const EPSGMAPBOX = new Projection({
     code: 'EPSG:mapbox',
@@ -39,5 +46,6 @@ const EPSGMAPBOX = new Projection({
 export const PROJECTIONS = [
     EPSG3857,
     EPSG4326,
+    EPSGBAIDU,
     EPSGMAPBOX
 ];

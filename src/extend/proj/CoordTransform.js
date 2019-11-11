@@ -1,4 +1,6 @@
 // @flow
+import { getTileBBox } from '@mapbox/whoots-js';
+
 import Projection from './Projection';
 import Units from './Units';
 
@@ -54,7 +56,8 @@ const transform = {
     lngFromMercatorX,
     latFromMercatorY,
     altitudeFromMercatorZ,
-    mercatorScale
+    mercatorScale,
+    getTileBBox
 };
 
 export { transform };
@@ -109,6 +112,21 @@ class CoordTransform {
             return 1 / Math.cos(lat * Math.PI / 180);
         }
         return 1 / lat;
+    }
+
+    getTileBBox(x, y, z) {
+        const zoomScale = Math.pow(2, z);
+        y = (zoomScale - y - 1);
+
+        const tileWidth = this.maxX - this.minX;
+        const tileHeight = this.maxY - this.minY;
+
+        const minx = this.minX + tileWidth * x / zoomScale;
+        const miny = this.minY + tileHeight * y / zoomScale;
+        const maxx = this.minY + tileWidth * (x + 1) / zoomScale;
+        const maxy = this.minX + tileHeight * (y + 1) / zoomScale;
+
+        return [minx, miny, maxx, maxy].join(',');
     }
 }
 
