@@ -17,7 +17,10 @@ const defaultOptions = {
     closeButton: true,
     closeOnClick: true,
     className: '',
-    maxWidth: "240px"
+    maxWidth: "240px",
+    // GeoGlobal-popup-huangwei-191111
+    showArrow: true,
+    contentClass: ''
 };
 
 export type Offset = number | PointLike | {[Anchor]: PointLike};
@@ -28,7 +31,10 @@ export type PopupOptions = {
     anchor?: Anchor,
     offset?: Offset,
     className?: string,
-    maxWidth?: string
+    maxWidth?: string,
+    // GeoGlobal-popup-huangwei-191111
+    showArrow?: boolean,
+    contentClass?: string
 };
 
 /**
@@ -337,7 +343,10 @@ export default class Popup extends Evented {
             DOM.remove(this._content);
         }
 
-        this._content = DOM.create('div', 'mapboxgl-popup-content', this._container);
+        // GeoGlobal-popup-huangwei-191111
+        const className = this.options.contentClass ? ` mapboxgl-popup-content-${this.options.contentClass}` : '';
+        this._content = DOM.create('div', `mapboxgl-popup-content${className}`, this._container);
+
         if (this.options.closeButton) {
             this._closeButton = DOM.create('button', 'mapboxgl-popup-close-button', this._content);
             this._closeButton.type = 'button';
@@ -356,7 +365,11 @@ export default class Popup extends Evented {
 
         if (!this._container) {
             this._container = DOM.create('div', 'mapboxgl-popup', this._map.getContainer());
-            this._tip       = DOM.create('div', 'mapboxgl-popup-tip', this._container);
+            // this._tip       = DOM.create('div', 'mapboxgl-popup-tip', this._container);
+            // GeoGlobal-popup-huangwei-191111
+            if (this.options.showArrow) {
+                this._tip = DOM.create('div', 'mapboxgl-popup-tip', this._container);
+            }
             this._container.appendChild(this._content);
             if (this.options.className) {
                 this.options.className.split(' ').forEach(name =>

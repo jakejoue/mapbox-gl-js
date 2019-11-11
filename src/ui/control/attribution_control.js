@@ -118,6 +118,13 @@ class AttributionControl {
 
     _updateAttributions() {
         if (!this._map.style) return;
+
+        // GeoGlobal-attribute-huangwei-191111 自定义dom内容
+        if (this.options.map_attr) {
+            this._container.innerHTML = this.options.map_attr;
+            return;
+        }
+
         let attributions: Array<string> = [];
         if (this.options.customAttribution) {
             if (Array.isArray(this.options.customAttribution)) {
