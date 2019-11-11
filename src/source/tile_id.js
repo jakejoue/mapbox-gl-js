@@ -3,7 +3,7 @@
 import EXTENT from '../data/extent';
 import Point from '@mapbox/point-geometry';
 import MercatorCoordinate from '../extend/geo/mercator_coordinate';
-import type {Projection} from '../extend/proj';
+import type { Projection } from '../extend/proj';
 
 import assert from 'assert';
 import { register } from '../util/web_worker_transfer';
@@ -43,6 +43,10 @@ export class CanonicalTileID {
 
         let x = this.x, y = this.y, z = this.z;
 
+        // 其他参数计算（先进行计算）
+        const bbox = projection.getTransform().getTileBBox(x, y, z);
+        const quadkey = getQuadkey(z, x, y);
+
         // 栅格切片（不同坐标原点的不同换算）
         if (rasterType && rasterType !== scheme) {
             // 百度地图
@@ -61,17 +65,14 @@ export class CanonicalTileID {
             z = z - Number.parseInt(zoomOffset);
         }
 
-        // 其他参数计算
-        const bbox = projection.getTransform().getTileBBox(x, y, z);
-        const quadkey = getQuadkey(z, x, y);
-
         return urls[(this.x + this.y) % urls.length]
             .replace('{prefix}', (x % 16).toString(16) + (y % 16).toString(16))
             .replace('{z}', String(z))
             .replace('{x}', String(x))
             .replace('{y}', String(y))
             .replace('{quadkey}', quadkey)
-            .replace('{bbox-epsg-3857}', bbox);
+            .replace('{bbox-epsg-3857}', bbox)
+            .replace('{bbox}', bbox);
 
         // 代码备份
         // const bbox = getTileBBox(this.x, this.y, this.z);
