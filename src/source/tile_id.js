@@ -1,9 +1,9 @@
 // @flow
 
-import {getTileBBox} from '../extend/modules/@mapbox/whoots-js';
 import EXTENT from '../data/extent';
 import Point from '@mapbox/point-geometry';
 import MercatorCoordinate from '../extend/geo/mercator_coordinate';
+import type {Projection} from '../extend/proj';
 
 import assert from 'assert';
 import { register } from '../util/web_worker_transfer';
@@ -29,17 +29,61 @@ export class CanonicalTileID {
     }
 
     // given a list of urls, choose a url template and return a tile URL
-    url(urls: Array<string>, scheme: ?string) {
-        const bbox = getTileBBox(this.x, this.y, this.z);
-        const quadkey = getQuadkey(this.z, this.x, this.y);
+    // GeoGlobal-raster-huangwei-191111
+    url(urls: Array<string>, projection: Projection, options?: any = 'xyz') {
+        // 参数赋值
+        let scheme, rasterType, zoomOffset;
+        if ((typeof options) === 'string') {
+            scheme = options;
+        } else {
+            scheme = options.scheme || 'xyz';
+            rasterType = options.rasterType;
+            zoomOffset = options.zoomOffset;
+        }
+
+        let x = this.x, y = this.y, z = this.z;
+
+        // 栅格切片（不同坐标原点的不同换算）
+        if (rasterType && rasterType !== scheme) {
+            // 百度地图
+            if (rasterType === 'baidu') {
+                const zz = Math.pow(2, z) / 2;
+                x = x - zz;
+                y = zz - y - 1;
+            }
+        }
+        // scheme
+        if (scheme === 'tms') {
+            y = Math.pow(2, z) - y - 1;
+        }
+        // zoom偏转
+        if (zoomOffset) {
+            z = z - Number.parseInt(zoomOffset);
+        }
+
+        // 其他参数计算
+        const bbox = projection.getTransform().getTileBBox(x, y, z);
+        const quadkey = getQuadkey(z, x, y);
 
         return urls[(this.x + this.y) % urls.length]
-            .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
-            .replace('{z}', String(this.z))
-            .replace('{x}', String(this.x))
-            .replace('{y}', String(scheme === 'tms' ? (Math.pow(2, this.z) - this.y - 1) : this.y))
+            .replace('{prefix}', (x % 16).toString(16) + (y % 16).toString(16))
+            .replace('{z}', String(z))
+            .replace('{x}', String(x))
+            .replace('{y}', String(y))
             .replace('{quadkey}', quadkey)
             .replace('{bbox-epsg-3857}', bbox);
+
+        // 代码备份
+        // const bbox = getTileBBox(this.x, this.y, this.z);
+        // const quadkey = getQuadkey(this.z, this.x, this.y);
+
+        // return urls[(this.x + this.y) % urls.length]
+        //     .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
+        //     .replace('{z}', String(this.z))
+        //     .replace('{x}', String(this.x))
+        //     .replace('{y}', String(scheme === 'tms' ? (Math.pow(2, this.z) - this.y - 1) : this.y))
+        //     .replace('{quadkey}', quadkey)
+        //     .replace('{bbox-epsg-3857}', bbox);
     }
 
     getTilePoint(coord: MercatorCoordinate) {
@@ -100,8 +144,8 @@ export class OverscaledTileID {
         // We're first testing for z == 0, to avoid a 32 bit shift, which is undefined.
         return parent.overscaledZ === 0 || (
             parent.overscaledZ < this.overscaledZ &&
-                parent.canonical.x === (this.canonical.x >> zDifference) &&
-                parent.canonical.y === (this.canonical.y >> zDifference));
+            parent.canonical.x === (this.canonical.x >> zDifference) &&
+            parent.canonical.y === (this.canonical.y >> zDifference));
     }
 
     children(sourceMaxZoom: number) {
@@ -177,4 +221,4 @@ function getQuadkey(z, x, y) {
 }
 
 register('CanonicalTileID', CanonicalTileID);
-register('OverscaledTileID', OverscaledTileID, {omit: ['posMatrix']});
+register('OverscaledTileID', OverscaledTileID, { omit: ['posMatrix'] });
