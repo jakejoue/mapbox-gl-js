@@ -31,6 +31,9 @@ class RasterTileSource extends Evented implements Source {
     url: string;
     scheme: string;
     tileSize: number;
+    // GeoGlobal-raster-huangwei-191111 支持百度瓦片和Arcgis瓦片
+    rasterType: string;
+    zoomOffset: number;
 
     bounds: ?[number, number, number, number];
     tileBounds: TileBounds;
@@ -55,10 +58,15 @@ class RasterTileSource extends Evented implements Source {
         this.roundZoom = true;
         this.scheme = 'xyz';
         this.tileSize = 512;
+        // GeoGlobal-raster-huangwei-191111
+        this.rasterType = 'xyz';
+        this.zoomOffset = 0;
+
         this._loaded = false;
 
         this._options = extend({ type: 'raster' }, options);
-        extend(this, pick(options, ['url', 'scheme', 'tileSize']));
+        // GeoGlobal-raster-huangwei-191111
+        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'rasterType', 'zoomOffset']));
     }
 
     load() {

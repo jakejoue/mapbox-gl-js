@@ -1,6 +1,6 @@
 // @flow
 
-import {getTileBBox} from '@mapbox/whoots-js';
+import {getTileBBox} from '../extend/modules/@mapbox/whoots-js';
 import EXTENT from '../data/extent';
 import Point from '@mapbox/point-geometry';
 import MercatorCoordinate from '../extend/geo/mercator_coordinate';
