@@ -10,6 +10,9 @@ import type SymbolBucket from '../data/bucket/symbol_bucket';
 import type StyleLayer from '../style/style_layer';
 import type Tile from '../source/tile';
 
+// GeoGlobal-proj-huangwei-191113
+import type {Projection} from '../extend/proj';
+
 /*
     The CrossTileSymbolIndex generally works on the assumption that
     a conceptual "unique symbol" can be identified by the text of
@@ -25,7 +28,7 @@ import type Tile from '../source/tile';
 */
 
 // Round anchor positions to roughly 4 pixel grid
-const roundingFactor = 512 / EXTENT / 2;
+// const roundingFactor = 512 / EXTENT / 2;
 
 class TileLayerIndex {
     tileID: OverscaledTileID;
@@ -38,7 +41,23 @@ class TileLayerIndex {
     }>};
     bucketInstanceId: number;
 
-    constructor(tileID: OverscaledTileID, symbolInstances: SymbolInstanceArray, bucketInstanceId: number) {
+    // GeoGlobal-proj-huangwei-191113
+    // GeoGlobal-tileSize-huangwei-191113
+    projection: Projection;
+    tileSize: number;
+
+    get roundingFactor() {
+        return this.tileSize / EXTENT / 2;
+    }
+
+    // GeoGlobal-proj-huangwei-191113
+    // GeoGlobal-tileSize-huangwei-191113
+    constructor(projection: Projection, tileSize: number, tileID: OverscaledTileID, symbolInstances: SymbolInstanceArray, bucketInstanceId: number) {
+        // GeoGlobal-proj-huangwei-191113
+        // GeoGlobal-tileSize-huangwei-191113
+        this.projection = projection;
+        this.tileSize = tileSize;
+
         this.tileID = tileID;
         this.indexedSymbolInstances = {};
         this.bucketInstanceId = bucketInstanceId;
@@ -66,7 +85,9 @@ class TileLayerIndex {
     //     more tolerant of small differences between tiles.
     getScaledCoordinates(symbolInstance: SymbolInstance, childTileID: OverscaledTileID) {
         const zDifference = childTileID.canonical.z - this.tileID.canonical.z;
-        const scale = roundingFactor / Math.pow(2, zDifference);
+        // GeoGlobal-proj-huangwei-191113 TODO:待改
+        // GeoGlobal-tileSize-huangwei-191113
+        const scale = this.roundingFactor / Math.pow(2, zDifference);
         return {
             x: Math.floor((childTileID.canonical.x * EXTENT + symbolInstance.anchorX) * scale),
             y: Math.floor((childTileID.canonical.y * EXTENT + symbolInstance.anchorY) * scale)
@@ -123,11 +144,16 @@ class CrossTileSymbolLayerIndex {
     indexes: {[zoom: string | number]: {[tileId: string | number]: TileLayerIndex}};
     usedCrossTileIDs: {[zoom: string | number]: {[crossTileID: number]: boolean}};
     lng: number;
+    // GeoGlobal-proj-huangwei-191113
+    projection: Projection;
 
-    constructor() {
+    // GeoGlobal-proj-huangwei-191113
+    constructor(projection: Projection) {
         this.indexes = {};
         this.usedCrossTileIDs = {};
         this.lng = 0;
+        // GeoGlobal-proj-huangwei-191113
+        this.projection = projection;
     }
 
     /*
@@ -135,9 +161,10 @@ class CrossTileSymbolLayerIndex {
      * To prevent labels from flashing out and in we adjust the tileID values in the indexes
      * so that they match the new wrapped version of the map.
      */
-    // GeoGlobal-worldcopy-huangwei-191105
-    handleWrapJump(lng: number, maxExtent: number) {
-        const wrapDelta = Math.round((lng - this.lng) / maxExtent);
+    handleWrapJump(lng: number) {
+        // GeoGlobal-worldcopy-huangwei-191105
+        // GeoGlobal-proj-huangwei-191113
+        const wrapDelta = Math.round((lng - this.lng) / this.projection.getMaxExtent());
         if (wrapDelta !== 0) {
             for (const zoom in this.indexes) {
                 const zoomIndexes = this.indexes[zoom];
@@ -211,7 +238,9 @@ class CrossTileSymbolLayerIndex {
         if (this.indexes[tileID.overscaledZ] === undefined) {
             this.indexes[tileID.overscaledZ] = {};
         }
-        this.indexes[tileID.overscaledZ][tileID.key] = new TileLayerIndex(tileID, bucket.symbolInstances, bucket.bucketInstanceId);
+        // GeoGlobal-proj-huangwei-191113
+        // GeoGlobal-tileSize-huangwei-191113
+        this.indexes[tileID.overscaledZ][tileID.key] = new TileLayerIndex(this.projection, bucket.tileSize, tileID, bucket.symbolInstances, bucket.bucketInstanceId);
 
         return true;
     }
@@ -245,28 +274,30 @@ class CrossTileSymbolIndex {
     crossTileIDs: CrossTileIDs;
     maxBucketInstanceId: number;
     bucketsInCurrentPlacement: {[number]: boolean};
-    maxExtent: number;
+    // GeoGlobal-proj-huangwei-191113
+    projection: number;
 
-    // GeoGlobal-worldcopy-huangwei-191105
-    constructor(maxExtent: number) {
+    // GeoGlobal-proj-huangwei-191113
+    constructor(projection: Projection) {
         this.layerIndexes = {};
         this.crossTileIDs = new CrossTileIDs();
         this.maxBucketInstanceId = 0;
         this.bucketsInCurrentPlacement = {};
-        this.maxExtent = maxExtent;
+        // GeoGlobal-proj-huangwei-191113
+        this.projection = projection;
     }
 
     addLayer(styleLayer: StyleLayer, tiles: Array<Tile>, lng: number) {
         let layerIndex = this.layerIndexes[styleLayer.id];
         if (layerIndex === undefined) {
-            layerIndex = this.layerIndexes[styleLayer.id] = new CrossTileSymbolLayerIndex();
+            // GeoGlobal-proj-huangwei-191113
+            layerIndex = this.layerIndexes[styleLayer.id] = new CrossTileSymbolLayerIndex(this.projection);
         }
 
         let symbolBucketsChanged = false;
         const currentBucketIDs = {};
 
-        // GeoGlobal-worldcopy-huangwei-191105
-        layerIndex.handleWrapJump(lng, this.maxExtent);
+        layerIndex.handleWrapJump(lng);
 
         for (const tile of tiles) {
             const symbolBucket = ((tile.getBucket(styleLayer): any): SymbolBucket);

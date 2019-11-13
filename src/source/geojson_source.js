@@ -96,7 +96,8 @@ class GeoJSONSource extends Evented implements Source {
 
         this.minzoom = 0;
         this.maxzoom = 18;
-        this.tileSize = 512;
+        // GeoGlobal-tileSize-huangwei-191113
+        this.tileSize = options.defaultTileSize;
         this.isTileClipped = true;
         this.reparseOverscaled = true;
         this._removed = false;

@@ -57,7 +57,8 @@ class RasterTileSource extends Evented implements Source {
         this.maxzoom = 22;
         this.roundZoom = true;
         this.scheme = 'xyz';
-        this.tileSize = 512;
+        // GeoGlobal-tileSize-huangwei-191113
+        this.tileSize = options.defaultTileSize;
         // GeoGlobal-raster-huangwei-191111
         this.rasterType = 'xyz';
         this.zoomOffset = 0;

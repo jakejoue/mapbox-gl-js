@@ -250,7 +250,8 @@ class LineBucket implements Bucket {
 
         if (join === 'bevel') miterLimit = 1.05;
 
-        const sharpCornerOffset = SHARP_CORNER_OFFSET * (EXTENT / (512 * this.overscaling));
+        // GeoGlobal-tileSize-huangwei-191113 根据TileSize重新计算
+        const sharpCornerOffset = SHARP_CORNER_OFFSET * (EXTENT / (this.tileSize * this.overscaling));
 
         // we could be more precise, but it would only save a negligible amount of space
         const segment = this.segments.prepareSegment(len * 10, this.layoutVertexArray, this.indexArray);

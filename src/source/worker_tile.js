@@ -118,6 +118,8 @@ class WorkerTile {
                     sourceLayerIndex,
                     sourceID: this.source
                 });
+                // GeoGlobal-tileSize-huangwei-191113 赋值bucket TileSzie属性
+                bucket.tileSize = this.tileSize;
 
                 bucket.populate(features, options);
                 featureIndex.bucketLayerIDs.push(family.map((l) => l.id));

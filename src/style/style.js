@@ -141,7 +141,7 @@ class Style extends Evented {
         this.glyphManager = new GlyphManager(map._requestManager, options.localIdeographFontFamily);
         this.lineAtlas = new LineAtlas(256, 512);
         // GeoGlobal-worldcopy-huangwei-191105
-        this.crossTileSymbolIndex = new CrossTileSymbolIndex(this.map.projection.getMaxExtent());
+        this.crossTileSymbolIndex = new CrossTileSymbolIndex(this.map.projection);
 
         this._layers = {};
         this._order  = [];
@@ -503,11 +503,17 @@ class Style extends Evented {
             throw new Error(`The type property must be defined, but the only the following properties were given: ${Object.keys(source).join(', ')}.`);
         }
 
+        // GeoGlobal-tileSize-huangwei-191113 删除默认tileSize，避免因此验证失败
+        delete source.defaultTileSize;
+
         const builtIns = ['vector', 'raster', 'geojson', 'video', 'image'];
         const shouldValidate = builtIns.indexOf(source.type) >= 0;
         if (shouldValidate && this._validate(validateStyle.source, `sources.${id}`, source, null, options)) return;
 
         if (this.map && this.map._collectResourceTiming) (source: any).collectResourceTiming = true;
+
+        // GeoGlobal-tileSize-huangwei-191113 设置默认tileSize
+        source.defaultTileSize = this.map.projection.getTileSize();
         const sourceCache = this.sourceCaches[id] = new SourceCache(id, source, this.dispatcher);
         sourceCache.style = this;
         sourceCache.setEventedParent(this, () => ({

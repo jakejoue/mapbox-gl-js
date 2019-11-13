@@ -64,7 +64,8 @@ class Transform {
         // GeoGlobal-proj-huangwei-191105
         this.projection = projection;
 
-        this.tileSize = 512; // constant
+        // GeoGlobal-tileSize-huangwei-191113 读取坐标系tileSize属性
+        this.tileSize = projection.getTileSize();
 
         // GeoGlobal-coord-huangwei-191105
         // this.maxValidLatitude = 85.051129; // constant

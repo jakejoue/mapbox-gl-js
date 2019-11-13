@@ -114,7 +114,8 @@ export function performSymbolLayout(bucket: SymbolBucket,
                              showCollisionBoxes: boolean) {
     bucket.createArrays();
 
-    const tileSize = 512 * bucket.overscaling;
+    // GeoGlobal-tileSize-huangwei-191113 根据TileSize重新计算
+    const tileSize = bucket.tileSize * bucket.overscaling;
     bucket.tilePixelRatio = EXTENT / tileSize;
     bucket.compareText = {};
     bucket.iconsNeedLinear = false;

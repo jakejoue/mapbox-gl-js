@@ -143,7 +143,7 @@ class Painter {
         this.emptyProgramConfiguration = new ProgramConfiguration();
 
         // GeoGlobal-worldcopy-huangwei-191105
-        this.crossTileSymbolIndex = new CrossTileSymbolIndex(this.projection.getMaxExtent());
+        this.crossTileSymbolIndex = new CrossTileSymbolIndex(this.projection);
     }
 
     /*

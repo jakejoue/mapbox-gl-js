@@ -97,7 +97,8 @@ class ImageSource extends Evented implements Source {
         this.type = 'image';
         this.minzoom = 0;
         this.maxzoom = 22;
-        this.tileSize = 512;
+        // GeoGlobal-tileSize-huangwei-191113
+        this.tileSize = options.defaultTileSize;
         this.tiles = {};
         this._loaded = false;
 
