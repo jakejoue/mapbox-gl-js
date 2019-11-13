@@ -405,6 +405,11 @@
       "value": "string",
       "doc": "URLs to video content in order of preferred format. GeoGlobal 扩展video属性，urls变为非必须"
     },
+    "video": {
+      "required": false,
+      "type": "*",
+      "doc": "GeoGlobal 扩展video属性"
+    },
     "coordinates": {
       "required": true,
       "doc": "Corners of video specified in longitude, latitude pairs.",
