@@ -94,7 +94,8 @@ class FullscreenControl {
     }
 
     _updateTitle() {
-        const title = this._isFullscreen() ? "Exit fullscreen" : "Enter fullscreen";
+        // GeoGlobal-language-huangwei-191113
+        const title = this._isFullscreen() ? "退出全屏" : "进入全屏";
         this._fullscreenButton.setAttribute("aria-label", title);
         this._fullscreenButton.title = title;
     }

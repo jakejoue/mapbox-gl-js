@@ -52,14 +52,16 @@ class NavigationControl {
             bindAll([
                 '_updateZoomButtons'
             ], this);
-            this._zoomInButton = this._createButton('mapboxgl-ctrl-icon mapboxgl-ctrl-zoom-in', 'Zoom in', () => this._map.zoomIn());
-            this._zoomOutButton = this._createButton('mapboxgl-ctrl-icon mapboxgl-ctrl-zoom-out', 'Zoom out', () => this._map.zoomOut());
+            // GeoGlobal-language-huangwei-191113
+            this._zoomInButton = this._createButton('mapboxgl-ctrl-icon mapboxgl-ctrl-zoom-in', '放大', () => this._map.zoomIn());
+            this._zoomOutButton = this._createButton('mapboxgl-ctrl-icon mapboxgl-ctrl-zoom-out', '缩小', () => this._map.zoomOut());
         }
         if (this.options.showCompass) {
             bindAll([
                 '_rotateCompassArrow'
             ], this);
-            this._compass = this._createButton('mapboxgl-ctrl-icon mapboxgl-ctrl-compass', 'Reset bearing to north', () => {
+            // GeoGlobal-language-huangwei-191113
+            this._compass = this._createButton('mapboxgl-ctrl-icon mapboxgl-ctrl-compass', '重置方位', () => {
                 if (this.options.visualizePitch) {
                     this._map.resetNorthPitch();
                 } else {
