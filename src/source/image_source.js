@@ -189,7 +189,8 @@ class ImageSource extends Evented implements Source {
 
         // Compute the coordinates of the tile we'll use to hold this image's
         // render data
-        this.tileID = getCoordinatesCenterTileID(cornerCoords);
+        // GeoGlobal-resolution-huangwei-1911014
+        this.tileID = getCoordinatesCenterTileID(cornerCoords, this.map);
 
         // Constrain min/max zoom to our tile's zoom level in order to force
         // SourceCache to request this tile (no matter what the map's zoom
@@ -281,7 +282,8 @@ class ImageSource extends Evented implements Source {
  * @returns centerpoint
  * @private
  */
-export function getCoordinatesCenterTileID(coords: Array<MercatorCoordinate>) {
+// GeoGlobal-resolution-huangwei-191108
+export function getCoordinatesCenterTileID(coords: Array<MercatorCoordinate>, map: Map) {
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
@@ -298,7 +300,8 @@ export function getCoordinatesCenterTileID(coords: Array<MercatorCoordinate>) {
     const dy = maxY - minY;
     const dMax = Math.max(dx, dy);
     const zoom = Math.max(0, Math.floor(-Math.log(dMax) / Math.LN2));
-    const tilesAtZoom = Math.pow(2, zoom);
+    // GeoGlobal-resolution-huangwei-1911014
+    const tilesAtZoom = map.projection.zoomScale(zoom);
 
     return new CanonicalTileID(
             zoom,

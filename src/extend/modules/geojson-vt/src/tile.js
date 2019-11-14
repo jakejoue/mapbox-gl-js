@@ -1,6 +1,7 @@
-
-export default function createTile(features, z, tx, ty, options) {
-    var tolerance = z === options.maxZoom ? 0 : options.tolerance / ((1 << z) * options.extent);
+// GeoGlobal-resolution-huangwei-1911014
+export default function createTile(features, z, tx, ty, options, projection) {
+    // GeoGlobal-resolution-huangwei-1911014
+    var tolerance = z === options.maxZoom ? 0 : options.tolerance / (projection.zoomScale(z) * options.extent);
     var tile = {
         features: [],
         numPoints: 0,

@@ -68,7 +68,7 @@ export type WorkerDEMTileCallback = (err: ?Error, result: ?DEMData) => void;
  * @param layerIndex
  */
 export interface WorkerSource {
-    // GeoGlobal-coord-workerproj-191108
+    // GeoGlobal-coord-workerproj-huangwei-191108
     projection: Projection;
 
     // Disabled due to https://github.com/facebook/flow/issues/5208

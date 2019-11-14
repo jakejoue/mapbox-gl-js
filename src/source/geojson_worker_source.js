@@ -16,7 +16,7 @@ import assert from 'assert';
 import VectorTileWorkerSource from './vector_tile_worker_source';
 import { createExpression } from '../style-spec/expression';
 
-// GeoGlobal-coord-workerproj-191108
+// GeoGlobal-coord-workerproj-huangwei-191108
 import { Projection } from '../extend/proj';
 
 import type {
@@ -111,7 +111,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * GeoJSON based on parameters passed from the main-thread Source.
      * See {@link GeoJSONWorkerSource#loadGeoJSON}.
      */
-    // GeoGlobal-coord-workerproj-191108
+    // GeoGlobal-coord-workerproj-huangwei-191108
     constructor(actor: Actor, projection: Projection, layerIndex: StyleLayerIndex, loadGeoJSON: ?LoadGeoJSON) {
         super(actor, projection, layerIndex, loadGeoJSONTile);
         if (loadGeoJSON) {
@@ -180,7 +180,7 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
                 rewind(data, true);
 
                 try {
-                    // GeoGlobal-coord-workerproj-191108
+                    // GeoGlobal-coord-workerproj-huangwei-191108
                     this._geoJSONIndex = params.cluster ?
                         new Supercluster(getSuperclusterOptions(params), this.projection).load(data.features) :
                         geojsonvt(data, params.geojsonVtOptions, this.projection);

@@ -7,12 +7,14 @@ import { OverscaledTileID } from '../source/tile_id';
 
 export default tileCover;
 
-function tileCover(z: number, bounds: [MercatorCoordinate, MercatorCoordinate, MercatorCoordinate, MercatorCoordinate],
+// GeoGlobal-resolution-huangwei-1911014
+function tileCover(numTiles: number, z: number, bounds: [MercatorCoordinate, MercatorCoordinate, MercatorCoordinate, MercatorCoordinate],
     actualZ: number, renderWorldCopies: boolean | void): Array<OverscaledTileID> {
     if (renderWorldCopies === undefined) {
         renderWorldCopies = true;
     }
-    const tiles = 1 << z;
+    // GeoGlobal-resolution-huangwei-1911014
+    const tiles = numTiles;
     const t = {};
 
     function scanLine(x0, x1, y) {

@@ -4,14 +4,15 @@ import { get } from './proj';
 
 export default class VectorTileFeature2 extends VectorTileFeature {
     toGeoJSON(x, y, z, projection) {
-        var size = this.extent * Math.pow(2, z),
+        // 设置默认坐标系
+        projection = projection || get('EPSG:mapbox');
+
+        var size = this.extent * projection.zoomScale(z),
             x0 = this.extent * x,
             y0 = this.extent * y,
             coords = this.loadGeometry(),
             type = VectorTileFeature.types[this.type],
             i, j;
-        // 设置默认坐标系
-        projection = projection || get('EPSG:mapbox');
 
         function project(line) {
             for (var j = 0; j < line.length; j++) {

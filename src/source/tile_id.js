@@ -15,9 +15,10 @@ export class CanonicalTileID {
     key: number;
 
     constructor(z: number, x: number, y: number) {
-        assert(z >= 0 && z <= 25);
-        assert(x >= 0 && x < Math.pow(2, z));
-        assert(y >= 0 && y < Math.pow(2, z));
+        // GeoGlobal-resolution-huangwei-1911014 去除tileNum限制
+        // assert(z >= 0 && z <= 25);
+        // assert(x >= 0 && x < Math.pow(2, z));
+        // assert(y >= 0 && y < Math.pow(2, z));
         this.z = z;
         this.x = x;
         this.y = y;
@@ -51,14 +52,16 @@ export class CanonicalTileID {
         if (rasterType && rasterType !== scheme) {
             // 百度地图
             if (rasterType === 'baidu') {
-                const zz = Math.pow(2, z) / 2;
+                // GeoGlobal-resolution-huangwei-1911014
+                const zz = projection.zoomScale(z) / 2;
                 x = x - zz;
                 y = zz - y - 1;
             }
         }
         // scheme
         if (scheme === 'tms') {
-            y = Math.pow(2, z) - y - 1;
+            // GeoGlobal-resolution-huangwei-1911014
+            y = projection.zoomScale(z) - y - 1;
         }
         // zoom偏转
         if (zoomOffset) {
@@ -66,10 +69,10 @@ export class CanonicalTileID {
         }
 
         return urls[(this.x + this.y) % urls.length]
-            .replace('{prefix}', (x % 16).toString(16) + (y % 16).toString(16))
-            .replace('{z}', String(z))
-            .replace('{x}', String(x))
-            .replace('{y}', String(y))
+            .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
+            .replace('{z}', String(Math.round(z)))
+            .replace('{x}', String(Math.round(x)))
+            .replace('{y}', String(Math.round(y)))
             .replace('{quadkey}', quadkey)
             .replace('{bbox-epsg-3857}', bbox)
             .replace('{bbox}', bbox);
@@ -88,7 +91,8 @@ export class CanonicalTileID {
     }
 
     getTilePoint(coord: MercatorCoordinate) {
-        const tilesAtZoom = Math.pow(2, this.z);
+        // GeoGlobal-resolution-huangwei-1911014
+        const tilesAtZoom = coord.projection.zoomScale(this.z);
         return new Point(
             (coord.x * tilesAtZoom - this.x) * EXTENT,
             (coord.y * tilesAtZoom - this.y) * EXTENT);
@@ -201,7 +205,8 @@ export class OverscaledTileID {
     }
 
     getTilePoint(coord: MercatorCoordinate) {
-        return this.canonical.getTilePoint(new MercatorCoordinate(coord.x - this.wrap, coord.y));
+        // GeoGlobal-resolution-huangwei-1911014
+        return this.canonical.getTilePoint(new MercatorCoordinate(coord.x - this.wrap, coord.y, coord.z, coord.projection));
     }
 }
 

@@ -75,6 +75,11 @@ class Transform {
         this._minZoom = minZoom || 0;
         this._maxZoom = maxZoom || 22;
 
+        // GeoGlobal-resolution-huangwei-1911014
+        if (this.projection.getResolutions()) {
+            this._maxZoom = this.projection.getResolutions().length - 1;
+        }
+
         this.setMaxBounds();
 
         this.width = 0;
@@ -116,6 +121,13 @@ class Transform {
     get maxZoom(): number { return this._maxZoom; }
     set maxZoom(zoom: number) {
         if (this._maxZoom === zoom) return;
+        // GeoGlobal-resolution-huangwei-1911014
+        if (this.projection.getResolutions()) {
+            if (zoom > (this.projection.getResolutions().length - 1)) {
+                this._maxZoom = this.projection.getResolutions().length - 1;
+                return;
+            }
+        }
         this._maxZoom = zoom;
         this.zoom = Math.min(this.zoom, zoom);
     }
@@ -274,7 +286,8 @@ class Transform {
 
         // GeoGlobal-coord-huangwei-191105
         const centerCoord = MercatorCoordinate.fromLngLat(this.center, 0, this.projection);
-        const numTiles = Math.pow(2, z);
+        // GeoGlobal-resolution-huangwei-1911014
+        const numTiles = Math.round(this.zoomScale(z));
         const centerPoint = new Point(numTiles * centerCoord.x - 0.5, numTiles * centerCoord.y - 0.5);
         const cornerCoords = [
             this.pointCoordinate(new Point(0, 0)),
@@ -282,7 +295,8 @@ class Transform {
             this.pointCoordinate(new Point(this.width, this.height)),
             this.pointCoordinate(new Point(0, this.height))
         ];
-        return tileCover(z, cornerCoords, options.reparseOverscaled ? actualZ : z, this._renderWorldCopies)
+        // GeoGlobal-resolution-huangwei-1911014
+        return tileCover(numTiles, z, cornerCoords, options.reparseOverscaled ? actualZ : z, this._renderWorldCopies)
             .sort((a, b) => centerPoint.dist(a.canonical) - centerPoint.dist(b.canonical));
     }
 
@@ -297,8 +311,14 @@ class Transform {
 
     get unmodified(): boolean { return this._unmodified; }
 
-    zoomScale(zoom: number) { return Math.pow(2, zoom); }
-    scaleZoom(scale: number) { return Math.log(scale) / Math.LN2; }
+    zoomScale(zoom: number) {
+        // GeoGlobal-resolution-huangwei-1911014
+        return this.projection.zoomScale(zoom);
+    }
+    scaleZoom(scale: number) {
+        // GeoGlobal-resolution-huangwei-1911014
+        return this.projection.scaleZoom(scale);
+    }
 
     project(lnglat: LngLat) {
         const lat = clamp(lnglat.lat, this.minValidLatitude, this.maxValidLatitude);

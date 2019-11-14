@@ -2,8 +2,8 @@
 
 import Point from '@mapbox/point-geometry';
 
-import mvt from '@mapbox/vector-tile';
-const toGeoJSON = mvt.VectorTileFeature.prototype.toGeoJSON;
+// import mvt from '@mapbox/vector-tile';
+// const toGeoJSON = mvt.VectorTileFeature.prototype.toGeoJSON;
 import EXTENT from '../data/extent';
 
 // The feature type used by geojson-vt and supercluster. Should be extracted to
@@ -66,9 +66,9 @@ class FeatureWrapper implements VectorTileFeature {
         }
     }
 
-    toGeoJSON(x: number, y: number, z: number) {
-        return toGeoJSON.call(this, x, y, z);
-    }
+    // toGeoJSON(x: number, y: number, z: number) {
+    //     return toGeoJSON.call(this, x, y, z);
+    // }
 }
 
 class GeoJSONWrapper implements VectorTile, VectorTileLayer {

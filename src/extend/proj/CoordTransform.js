@@ -64,6 +64,8 @@ export { transform };
 
 class CoordTransform {
     constructor(projection: Projection) {
+        this.projection = projection;
+
         const maxExtent = projection.getMaxExtent();
         const [minX, minY, maxX, maxY] = projection.getExtent();
 
@@ -115,7 +117,7 @@ class CoordTransform {
     }
 
     getTileBBox(x, y, z) {
-        const zoomScale = Math.pow(2, z);
+        const zoomScale = this.projection.zoomScale(z);
         y = (zoomScale - y - 1);
 
         const tileWidth = this.maxX - this.minX;

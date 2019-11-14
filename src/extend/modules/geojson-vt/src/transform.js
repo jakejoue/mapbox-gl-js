@@ -1,10 +1,12 @@
 
 // Transforms the coordinates of each feature in the given tile from
 // mercator-projected space into (extent x extent) tile space.
-export default function transformTile(tile, extent) {
+// GeoGlobal-resolution-huangwei-1911014
+export default function transformTile(tile, extent, projection) {
     if (tile.transformed) return tile;
 
-    var z2 = 1 << tile.z,
+    // GeoGlobal-resolution-huangwei-1911014
+    var z2 = projection.zoomScale(tile.z),
         tx = tile.x,
         ty = tile.y,
         i, j, k;

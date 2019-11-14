@@ -38,7 +38,8 @@ class TileBounds {
             return true;
         }
 
-        const worldSize = Math.pow(2, tileID.z);
+        // GeoGlobal-resolution-huangwei-1911014
+        const worldSize = this.projection.zoomScale(tileID.z);
         const level = {
             minX: Math.floor(this.projection.getTransform().mercatorXfromLng(this.bounds.getWest()) * worldSize),
             minY: Math.floor(this.projection.getTransform().mercatorYfromLat(this.bounds.getNorth()) * worldSize),

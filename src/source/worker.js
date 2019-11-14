@@ -189,7 +189,7 @@ export default class Worker {
                 }
             };
 
-            // GeoGlobal-coord-workerproj-191108
+            // GeoGlobal-coord-workerproj-huangwei-191108
             this.workerSources[mapId][type][source] = new (this.workerSourceTypes[type]: any)((actor: any), this.projcetions[mapId], this.getLayerIndex(mapId));
         }
 

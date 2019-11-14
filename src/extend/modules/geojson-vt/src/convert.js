@@ -4,7 +4,7 @@ import createFeature from './feature';
 
 // converts GeoJSON feature into an intermediate projected JSON vector format with simplification data
 
-// GeoGlobal-coord-workerproj-191108
+// GeoGlobal-coord-workerproj-huangwei-191108
 export default function convert(data, options, projection) {
     const converter = getConverter(projection);
 
@@ -31,7 +31,8 @@ function convertFeature(features, geojson, options, index) {
 
     var coords = geojson.geometry.coordinates;
     var type = geojson.geometry.type;
-    var tolerance = Math.pow(options.tolerance / ((1 << options.maxZoom) * options.extent), 2);
+    // GeoGlobal-resolution-huangwei-1911014
+    var tolerance = Math.pow(options.tolerance / (this.projection.zoomScale(options.maxZoom) * options.extent), 2);
     var geometry = [];
     var id = geojson.id;
     if (options.promoteId) {
@@ -136,7 +137,7 @@ function convertLines(rings, out, tolerance, isPolygon) {
 }
 /* ************* 非直接调用 ************* */
 
-// GeoGlobal-coord-workerproj-191108
+// GeoGlobal-coord-workerproj-huangwei-191108
 function getConverter(projection) {
     const converter = {
         projection,
@@ -145,19 +146,10 @@ function getConverter(projection) {
         convertLine,
         convertLines,
         projectX(x) {
-            if (this.projection) {
-                return this.projection.getTransform().mercatorXfromLng(x);
-            }
-            return x / 360 + 0.5;
+            return this.projection.getTransform().mercatorXfromLng(x);
         },
         projectY(y) {
-            var y2;
-            if (this.projection) {
-                y2 = this.projection.getTransform().mercatorYfromLat(y);
-            } else {
-                var sin = Math.sin(y * Math.PI / 180);
-                y2 = 0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI;
-            }
+            var y2 = this.projection.getTransform().mercatorYfromLat(y);
             return y2 < 0 ? 0 : y2 > 1 ? 1 : y2;
         }
     }

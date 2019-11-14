@@ -8,7 +8,7 @@ import WorkerTile from './worker_tile';
 import { extend } from '../util/util';
 import performance from '../util/performance';
 
-// GeoGlobal-coord-workerproj-191108
+// GeoGlobal-coord-workerproj-huangwei-191108
 import { Projection } from '../extend/proj';
 
 import type {
@@ -79,7 +79,7 @@ class VectorTileWorkerSource implements WorkerSource {
     loading: { [string]: WorkerTile };
     loaded: { [string]: WorkerTile };
 
-    // GeoGlobal-coord-workerproj-191108
+    // GeoGlobal-coord-workerproj-huangwei-191108
     projection: Projection;
 
     /**
@@ -88,11 +88,11 @@ class VectorTileWorkerSource implements WorkerSource {
      * {@link VectorTileWorkerSource#loadTile}. The default implementation simply
      * loads the pbf at `params.url`.
      */
-    // GeoGlobal-coord-workerproj-191108
+    // GeoGlobal-coord-workerproj-huangwei-191108
     constructor(actor: Actor, projection: Projection, layerIndex: StyleLayerIndex, loadVectorData: ?LoadVectorData) {
         this.actor = actor;
 
-        // GeoGlobal-coord-workerproj-191108
+        // GeoGlobal-coord-workerproj-huangwei-191108
         this.projection = projection;
 
         this.layerIndex = layerIndex;

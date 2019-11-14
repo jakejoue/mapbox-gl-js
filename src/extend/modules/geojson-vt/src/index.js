@@ -5,13 +5,13 @@ import wrap from './wrap';           // date line processing
 import transform from './transform'; // coordinate transformation
 import createTile from './tile';     // final simplified tile generation
 
-// GeoGlobal-coord-workerproj-191108
+// GeoGlobal-coord-workerproj-huangwei-191108
 export default function geojsonvt(data, options, projection) {
     return new GeoJSONVT(data, options, projection);
 }
 
 function GeoJSONVT(data, options, projection) {
-    // GeoGlobal-coord-workerproj-191108
+    // GeoGlobal-coord-workerproj-huangwei-191108
     this.projection = projection;
 
     options = this.options = extend(Object.create(this.options), options);
@@ -23,7 +23,7 @@ function GeoJSONVT(data, options, projection) {
     if (options.maxZoom < 0 || options.maxZoom > 24) throw new Error('maxZoom should be in the 0-24 range');
     if (options.promoteId && options.generateId) throw new Error('promoteId and generateId cannot be used together.');
 
-    // GeoGlobal-coord-workerproj-191108
+    // GeoGlobal-coord-workerproj-huangwei-191108
     var features = convert(data, options, projection);
 
     this.tiles = {};
@@ -75,14 +75,16 @@ GeoJSONVT.prototype.splitTile = function (features, z, x, y, cz, cx, cy) {
         z = stack.pop();
         features = stack.pop();
 
-        var z2 = 1 << z,
+        // GeoGlobal-resolution-huangwei-1911014
+        var z2 = this.projection.zoomScale(z),
             id = toID(z, x, y),
             tile = this.tiles[id];
 
         if (!tile) {
             if (debug > 1) console.time('creation');
 
-            tile = this.tiles[id] = createTile(features, z, x, y, options);
+            // GeoGlobal-resolution-huangwei-1911014
+            tile = this.tiles[id] = createTile(features, z, x, y, options, this.projection);
             this.tileCoords.push({z: z, x: x, y: y});
 
             if (debug) {
@@ -111,7 +113,8 @@ GeoJSONVT.prototype.splitTile = function (features, z, x, y, cz, cx, cy) {
             if (z === options.maxZoom || z === cz) continue;
 
             // stop tiling if it's not an ancestor of the target tile
-            var m = 1 << (cz - z);
+            // GeoGlobal-resolution-huangwei-1911014
+            var m = this.projection.zoomScale(cz - z);
             if (x !== Math.floor(cx / m) || y !== Math.floor(cy / m)) continue;
         }
 
@@ -163,11 +166,13 @@ GeoJSONVT.prototype.getTile = function (z, x, y) {
 
     if (z < 0 || z > 24) return null;
 
-    var z2 = 1 << z;
+    // GeoGlobal-resolution-huangwei-1911014
+    var z2 = this.projection.zoomScale(z);
     x = ((x % z2) + z2) % z2; // wrap tile x coordinate
 
     var id = toID(z, x, y);
-    if (this.tiles[id]) return transform(this.tiles[id], extent);
+    // GeoGlobal-resolution-huangwei-1911014
+    if (this.tiles[id]) return transform(this.tiles[id], extent, this.projection);
 
     if (debug > 1) console.log('drilling down to z%d-%d-%d', z, x, y);
 
@@ -192,7 +197,8 @@ GeoJSONVT.prototype.getTile = function (z, x, y) {
     this.splitTile(parent.source, z0, x0, y0, z, x, y);
     if (debug > 1) console.timeEnd('drilling down');
 
-    return this.tiles[id] ? transform(this.tiles[id], extent) : null;
+    // GeoGlobal-resolution-huangwei-1911014
+    return this.tiles[id] ? transform(this.tiles[id], extent, this.projection) : null;
 };
 
 function toID(z, x, y) {

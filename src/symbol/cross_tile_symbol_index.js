@@ -85,7 +85,7 @@ class TileLayerIndex {
     //     more tolerant of small differences between tiles.
     getScaledCoordinates(symbolInstance: SymbolInstance, childTileID: OverscaledTileID) {
         const zDifference = childTileID.canonical.z - this.tileID.canonical.z;
-        // GeoGlobal-proj-huangwei-191113 TODO:待改
+        // GeoGlobal-resolution-huangwei-191113 说明：算单个像素单位的相对比例，不重新根据resolutions计算
         // GeoGlobal-tileSize-huangwei-191113
         const scale = this.roundingFactor / Math.pow(2, zDifference);
         return {

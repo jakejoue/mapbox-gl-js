@@ -72,7 +72,10 @@ class Projection {
     }
 
     getResolutions(): Array<number> {
-        return [...this.resolutions_];
+        if (this.resolutions_) {
+            return [...this.resolutions_];
+        }
+        return null;
     }
 
     getTileSize(): number {
@@ -119,19 +122,19 @@ class Projection {
     getZoomResolution(zoom: number): number {
         if (this.resolutions_) {
             const floorResolution = this.resolutions_[Math.floor(zoom)];
-            const roundResolution = this.resolutions_[Math.round(zoom)];
+            const ceilResolution = this.resolutions_[Math.ceil(zoom)];
 
             // 到达最小
             if (!floorResolution) { return this.resolutions_[0]; }
             // 到达最大
-            if (!roundResolution) { return this.resolutions_[this.resolutions_.length - 1]; }
+            if (!ceilResolution) { return this.resolutions_[this.resolutions_.length - 1]; }
 
             // 中间值，取线性百分比
-            return floorResolution + (zoom - Math.floor(zoom)) * (roundResolution - floorResolution);
+            return floorResolution + (zoom - Math.floor(zoom)) * (ceilResolution - floorResolution);
         }
 
         // 默认
-        return this.maxExtent / (this.tileSize_ * Math.pow(2, zoom));
+        return this.getMaxExtent() / (this.tileSize_ * Math.pow(2, zoom));
     }
 
     /**
@@ -139,7 +142,7 @@ class Projection {
      */
     zoomScale(zoom: number): number {
         if (this.resolutions_) {
-            return this.maxExtent / this.getZoomResolution(zoom) / this.tileSize_;
+            return this.getMaxExtent() / this.getZoomResolution(zoom) / this.tileSize_;
         }
         return Math.pow(2, zoom);
     }
@@ -149,7 +152,7 @@ class Projection {
      */
     scaleZoom(scale: number): number {
         if (this.resolutions_) {
-            const resolution = this.maxExtent / (scale * this.tileSize_);
+            const resolution = this.getMaxExtent() / (scale * this.tileSize_);
             if (resolution >= this.resolutions_[0]) {
                 return 0;
             }
