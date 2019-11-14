@@ -32,7 +32,7 @@
             for (let zoom = 0; zoom < 15; zoom++) {
                 resolutions[zoom] = 360 / 512 / Math.pow(2, zoom);
             }
-            projection.setResolutions(resolutions);
+            // projection.setResolutions(resolutions);
 
             var map = (window.map = new mapboxgl.Map({
                 container: "map",
