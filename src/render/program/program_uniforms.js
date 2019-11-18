@@ -1,7 +1,8 @@
 // @flow
 
 import { fillExtrusionUniforms, fillExtrusionPatternUniforms } from './fill_extrusion_program';
-import { fillUniforms, fillPatternUniforms, fillOutlineUniforms, fillOutlinePatternUniforms } from './fill_program';
+// GeoGlobal-fillwater-huangwei-191118
+import { fillUniforms, fillPatternUniforms, fillOutlineUniforms, fillOutlinePatternUniforms, fillWaterUniforms } from './fill_program';
 import { circleUniforms } from './circle_program';
 import { collisionUniforms } from './collision_program';
 import { debugUniforms } from './debug_program';
@@ -20,6 +21,8 @@ export const programUniforms = {
     fillPattern: fillPatternUniforms,
     fillOutline: fillOutlineUniforms,
     fillOutlinePattern: fillOutlinePatternUniforms,
+    // GeoGlobal-fillwater-huangwei-191118
+    fillWater: fillWaterUniforms,
     circle: circleUniforms,
     collisionBox: collisionUniforms,
     collisionCircle: collisionUniforms,

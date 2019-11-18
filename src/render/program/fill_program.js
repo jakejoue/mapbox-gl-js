@@ -114,6 +114,23 @@ const fillOutlinePatternUniformValues = (
     }
 );
 
+// GeoGlobal-fillwater-huangwei-191118
+
+export type FillWaterUniformsType = {|
+    'u_matrix': UniformMatrix4f,
+	'u_time': Uniform1f
+|};
+
+const fillWaterUniforms = (context: Context, locations: UniformLocations): FillWaterUniformsType => ({
+    'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
+    'u_time': new Uniform1f(context, locations.u_time)
+});
+
+const fillWaterUniformValues = (matrix: Float32Array, time: number): UniformValues<FillWaterUniformsType> => ({
+    'u_matrix': matrix,
+    'u_time': time
+});
+
 export {
     fillUniforms,
     fillPatternUniforms,
@@ -122,5 +139,8 @@ export {
     fillUniformValues,
     fillPatternUniformValues,
     fillOutlineUniformValues,
-    fillOutlinePatternUniformValues
+    fillOutlinePatternUniformValues,
+    // GeoGlobal-fillwater-huangwei-191118
+    fillWaterUniforms,
+    fillWaterUniformValues
 };

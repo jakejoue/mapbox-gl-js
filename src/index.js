@@ -27,6 +27,9 @@ import {clearTileCache} from './util/tile_request_cache';
 import * as proj from './extend/proj';
 import * as extent from './extend/extent';
 
+// GeoGlobal-layergroup-huangwei-191118 导入图层组相关
+import LayerGroup from './extend/layer_group';
+
 const exported = {
     version,
     supported,
@@ -50,6 +53,9 @@ const exported = {
     // GeoGlobal-proj-huangwei-191015 proj 导入坐标系相关
     proj,
     extent,
+
+    // GeoGlobal-layergroup-huangwei-191118 图层组
+    LayerGroup,
 
     /**
      * Gets and sets the map's [access token](https://www.mapbox.com/help/define-access-token/).

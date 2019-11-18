@@ -7,7 +7,9 @@ import {
     fillUniformValues,
     fillPatternUniformValues,
     fillOutlineUniformValues,
-    fillOutlinePatternUniformValues
+    fillOutlinePatternUniformValues,
+    // GeoGlobal-fillwater-huangwei-191118
+    fillWaterUniformValues
 } from './program/fill_program';
 
 import type Painter from './painter';
@@ -64,10 +66,17 @@ function drawFillTiles(painter, sourceCache, layer, coords, depthMode, colorMode
     const patternProperty = layer.paint.get('fill-pattern');
     const image = patternProperty && patternProperty.constantOr((1: any));
     const crossfade = layer.getCrossfadeParameters();
+
+    // GeoGlobal-fillwater-huangwei-191118
+    const waterProperty = layer.paint.get('fill-water');
     let drawMode, programName, uniformValues, indexBuffer, segments;
 
     if (!isOutline) {
         programName = image ? 'fillPattern' : 'fill';
+        // GeoGlobal-fillwater-huangwei-191118
+        if (waterProperty === 'water') {
+            programName = 'fillWater';
+        }
         drawMode = gl.TRIANGLES;
     } else {
         programName = image && !layer.getPaintProperty('fill-outline-color') ? 'fillOutlinePattern' : 'fillOutline';
@@ -106,6 +115,10 @@ function drawFillTiles(painter, sourceCache, layer, coords, depthMode, colorMode
             uniformValues = image ?
                 fillPatternUniformValues(tileMatrix, painter, crossfade, tile) :
                 fillUniformValues(tileMatrix);
+            // GeoGlobal-fillwater-huangwei-191118
+            if (waterProperty === 'water') {
+                uniformValues = fillWaterUniformValues(tileMatrix, performance.now() / 1e3);
+            }
         } else {
             indexBuffer = bucket.indexBuffer2;
             segments = bucket.segments2;
