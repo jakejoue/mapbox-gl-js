@@ -45,17 +45,18 @@
             }));
 
             map.on("load", () => {
-                map.showTileBoundaries = true
+                // map.showTileBoundaries = true;
                 map.addSource(
                     "sourceId_vec_bc5d53c0-f645-11e9-8857-f543029c4471",
                     {
                         type: "raster",
                         rasterType: "baidu",
                         tiles: [
-                            "http://online1.map.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20190410"
-                        ],
-                        tileSize: 256,
-                        zoomOffset: 0
+                            "http://online1.map.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20190410",
+                            "http://online2.map.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20190410",
+                            "http://online3.map.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20190410",
+                            "http://online4.map.bdimg.com/tile/?qt=vtile&x={x}&y={y}&z={z}&styles=pl&scaler=1&udt=20190410"
+                        ]
                     }
                 );
                 map.addLayer({
