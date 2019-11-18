@@ -75,8 +75,7 @@ GeoJSONVT.prototype.splitTile = function (features, z, x, y, cz, cx, cy) {
         z = stack.pop();
         features = stack.pop();
 
-        // GeoGlobal-resolution-huangwei-1911014
-        var z2 = this.projection.zoomScale(z),
+        var z2 = 1 << z,
             id = toID(z, x, y),
             tile = this.tiles[id];
 
@@ -113,8 +112,7 @@ GeoJSONVT.prototype.splitTile = function (features, z, x, y, cz, cx, cy) {
             if (z === options.maxZoom || z === cz) continue;
 
             // stop tiling if it's not an ancestor of the target tile
-            // GeoGlobal-resolution-huangwei-1911014
-            var m = this.projection.zoomScale(cz - z);
+            var m = 1 << (cz - z);
             if (x !== Math.floor(cx / m) || y !== Math.floor(cy / m)) continue;
         }
 
@@ -166,8 +164,7 @@ GeoJSONVT.prototype.getTile = function (z, x, y) {
 
     if (z < 0 || z > 24) return null;
 
-    // GeoGlobal-resolution-huangwei-1911014
-    var z2 = this.projection.zoomScale(z);
+    var z2 = 1 << z;
     x = ((x % z2) + z2) % z2; // wrap tile x coordinate
 
     var id = toID(z, x, y);
@@ -180,6 +177,13 @@ GeoJSONVT.prototype.getTile = function (z, x, y) {
         x0 = x,
         y0 = y,
         parent;
+
+    // GeoGlobal-resolution-huangwei-1911018 存在自定义resolutions，改变切片方法
+    if (this.projection.maxZoom) {
+        parent = this.tiles[toID(0, 0, 0)];
+        this.splitTile(parent.source, z, x, y);
+        return this.tiles[id] ? transform(this.tiles[id], extent, this.projection) : null;
+    }
 
     while (!parent && z0 > 0) {
         z0--;

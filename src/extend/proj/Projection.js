@@ -43,6 +43,13 @@ class Projection {
         this.transform_ = null;
     }
 
+    get maxZoom() {
+        if (this.resolutions_) {
+            return this.resolutions_.length - 1;
+        }
+        return null;
+    }
+
     /**
      * 获取坐标转换方法
      */

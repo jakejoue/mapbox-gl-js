@@ -25,6 +25,10 @@ export default class Supercluster {
         this.converter = getConverter(projection);
 
         this.options = extend(Object.create(defaultOptions), options);
+        // GeoGlobal-resolution-huangwei-191115 如果是自适应分辨率，maxZoom则为已知
+        if(this.projection.maxZoom) {
+            this.options.maxZoom = Math.min(this.options.maxZoom, this.projection.maxZoom - 1)
+        }
         this.trees = new Array(this.options.maxZoom + 1);
     }
 

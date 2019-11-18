@@ -76,8 +76,8 @@ class Transform {
         this._maxZoom = maxZoom || 22;
 
         // GeoGlobal-resolution-huangwei-1911014
-        if (this.projection.getResolutions()) {
-            this._maxZoom = this.projection.getResolutions().length - 1;
+        if (this.projection.maxZoom) {
+            this._maxZoom = this.projection.maxZoom;
         }
 
         this.setMaxBounds();
@@ -122,9 +122,10 @@ class Transform {
     set maxZoom(zoom: number) {
         if (this._maxZoom === zoom) return;
         // GeoGlobal-resolution-huangwei-1911014
-        if (this.projection.getResolutions()) {
-            if (zoom > (this.projection.getResolutions().length - 1)) {
-                this._maxZoom = this.projection.getResolutions().length - 1;
+        if (this.projection.maxZoom) {
+            if (zoom > this.projection.maxZoom) {
+                this._maxZoom = this.projection.maxZoom;
+                this.zoom = Math.min(this.zoom, this._maxZoom);
                 return;
             }
         }

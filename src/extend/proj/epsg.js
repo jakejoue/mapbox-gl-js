@@ -27,11 +27,17 @@ const EPSG4326 = new Projection({
     extent: [-180, -90, 180, 90]
 });
 
+const resolutions = [];
+for (let i = 0; i <= 19; i++) {
+    resolutions[i] = Math.pow(2, 18 - i);
+}
+
 const EPSGBAIDU = new Projection({
     code: 'EPSG:baidu',
     units: Units.METERS,
-    extent: [-33554432, -33554432, 33554432, 33554432],
-    validlatRange: [-HALF_SIZE, HALF_SIZE]
+    extent: EXTENT,
+    resolutions,
+    tileSize: 256
 });
 
 // mapbox

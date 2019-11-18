@@ -701,7 +701,8 @@ class Camera extends Evented {
 
         const from = tr.project(locationAtOffset);
         const delta = tr.project(center).sub(from);
-        const finalScale = tr.zoomScale(zoom - startZoom);
+        // GeoGlobal-resolution-huangwei-191115 修复自定义分辨率的缩放问题
+        const finalScale = tr.zoomScale(zoom) / tr.zoomScale(startZoom);
 
         let around, aroundPoint;
 
@@ -732,7 +733,8 @@ class Camera extends Evented {
             if (around) {
                 tr.setLocationAtPoint(around, aroundPoint);
             } else {
-                const scale = tr.zoomScale(tr.zoom - startZoom);
+                // GeoGlobal-resolution-huangwei-191115 修复自定义分辨率的缩放问题
+                const scale = tr.zoomScale(tr.zoom) / tr.zoomScale(startZoom);
                 const base = zoom > startZoom ?
                     Math.min(2, finalScale) :
                     Math.max(0.5, finalScale);
@@ -897,7 +899,8 @@ class Camera extends Evented {
         const bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing;
         const pitch = 'pitch' in options ? +options.pitch : startPitch;
 
-        const scale = tr.zoomScale(zoom - startZoom);
+        // GeoGlobal-resolution-huangwei-191115
+        const scale =  tr.zoomScale(zoom) / tr.zoomScale(startZoom);
         const pointAtOffset = tr.centerPoint.add(Point.convert(options.offset));
         const locationAtOffset = tr.pointLocation(pointAtOffset);
         const center = LngLat.convert(options.center || locationAtOffset);
@@ -920,7 +923,8 @@ class Camera extends Evented {
             const minZoom = clamp(Math.min(options.minZoom, startZoom, zoom), tr.minZoom, tr.maxZoom);
             // w<sub>m</sub>: Maximum visible span, measured in pixels with respect to the initial
             // scale.
-            const wMax = w0 / tr.zoomScale(minZoom - startZoom);
+            // GeoGlobal-resolution-huangwei-191115
+            const wMax = w0 / (tr.zoomScale(minZoom) / tr.zoomScale(startZoom));
             rho = Math.sqrt(wMax / u1 * 2);
         }
 
