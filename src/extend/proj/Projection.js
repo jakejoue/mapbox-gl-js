@@ -43,6 +43,13 @@ class Projection {
         this.transform_ = null;
     }
 
+    get minZoom() {
+        if (this.resolutions_) {
+            return this.resolutions_.findIndex(r => r !== null);
+        }
+        return null;
+    }
+
     get maxZoom() {
         if (this.resolutions_) {
             return this.resolutions_.length - 1;
@@ -132,9 +139,9 @@ class Projection {
             const ceilResolution = this.resolutions_[Math.ceil(zoom)];
 
             // 到达最小
-            if (!floorResolution) { return this.resolutions_[0]; }
+            if (!floorResolution) { return this.resolutions_[this.minZoom]; }
             // 到达最大
-            if (!ceilResolution) { return this.resolutions_[this.resolutions_.length - 1]; }
+            if (!ceilResolution) { return this.resolutions_[this.maxZoom]; }
 
             // 中间值，取线性百分比
             return floorResolution + (zoom - Math.floor(zoom)) * (ceilResolution - floorResolution);
@@ -160,15 +167,15 @@ class Projection {
     scaleZoom(scale: number): number {
         if (this.resolutions_) {
             const resolution = this.getMaxExtent() / (scale * this.tileSize_);
-            if (resolution >= this.resolutions_[0]) {
-                return 0;
+            if (resolution >= this.resolutions_[this.minZoom]) {
+                return this.minZoom;
             }
-            if (resolution <= this.resolutions_[this.resolutions_.length - 1]) {
-                return this.resolutions_.length - 1;
+            if (resolution <= this.resolutions_[this.maxZoom]) {
+                return this.maxZoom;
             }
 
             // resolution从大到小，取的第一个小于当前resolution的值
-            const baseZoom = this.resolutions_.findIndex(r => r <= resolution);
+            const baseZoom = this.resolutions_.findIndex(r => r && r <= resolution);
 
             // 取线性关系值
             const preResolution = this.resolutions_[baseZoom - 1];

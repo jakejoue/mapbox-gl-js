@@ -76,6 +76,9 @@ class Transform {
         this._maxZoom = maxZoom || 22;
 
         // GeoGlobal-resolution-huangwei-1911014
+        if (this.projection.minZoom) {
+            this._minZoom = this.projection.minZoom;
+        }
         if (this.projection.maxZoom) {
             this._maxZoom = this.projection.maxZoom;
         }
@@ -114,6 +117,14 @@ class Transform {
     get minZoom(): number { return this._minZoom; }
     set minZoom(zoom: number) {
         if (this._minZoom === zoom) return;
+        // GeoGlobal-resolution-huangwei-1911014
+        if (this.projection.minZoom) {
+            if (zoom < this.projection.minZoom) {
+                this._minZoom = this.projection.minZoom;
+                this.zoom = Math.max(this.zoom, this._minZoom);
+                return;
+            }
+        }
         this._minZoom = zoom;
         this.zoom = Math.max(this.zoom, zoom);
     }
