@@ -483,6 +483,14 @@
             }
           }
         },
+        "sprite": {
+          "doc": "A dynamic line. GeoGlobal-sprite-huangwei-10191119",
+          "sdk-support": {
+            "basic functionality": {
+              "js": "0.44.2"
+            }
+          }
+        },
         "symbol": {
           "doc": "An icon or a text label.",
           "sdk-support": {
@@ -604,6 +612,7 @@
   "layout": [
     "layout_fill",
     "layout_line",
+    "layout_sprite",
     "layout_circle",
     "layout_heatmap",
     "layout_fill-extrusion",
@@ -918,6 +927,135 @@
           "android": "2.0.1",
           "ios": "2.0.0",
           "macos": "0.1.0"
+        },
+        "data-driven styling": {}
+      },
+      "property-type": "constant"
+    }
+  },
+  "layout_sprite": {
+    "sprite-cap": {
+      "type": "enum",
+      "values": {
+        "butt": {
+          "doc": "A cap with a squared-off end which is drawn to the exact endpoint of the line."
+        },
+        "round": {
+          "doc": "A cap with a rounded end which is drawn beyond the endpoint of the line at a radius of one-half of the line's width and centered on the endpoint of the line."
+        },
+        "square": {
+          "doc": "A cap with a squared-off end which is drawn beyond the endpoint of the line at a distance of one-half of the line's width."
+        }
+      },
+      "default": "butt",
+      "doc": "The display of sprite endings.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {}
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "sprite-join": {
+      "type": "enum",
+      "values": {
+        "bevel": {
+          "doc": "A join with a squared-off end which is drawn beyond the endpoint of the line at a distance of one-half of the line's width."
+        },
+        "round": {
+          "doc": "A join with a rounded end which is drawn beyond the endpoint of the line at a radius of one-half of the line's width and centered on the endpoint of the line."
+        },
+        "miter": {
+          "doc": "A join with a sharp, angled corner which is drawn with the outer sides beyond the endpoint of the path until they meet."
+        }
+      },
+      "default": "miter",
+      "doc": "The display of sprites when joining.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {
+          "js": "0.44.2"
+        }
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom",
+          "feature"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "sprite-miter-limit": {
+      "type": "number",
+      "default": 2,
+      "doc": "Used to automatically convert miter joins to bevel joins for sharp angles.",
+      "requires": [
+        {
+          "sprite-join": "miter"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {}
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "sprite-round-limit": {
+      "type": "number",
+      "default": 1.05,
+      "doc": "Used to automatically convert round joins to miter joins for shallow angles.",
+      "requires": [
+        {
+          "sprite-join": "round"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {}
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "visibility": {
+      "type": "enum",
+      "values": {
+        "visible": {
+          "doc": "The layer is shown."
+        },
+        "none": {
+          "doc": "The layer is not shown."
+        }
+      },
+      "default": "visible",
+      "doc": "Whether this layer is displayed.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
         },
         "data-driven styling": {}
       },
@@ -3604,6 +3742,7 @@
   "paint": [
     "paint_fill",
     "paint_line",
+    "paint_sprite",
     "paint_circle",
     "paint_heatmap",
     "paint_fill-extrusion",
@@ -4417,6 +4556,223 @@
         ]
       },
       "property-type": "color-ramp"
+    }
+  },
+  "paint_sprite": {
+    "sprite-opacity": {
+      "type": "number",
+      "doc": "The opacity at which the sprite will be drawn.",
+      "default": 1,
+      "minimum": 0,
+      "maximum": 1,
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {
+          "js": "0.44.2"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "sprite-color": {
+      "type": "color",
+      "doc": "The color with which the sprite will be drawn.",
+      "default": "#000000",
+      "transition": true,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {
+          "js": "0.44.2"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "sprite-translate": {
+      "type": "array",
+      "value": "number",
+      "length": 2,
+      "default": [
+        0,
+        0
+      ],
+      "transition": true,
+      "units": "pixels",
+      "doc": "The geometry's offset. Values are [x, y] where negatives indicate left and up, respectively.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {}
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "sprite-translate-anchor": {
+      "type": "enum",
+      "values": {
+        "map": {
+          "doc": "The line is translated relative to the map."
+        },
+        "viewport": {
+          "doc": "The line is translated relative to the viewport."
+        }
+      },
+      "doc": "Controls the frame of reference for `line-translate`.",
+      "default": "map",
+      "requires": [
+        "sprite-translate"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {}
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
+    },
+    "sprite-width": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "transition": true,
+      "units": "pixels",
+      "doc": "Stroke thickness.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {
+          "js": "0.44.2"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "sprite-gap-width": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "doc": "Draws a line casing outside of a line's actual path. Value indicates the width of the inner gap.",
+      "transition": true,
+      "units": "pixels",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {
+          "js": "0.44.2"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "sprite-offset": {
+      "type": "number",
+      "default": 0,
+      "doc": "The line's offset. For linear features, a positive value offsets the line to the right, relative to the direction of the line, and a negative value to the left. For polygon features, a positive value results in an inset, and a negative value results in an outset.",
+      "transition": true,
+      "units": "pixels",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {
+          "js": "0.44.2"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "sprite-blur": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "transition": true,
+      "units": "pixels",
+      "doc": "Blur applied to the line, in pixels.",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {
+          "js": "0.44.2"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "sprite-speed-factor": {
+      "type": "number",
+      "default": 1,
+      "minimum": 0,
+      "transition": true,
+      "units": "pixels",
+      "doc": "",
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.44.2"
+        },
+        "data-driven styling": {}
+      }
     }
   },
   "paint_circle": {

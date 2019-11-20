@@ -149,6 +149,53 @@ register('StructArrayLayout2i4ub8', StructArrayLayout2i4ub8);
 
 /**
  * Implementation of the StructArray layout:
+ * [0]: Int16[4]
+ * [8]: Uint8[4]
+ * [12]: Uint8[3]
+ * [15]: uint16[2]
+ * GeoGlobal-sprite-huangwei-10191119
+ * @private
+ */
+class StructArrayLayout4i4ub20 extends StructArray {
+    uint8: Uint8Array;
+    int16: Int16Array;
+    uint16: Int16Array;
+
+    _refreshViews() {
+        this.uint8 = new Uint8Array(this.arrayBuffer);
+        this.int16 = new Int16Array(this.arrayBuffer);
+        this.uint16 = new Uint16Array(this.arrayBuffer);
+    }
+
+    emplaceBack(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number) {
+        const i = this.length;
+        this.resize(i + 1);
+        const o2 = i * 10;
+        const o1 = i * 20;
+        this.int16[o2 + 0] = v0;
+        this.int16[o2 + 1] = v1;
+        this.int16[o2 + 2] = v2;
+        this.int16[o2 + 3] = v3;
+        this.uint8[o1 + 8] = v4;
+        this.uint8[o1 + 9] = v5;
+        this.uint8[o1 + 10] = v6;
+        this.uint8[o1 + 11] = v7;
+
+        this.uint8[o1 + 12] = v8;
+        this.uint8[o1 + 13] = v9;
+        this.uint8[o1 + 14] = v10;
+        this.uint16[o2 + 8] = v11;
+        this.uint16[o2 + 9] = v12;
+        return i;
+    }
+
+}
+
+StructArrayLayout4i4ub20.prototype.bytesPerElement = 20;
+register('StructArrayLayout4i4ub20', StructArrayLayout4i4ub20);
+
+/**
+ * Implementation of the StructArray layout:
  * [0]: Uint16[8]
  *
  * @private
@@ -1112,7 +1159,9 @@ export {
     StructArrayLayout2i4,
     StructArrayLayout4i8,
     StructArrayLayout2i4i12,
+    // GeoGlobal-sprite-huangwei-10191119
     StructArrayLayout2i4ub8,
+    StructArrayLayout4i4ub20,
     StructArrayLayout8ui16,
     StructArrayLayout4i4ui16,
     StructArrayLayout3f12,
@@ -1137,6 +1186,8 @@ export {
     StructArrayLayout2i4i12 as FillExtrusionLayoutArray,
     StructArrayLayout2i4 as HeatmapLayoutArray,
     StructArrayLayout2i4ub8 as LineLayoutArray,
+    // GeoGlobal-sprite-huangwei-10191119
+    StructArrayLayout4i4ub20 as SpriteLayoutArray,
     StructArrayLayout8ui16 as PatternLayoutArray,
     StructArrayLayout4i4ui16 as SymbolLayoutArray,
     StructArrayLayout3f12 as SymbolDynamicLayoutArray,

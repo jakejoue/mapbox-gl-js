@@ -1,4 +1,6 @@
 // @flow
+// GeoGlobal-sprite-huangwei-191120 兼容旧图层
+import browser from '../util/browser';
 
 import {prelude} from '../shaders';
 import assert from 'assert';
@@ -36,7 +38,10 @@ class Program<Us: UniformBindings> {
         const gl = context.gl;
         this.program = gl.createProgram();
 
-        const defines = configuration.defines();
+        // GeoGlobal-sprite-huangwei-191120 兼容旧图层
+        // const defines = configuration.defines();
+        const defines = configuration.defines().concat(
+            `#define DEVICE_PIXEL_RATIO ${browser.devicePixelRatio.toFixed(1)}`);
         if (showOverdrawInspector) {
             defines.push('#define OVERDRAW_INSPECTOR;');
         }

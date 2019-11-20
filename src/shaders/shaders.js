@@ -57,6 +57,10 @@ import symbolSDFVert from './symbol_sdf.vertex.glsl';
 import fillWaterFrag from './fill_water.fragment.glsl';
 import fillWaterVert from './fill_water.vertex.glsl';
 
+// GeoGlobal-sprite-huangwei-191120
+import spriteFrag from './sprite.fragment.glsl';
+import spriteVert from './sprite.vertex.glsl';
+
 export const prelude = compile(preludeFrag, preludeVert);
 export const background = compile(backgroundFrag, backgroundVert);
 export const backgroundPattern = compile(backgroundPatternFrag, backgroundPatternVert);
@@ -85,6 +89,8 @@ export const symbolSDF = compile(symbolSDFFrag, symbolSDFVert);
 
 // GeoGlobal-fillwater-huangwei-191118
 export const fillWater = compile(fillWaterFrag, fillWaterVert);
+// GeoGlobal-sprite-huangwei-191120
+export const sprite = compile(spriteFrag, spriteVert);
 
 // Expand #pragmas to #ifdefs.
 

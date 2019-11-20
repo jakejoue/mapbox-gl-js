@@ -6,6 +6,8 @@ import hillshade from './style_layer/hillshade_style_layer';
 import fill from './style_layer/fill_style_layer';
 import fillExtrusion from './style_layer/fill_extrusion_style_layer';
 import line from './style_layer/line_style_layer';
+// GeoGlobal-sprite-huangwei-10191119
+import sprite from './style_layer/sprite_style_layer';
 import symbol from './style_layer/symbol_style_layer';
 import background from './style_layer/background_style_layer';
 import raster from './style_layer/raster_style_layer';
@@ -21,6 +23,8 @@ const subclasses = {
     fill,
     'fill-extrusion': fillExtrusion,
     line,
+    // GeoGlobal-sprite-huangwei-10191119
+    sprite,
     symbol,
     background,
     raster
