@@ -27,11 +27,26 @@
         <script src="../../dist/mapbox-gl-dev.js"></script>
         <script src="../access_token_generated.js"></script>
         <script>
+            const RADIUS = 6378137;
+            const HALF_SIZE = Math.PI * RADIUS;
+            const EXTENT = [-HALF_SIZE, -HALF_SIZE, HALF_SIZE, HALF_SIZE];
+            const resolutions = [];
+            for (let i = 0; i <= 19; i++) {
+                resolutions[i] = Math.pow(2, 18 - i);
+            }
+            const EPSGBAIDU = new mapboxgl.proj.Projection({
+                code: "EPSG:baidu",
+                units: "m",
+                extent: EXTENT,
+                resolutions,
+                tileSize: 256
+            });
+
             var map = (window.map = new mapboxgl.Map({
                 container: "map",
                 zoom: 2,
                 minZoom: 2,
-                projection: "EPSG:baidu",
+                projection: EPSGBAIDU,
                 center: [0, 0],
                 style: {
                     version: 8,
