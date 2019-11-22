@@ -598,3 +598,15 @@ a.mapboxgl-ctrl-logo.mapboxgl-compact {
         display: none;
     }
 }
+
+/* 框选样式 */
+.mapboxgl-boxhandler {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    background: #a09e9e;
+    border: 2px dotted #b90909;
+    opacity: 0.7;
+}

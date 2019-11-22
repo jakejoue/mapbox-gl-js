@@ -29,6 +29,13 @@ import * as extent from './extend/extent';
 
 // GeoGlobal-layergroup-huangwei-191118 导入图层组相关
 import LayerGroup from './extend/layer_group';
+// GeoGlobal-boxhandler-huangwei-191122 框选
+import BoxHandler from './ui/handler/box';
+// GeoGlobal-util-huangwei-191122 工具类
+import * as util from './util/util';
+
+// GeoGlobal-freeCrsMap-huangwei-191121 freeCrsMap
+import FreeCRSMap from './ui/freecrsmap';
 
 const exported = {
     version,
@@ -56,6 +63,13 @@ const exported = {
 
     // GeoGlobal-layergroup-huangwei-191118 图层组
     LayerGroup,
+    // GeoGlobal-boxhandler-huangwei-191122 框选
+    BoxHandler,
+    // GeoGlobal-util-huangwei-191122 工具类
+    util,
+
+    // GeoGlobal-freeCrsMap-huangwei-191121 freeCrsMap
+    FreeCRSMap,
 
     /**
      * Gets and sets the map's [access token](https://www.mapbox.com/help/define-access-token/).

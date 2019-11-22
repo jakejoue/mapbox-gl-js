@@ -18,13 +18,15 @@ const EPSG3857 = new Projection({
     code: 'EPSG:3857',
     units: Units.METERS,
     extent: EXTENT,
+    tileSize: 256
 });
 
 // 4326
 const EPSG4326 = new Projection({
     code: 'EPSG:4326',
     units: Units.DEGREES,
-    extent: [-180, -90, 180, 90]
+    extent: [-180, -90, 180, 90],
+    tileSize: 256
 });
 
 // mapbox
