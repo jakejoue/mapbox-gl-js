@@ -17,7 +17,7 @@ const defaultOptions = {
     closeButton: true,
     closeOnClick: true,
     className: '',
-    maxWidth: "240px",
+    maxWidth: "auto",
     // GeoGlobal-popup-huangwei-191111
     showArrow: true,
     contentClass: ''
