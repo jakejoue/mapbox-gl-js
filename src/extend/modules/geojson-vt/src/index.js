@@ -26,6 +26,7 @@ function GeoJSONVT(data, options, projection) {
     if (options.promoteId && options.generateId) throw new Error('promoteId and generateId cannot be used together.');
 
     // GeoGlobal-geojsonlayer-huangwei-191125 赋值原属性信息（避免切片后获取的feature不全）
+    if(data.type === 'Feature') data = { type: 'FeatureCollection', features: [data] };
     data.features = data.features.map(f => {
         if (!f.properties) f.properties = {};
         const _metadata = JSON.stringify(f);
