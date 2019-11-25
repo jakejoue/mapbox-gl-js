@@ -5,6 +5,8 @@ import wrap from './wrap';           // date line processing
 import transform from './transform'; // coordinate transformation
 import createTile from './tile';     // final simplified tile generation
 
+import hat from '../../hat';
+
 // GeoGlobal-coord-workerproj-huangwei-191108
 export default function geojsonvt(data, options, projection) {
     return new GeoJSONVT(data, options, projection);
@@ -22,6 +24,15 @@ function GeoJSONVT(data, options, projection) {
 
     if (options.maxZoom < 0 || options.maxZoom > 24) throw new Error('maxZoom should be in the 0-24 range');
     if (options.promoteId && options.generateId) throw new Error('promoteId and generateId cannot be used together.');
+
+    // GeoGlobal-geojsonlayer-huangwei-191125 赋值原属性信息（避免切片后获取的feature不全）
+    data.features = data.features.map(f => {
+        const _metadata = JSON.stringify(f);
+
+        f.properties._metadataId = hat();
+        f.properties._metadata = _metadata;
+        return f;
+    });
 
     // GeoGlobal-coord-workerproj-huangwei-191108
     var features = convert(data, options, projection);

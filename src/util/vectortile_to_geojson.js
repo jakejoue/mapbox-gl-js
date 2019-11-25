@@ -56,6 +56,30 @@ class Feature {
     }
 
     toJSON() {
+        // GeoGlobal-geojsonlayer-huangwei-191125 如果有元数据信息
+        if (this.properties._metadataId && this.properties._metadata) {
+            const { _metadataId, _metadata } = this.properties;
+            const feature = JSON.parse(_metadata);
+            feature.fid = _metadataId;
+
+            feature.toJSON = function() {
+                return this;
+            };
+            // 赋值其他属性
+            for (const i in this) {
+                if (
+                    i === '_geometry' ||
+                    i === '_vectorTileFeature' ||
+                    i === '_projection' ||
+                    i === 'toJSON' ||
+                    i === 'geometry' ||
+                    i === 'properties')
+                    continue;
+                feature[i] = this[i];
+            }
+            return feature;
+        }
+
         const json = {
             geometry: this.geometry
         };
