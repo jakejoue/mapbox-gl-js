@@ -28,7 +28,7 @@ function GeoJSONVT(data, options, projection) {
     // GeoGlobal-geojsonlayer-huangwei-191125 赋值原属性信息（避免切片后获取的feature不全）
     data.features = data.features.map(f => {
         const _metadata = JSON.stringify(f);
-
+        if (!f.properties) f.properties = {};
         f.properties._metadataId = hat();
         f.properties._metadata = _metadata;
         return f;

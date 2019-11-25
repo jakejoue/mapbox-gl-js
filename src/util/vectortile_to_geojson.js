@@ -57,7 +57,7 @@ class Feature {
 
     toJSON() {
         // GeoGlobal-geojsonlayer-huangwei-191125 如果有元数据信息
-        if (this.properties._metadataId && this.properties._metadata) {
+        if (this.properties && this.properties._metadataId && this.properties._metadata) {
             const { _metadataId, _metadata } = this.properties;
             const feature = JSON.parse(_metadata);
             feature.fid = _metadataId;
