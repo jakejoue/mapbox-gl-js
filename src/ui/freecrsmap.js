@@ -1,4 +1,5 @@
 // @flow
+import window from '../util/browser/window';
 
 import Map from './map';
 import { Projection } from '../extend/proj';
@@ -17,7 +18,7 @@ export default class FreeCRSMap extends Map {
                 units: units || 'degrees',
                 extent: topTileExtent,
                 resolutions,
-                tileSize: tileSize || global.GEOGLOBE_TILESIZE || 256
+                tileSize: tileSize || window.GEOGLOBE_TILESIZE || 256
             });
             options.projection = projection;
         }
