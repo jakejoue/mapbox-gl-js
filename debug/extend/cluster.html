@@ -30,7 +30,7 @@
             const projection = mapboxgl.proj.get("EPSG:4326");
             const resolutions = [];
             for (let zoom = 0; zoom < 15; zoom++) {
-                resolutions[zoom] = 360 / 512 / Math.pow(2, zoom);
+                resolutions[zoom] = 360 / 256 / Math.pow(2, zoom);
             }
             projection.setResolutions(resolutions);
 
@@ -41,8 +41,6 @@
                 center: [-77.01866, 38.888],
                 style: {
                     version: 8,
-                    glyphs:
-                        "http://127.0.0.1:5500/proxy/ztkfw/fls?SERVICE=FLS&VERSION=1.0&REQUEST=GetFont&FONTNAME={fontstack}&RANGE={range}.pbf",
                     sources: {
                         tdt: {
                             type: "raster",
@@ -106,14 +104,14 @@
                     source: "geojson",
                     filter: ["==", "cluster", true],
                     layout: {
-                        "text-field": "{point_count} ({max})",
-                        "text-font": [
-                            "Open Sans Semibold",
-                            "Arial Unicode MS Bold"
-                        ],
-                        "text-size": 12,
-                        "text-allow-overlap": true,
-                        "text-ignore-placement": true
+                        // "text-field": "{point_count} ({max})",
+                        // "text-font": [
+                        //     "Open Sans Semibold",
+                        //     "Arial Unicode MS Bold"
+                        // ],
+                        // "text-size": 12,
+                        // "text-allow-overlap": true,
+                        // "text-ignore-placement": true
                     }
                 });
                 map.addLayer({
