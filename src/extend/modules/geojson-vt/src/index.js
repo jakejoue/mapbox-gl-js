@@ -62,7 +62,13 @@ function GeoJSONVT(data, options, projection) {
     features = wrap(features, options);
 
     // start slicing from the top tile down
-    if (features.length) this.splitTile(features, 0, 0, 0);
+    if (features.length)
+        // GeoGlobal-resolution-huangwei-191126 自定义金字塔切片
+        if (this.projection.maxZoom) {
+            this.splitTile2(features, 0, 0, 0);
+        } else {
+            this.splitTile(features, 0, 0, 0);
+        }
 
     if (debug) {
         if (features.length) console.log('features: %d, points: %d', this.tiles[0].numFeatures, this.tiles[0].numPoints);
@@ -179,6 +185,35 @@ GeoJSONVT.prototype.splitTile = function (features, z, x, y, cz, cx, cy) {
     }
 };
 
+// GeoGlobal-resolution-huangwei-191126 自定义金字塔切片
+GeoJSONVT.prototype.splitTile2 = function (features, z, x, y) {
+    var options = this.options;
+
+    var tiles = this.projection.zoomScale(z),
+        id = toID(z, x, y),
+        tile = this.tiles[id];
+
+    var topTile = this.tiles[toID(0, 0, 0)];
+
+    if (!topTile) {
+        topTile = this.tiles[toID(0, 0, 0)] = createTile(features, 0, 0, 0, options, this.projection);
+        topTile.source = features;
+        return;
+    }
+
+    var k1 = 0.5 * options.buffer / options.extent,
+        k4 = 1 + k1;
+    var featureX = clip(features, tiles, x - k1, x + k4, 0, topTile.minX, topTile.maxX, options),
+        featureY
+
+	if (featureX) {
+		featureY = clip(featureX, tiles, y - k1, y + k4, 1, topTile.minY, topTile.maxY, options);
+	}
+	if (featureY) {
+		this.tiles[id] = createTile(featureY, z, x, y, options, this.projection);
+	}
+};
+
 GeoJSONVT.prototype.getTile = function (z, x, y) {
     var options = this.options,
         extent = options.extent,
@@ -186,7 +221,8 @@ GeoJSONVT.prototype.getTile = function (z, x, y) {
 
     if (z < 0 || z > 24) return null;
 
-    var z2 = 1 << z;
+    // GeoGlobal-resolution-huangwei-1911014
+    var z2 = this.projection.zoomScale(z);
     x = ((x % z2) + z2) % z2; // wrap tile x coordinate
 
     var id = toID(z, x, y);
@@ -203,7 +239,9 @@ GeoJSONVT.prototype.getTile = function (z, x, y) {
     // GeoGlobal-resolution-huangwei-1911018 存在自定义resolutions，改变切片方法
     if (this.projection.maxZoom) {
         parent = this.tiles[toID(0, 0, 0)];
-        this.splitTile(parent.source, z, x, y);
+        if (!parent || !parent.source) return null;
+
+        this.splitTile2(parent.source, z, x, y);
         return this.tiles[id] ? transform(this.tiles[id], extent, this.projection) : null;
     }
 

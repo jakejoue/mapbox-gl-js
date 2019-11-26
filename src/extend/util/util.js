@@ -123,3 +123,18 @@ export function deepCopy(
     }
     return o;
 }
+
+/**
+ * 末端查找
+ * @param {*} array 原数组
+ * @param {*} fn 方法
+ */
+export function findLastIndexOf(array, fn) {
+    for (let i = array.length - 1; i >= 0; i--) {
+        const element = array[i];
+        if (fn(element, i, array)) {
+            return i;
+        }
+    }
+    return -1;
+}

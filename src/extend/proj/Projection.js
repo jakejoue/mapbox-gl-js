@@ -6,7 +6,7 @@ import CoordTransform, { transform } from './CoordTransform';
 import { getHeight, getWidth } from '../extent';
 import { register } from '../../util/web_worker_transfer';
 
-import { deepCopy } from '../util/util';
+import { deepCopy, findLastIndexOf } from '../util/util';
 
 export type ProjectionOption = {
     code: string,
@@ -52,7 +52,7 @@ class Projection {
 
     get maxZoom() {
         if (this.resolutions_) {
-            return this.resolutions_.length - 1;
+            return findLastIndexOf(this.resolutions_, r => r != null);
         }
         return null;
     }
@@ -165,25 +165,25 @@ class Projection {
      * 获取指定数量下的zoom级别
      */
     scaleZoom(scale: number): number {
-        if (this.resolutions_) {
-            const resolution = this.getMaxExtent() / (scale * this.tileSize_);
-            if (resolution >= this.resolutions_[this.minZoom]) {
-                return this.minZoom;
-            }
-            if (resolution <= this.resolutions_[this.maxZoom]) {
-                return this.maxZoom;
-            }
+        // if (this.resolutions_) {
+        //     const resolution = this.getMaxExtent() / (scale * this.tileSize_);
+        //     if (resolution >= this.resolutions_[this.minZoom]) {
+        //         return this.minZoom;
+        //     }
+        //     if (resolution <= this.resolutions_[this.maxZoom]) {
+        //         return this.maxZoom;
+        //     }
 
-            // resolution从大到小，取的第一个小于当前resolution的值
-            const baseZoom = this.resolutions_.findIndex(r => r && r <= resolution);
+        //     // resolution从大到小，取的第一个小于当前resolution的值
+        //     const baseZoom = this.resolutions_.findIndex(r => r && r <= resolution);
 
-            // 取线性关系值
-            const preResolution = this.resolutions_[baseZoom - 1];
-            if (preResolution) {
-                return baseZoom - 1 + (resolution - preResolution) / (this.resolutions_[baseZoom] - preResolution);
-            }
-            return baseZoom;
-        }
+        //     // 取线性关系值
+        //     const preResolution = this.resolutions_[baseZoom - 1];
+        //     if (preResolution) {
+        //         return baseZoom - 1 + (resolution - preResolution) / (this.resolutions_[baseZoom] - preResolution);
+        //     }
+        //     return baseZoom;
+        // }
         return Math.log(scale) / Math.LN2;
     }
 }
