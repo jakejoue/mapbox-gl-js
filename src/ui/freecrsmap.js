@@ -16,7 +16,7 @@ export default class FreeCRSMap extends Map {
             const projection = new Projection({
                 code: 'mapcrs',
                 units: units || 'degrees',
-                extent: topTileExtent,
+                extent: topTileExtent || [-180, -90, 180, 90],
                 resolutions,
                 tileSize: tileSize || window.GEOGLOBE_TILESIZE || 256
             });
@@ -24,5 +24,13 @@ export default class FreeCRSMap extends Map {
         }
         super(options);
         this._mapCRS = mapCRS;
+    }
+
+    get _tileExtent() {
+        if (this.projection.getCode() === 'EPSG:mapbox') {
+            return [-20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892];
+        } else {
+            return this.projection.getExtent();
+        }
     }
 }
