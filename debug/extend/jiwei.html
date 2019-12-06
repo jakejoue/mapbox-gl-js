@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapbox GL JS debug page</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <link rel="stylesheet" href="../../dist/mapbox-gl.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <script src="../../dist/mapbox-gl-dev.js"></script>
+        <script src="../access_token_generated.js"></script>
+        <script>
+            var map = (window.map = new mapboxgl.Map({
+                container: "map",
+                zoom: 12.5,
+                projection: "EPSG:4326",
+                center: [114.2933203, 30.5665867],
+                style: {
+                    version: 8,
+                    sources: {
+                        jw: {
+                            type: "raster",
+                            tiles: [
+                                "https://ditu.zjzwfw.gov.cn/mapserver/vmap/zjvmap/getMAP?x={x}&y={y}&l={z}&styleId=tdt_biaozhunyangshi_2017&ratio=1"
+                            ],
+                            tileSize: 256,
+                            zoomOffset: 0
+                        }
+                    },
+                    layers: [
+                        {
+                            id: "jw",
+                            type: "raster",
+                            layout: { visibility: "visible" },
+                            maxzoom: 19,
+                            metadata: { type: "WMTS" },
+                            minzoom: 1,
+                            name: "vec",
+                            paint: { "raster-opacity": 1 },
+                            source: "jw"
+                        }
+                    ]
+                },
+                hash: true,
+                renderWorldCopies: true,
+                isIntScrollZoom: true,
+                skipLevelOfZooming: true
+            }));
+        </script>
+    </body>
+</html>
