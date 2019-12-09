@@ -29,6 +29,8 @@ import * as extent from './extend/extent';
 
 // GeoGlobal-layergroup-huangwei-191118 导入图层组相关
 import LayerGroup from './extend/layer_group';
+// GeoGlobal-flyroute-huangwei-191209 分析路径
+import FlyRoute from './extend/fly_route';
 // GeoGlobal-boxhandler-huangwei-191122 框选
 import BoxHandler from './ui/handler/box';
 // GeoGlobal-util-huangwei-191122 工具类
@@ -63,6 +65,8 @@ const exported = {
 
     // GeoGlobal-layergroup-huangwei-191118 图层组
     LayerGroup,
+    // GeoGlobal-flyroute-huangwei-191209 分析路径
+    FlyRoute,
     // GeoGlobal-boxhandler-huangwei-191122 框选
     BoxHandler,
     // GeoGlobal-util-huangwei-191122 工具类

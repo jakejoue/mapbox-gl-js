@@ -1,10 +1,11 @@
 // @flow
 import { clamp } from '../util/util';
-import browser from '../util/browser';
-import TaskQueue from '../util/task_queue';
+import { number as interpolate } from '../style-spec/util/interpolate';
+import { METERS_PER_UNIT } from './proj/Units';
+import LngLat from './geo/lng_lat';
 
 import type Map from '../ui/map';
-import type { Cancelable } from '../types/cancelable';
+import type Transform from './geo/transform';
 import type { TaskID } from '../util/task_queue';
 
 // 一些工具方法
@@ -23,14 +24,14 @@ const util = {
         });
         return l;
     },
-    calcDirection(coord1: Array, coord2: Array): number {
+    calcBearing(coord1: Array, coord2: Array): number {
         if (coord1 && coord2) {
             const angle = Math.atan2(coord2[1] - coord1[1], coord2[0] - coord1[0]);
             return 90 - angle / Math.PI * 180;
         }
     },
     scalePoint(scale: number, coord1: Array, coord2: Array): Array {
-        scale = this.clamp(scale, 0, 1);
+        scale = clamp(scale, 0, 1);
         return coord1.map((c, i) => c + (coord2[i] - c) * scale);
     }
 };
@@ -40,7 +41,7 @@ class PosControl {
     // 常量
     PATH: Array; // 完整的路径
     LENGTH: number; // 全部的长度
-    ZOOMRANGE: [number, number]; // 缩放范围
+    ZOOMRANGE: ?[number, number]; // 缩放范围
     MIN_Z: number;
     MAX_Z: number;
 
@@ -50,6 +51,9 @@ class PosControl {
     preIndex: number; // 上个点的索引
     currentPoint: Array; // 当前点坐标
     passLength: number; // 已经经过的点的长度，用于百分比的计算
+
+    // 旋转参数(多个点)
+    rotateOptions: Array;
 
     constructor(path, speedV, zoomRange) {
         this.PATH = path;
@@ -64,6 +68,8 @@ class PosControl {
         this.preIndex = 0;
         this.currentPoint = path[0];
         this.passLength = 0;
+
+        this.rotateOptions = [];
     }
 
     // 速度
@@ -85,11 +91,13 @@ class PosControl {
             index: 1,
             cPoint: this.PATH[0]
         });
+        this.rotateOptions = [];
     }
     /**
+     * @api
      * 获取已经通过的线段信息
      */
-    getPathLine(): Array {
+    getPassLine(): Array {
         const path = this.PATH.slice(0, this.preIndex + 2);
         path.pop();
         return [...path, [...this.currentPoint]];
@@ -105,8 +113,8 @@ class PosControl {
      * @api
      * 获取方位信息
      */
-    getDirection(): number {
-        return util.calcDirection(this.currentPoint, this.PATH[this.preIndex + 1]);
+    getBearing(): number {
+        return util.calcBearing(this.currentPoint, this.PATH[this.preIndex + 1]);
     }
     /**
      * @api
@@ -133,10 +141,14 @@ class PosControl {
         distance = this.speed,
         { index = this.preIndex + 1, cPoint = this.currentPoint } = {}
     ): void {
-        let resultPoint;
-
         // 默认加距离
         this.passLength += distance;
+
+        // 重置旋转参数
+        this.rotateOptions = [];
+
+        // 结果点
+        let resultPoint;
 
         // eslint-disable-next-line no-constant-condition
         while (true) {
@@ -158,13 +170,11 @@ class PosControl {
                     cPoint = nextPoint;
                     index++;
 
-                    // 旋转回调
-                    if (this.rotateCallback) {
-                        this.rotateCallback(
-                            cPoint,
-                            util.calcDirection(cPoint, this.PATH[index])
-                        );
-                    }
+                    // 添加旋转点
+                    this.rotateOptions.push({
+                        point: [...cPoint],
+                        bearing: util.calcBearing(cPoint, this.PATH[index])
+                    });
                 }
             } else {
                 // 如果不存在下个点，认为到达线段结尾
@@ -181,26 +191,27 @@ class PosControl {
     }
 }
 
-// 常量，每米代表的经纬度距离
-const SPEED = 0.000008983152841195214;
-
+// 飞行路径
 export default class FlyRoute {
     // 地图对象
     _map: Map;
 
-    // 当前的动画对象
-    _frame: Cancelable;
-
-    // 渲染进程
-    _renderTaskQueue: TaskQueue;
+    // 单位
+    _units: String;
 
     // 当前播放状态(0停止 1播放)
     _status: number;
 
-    // 外部更新方法
-    update: function;
+    // 当前的动画对象
+    _frameId: ?TaskID;
 
-    constructor(path, zoomRange) {
+    // 位置计算控制器
+    _control: PosControl;
+
+    // 外部更新方法
+    update: Function;
+
+    constructor(path: Array, zoomRange?: Array) {
         // 路径有效性判断
         if (!path || path.length <= 1) {
             throw new Error('flyroute: 无效的飞行轨迹！');
@@ -214,29 +225,23 @@ export default class FlyRoute {
             }
         }
 
+        // 坐标单位
+        this._units = 'degrees';
+
         // 初始化成员变量
         this._status = 0;
-        this._renderTaskQueue = new TaskQueue();
-
-        // 更新函数
-        this._rotate = FlyRoute.rotateHandler.bind(this);
 
         // 控制器
-        this._control = new PosControl(
-            [...path],
-            SPEED,
-            [...zoomRange],
-            this._rotate
-        );
+        this._control = new PosControl([...path], 0, zoomRange);
     }
 
     // 速度（整数）
     get Speed(): number {
-        return Math.round(this._control.getSpeed() / SPEED);
+        return Math.round(this._control.getSpeed() / (1 / METERS_PER_UNIT[this._units]));
     }
     set Speed(value: number) {
         value = Math.max(0, value);
-        this._control.setSpeed(Math.round(value) * SPEED);
+        this._control.setSpeed(Math.round(value) * (1 / METERS_PER_UNIT[this._units]));
     }
 
     // 百分比
@@ -249,18 +254,21 @@ export default class FlyRoute {
 
     // 获取已经通过的点
     get PathLine(): Array {
-        return this._control.getPathLine();
+        return this._control.getPassLine();
     }
 
     addTo(map: Map) {
-        this._map = map;
+        if (!this._map) {
+            this._map = map;
+            // 初始化单位和速度
+            this._units = map.units || map.projection.getUnits();
+            this.Speed = 1;
+        }
         return this;
     }
 
     remove() {
         this.stop();
-        this._renderTaskQueue.clear();
-        delete this._update;
         delete this._control;
         delete this._map;
         delete this.update;
@@ -274,128 +282,129 @@ export default class FlyRoute {
 
     stop() {
         this._status = 0;
-        if (this._frame) {
-            this._frame.cancel();
-            this._frame = null;
+        if (this._frameId) {
+            this._map._cancelRenderFrame(this._frameId);
+            delete this._frameId;
         }
         return this;
     }
 
-    // 静态更新函数（非直接调用）
-    static updateHandler() {
-        if (this._status === 0 || this._frame) {
-            return;
-        }
-
-        const control = this._control;
-        const map = this._map;
-
-        this._frame = requestAnimationFrame(() => {
-            // 删除frameid（过滤动画请求）
-            delete this._frame;
-
-            if (control.getPercent() < 100) {
-                // 计算下个点
-                control.calcNextPoint();
-
-                const options = {
-                    center: control.getCurrentPoint(),
-                    bearing: control.getDirection(),
-                    zoom: control.getZoom()
-                };
-                // 删除无效属性
-                Object.keys(options).forEach(k => {
-                    if (options[k] === undefined) {
-                        delete options[k];
-                    }
-                });
-
-                const next = () => {
-                    // 如果是在旋转中
-                    if (this.isRotating) {
-                        setTimeout(next, 500);
-                        return;
-                    }
-
-                    // 存在map的时候进行更新
-                    if (map) map.jumpTo(options);
-
-                    // 存在外部更新方法
-                    if (this.update) this.update(options.center, this);
-
-                    // 进行下次更新
-                    this._update();
-                };
-                next();
-            } else {
-                this.stop();
-            }
-        });
-    }
-
-    static rotateHandler(point: Array, bearing: number) {
-        this.isRotating = true;
-
-        const map = this._map;
-
-        // 存在map的时候进行更新
-        if (map) map.jumpTo({ center: point });
-
-        // 存在外部更新方法
-        if (this.update) this.update(point, this);
-
-        // 旋转
-        if (map && bearing) {
-            // 两秒后不管怎样都完成旋转
-            setTimeout(() => {
-                if (this.isRotating) {
-                    this.isRotating = false;
-                }
-            }, 2000);
-
-            // 禁用鼠标操作
-            map.easeTo({
-                bearing,
-                duration: 2000,
-                easing: v => {
-                    if (v === 1) {
-                        this.isRotating = false;
-                    }
-                    return v;
-                }
-            });
-        } else {
-            this.isRotating = false;
-        }
-    }
-
     /**
      * @private
-     * 帧函数
+     * 更新函数（地图效果）
      */
-    _requestRenderFrame(callback: () => void): TaskID {
-        this._update();
-        return this._renderTaskQueue.add(callback);
-    }
-
-    /**
-     * @private
-     * 移除指定帧
-     */
-    _cancelRenderFrame(id: TaskID) {
-        this._renderTaskQueue.remove(id);
-    }
-
     _update() {
-        if (!this._frame) {
-            this._frame = browser.frame(() => {
-                this._frame = null;
-                this._render();
+        if (!this._frameId) {
+            this._frameId = this._map._requestRenderFrame(() => {
+                // 删除帧ID
+                delete this._frameId;
+
+                // 停止状态
+                if (this._status === 0) {
+                    return;
+                }
+
+                const map = this._map;
+                const tr: Transform = map.transform;
+                const control = this._control;
+
+                // 百分比小于100，即存在可播放
+                if (control.getPercent() < 100) {
+                    // 计算下个点
+                    control.calcNextPoint();
+
+                    // 添加旋转中间帧
+                    this._frame((k, { point, bearing }) => {
+                        // 旋转中函数
+                        if (k === 0) {
+                            tr.center = LngLat.convert(point);
+                        }
+                        // 更新bearing角度
+                        tr.bearing = bearing;
+                    }, () => {
+                        const options = {
+                            center: control.getCurrentPoint(),
+                            bearing: +control.getBearing(),
+                            zoom: +control.getZoom()
+                        };
+
+                        // 缩放
+                        if (Number.isFinite(options.zoom)) {
+                            tr.zoom = options.zoom;
+                        }
+                        // 方位
+                        if (Number.isFinite(options.bearing)) {
+                            tr.bearing = options.bearing;
+                        }
+                        // 中心点
+                        if (options.center) {
+                            tr.center = LngLat.convert(options.center);
+                        }
+
+                        // 外部更新
+                        if (this.update) this.update(options.center, this);
+
+                        // 继续下一帧率
+                        this._update();
+                    });
+
+                } else {
+                    this.stop();
+                }
             });
         }
     }
 
-    _render() {
-        this._renderTaskQueue.run();
+    /**
+     * 过度帧函数
+     * @private
+     */
+    _frame(frame: () => void, finish: () => void) {
+        const map = this._map;
+        const control = this._control;
+        const rotateOptions = control.rotateOptions || [];
+
+        // 如果存在多个拐点
+        if (rotateOptions.length) {
+            // 下个旋转点
+            const next = () => {
+                const rotateOption = rotateOptions.shift();
+                let { point, bearing } = rotateOption;
+
+                if (bearing) {
+                    const startBearing = map.getBearing();
+                    bearing = map._normalizeBearing(bearing, startBearing);
+                    const l = Math.floor(Math.abs(bearing - startBearing));
+
+                    let i = 0;
+                    // 下个旋转帧
+                    const nextFrame = () => {
+                        const k = i / l;
+                        map._requestRenderFrame(() => {
+                            frame(k, { point, bearing: interpolate(startBearing, bearing, k) });
+
+                            // 完成单个拐点
+                            if (k >= 1) {
+                                if (rotateOptions.length === 0) {
+                                    finish();
+                                } else {
+                                    next();
+                                }
+                            } else {
+                                i++;
+                                nextFrame();
+                            }
+                        });
+                    };
+                    nextFrame();
+                } else {
+                    finish(1);
+                }
+            };
+            // 执行函数
+            next();
+        } else {
+            finish(1);
+        }
     }
 }
