@@ -257,6 +257,10 @@ export default class FlyRoute {
         return this._control.getPassLine();
     }
 
+    /**
+     * @api
+     * 添加到地图对象
+     */
     addTo(map: Map) {
         if (!this._map) {
             this._map = map;
@@ -267,19 +271,42 @@ export default class FlyRoute {
         return this;
     }
 
+    /**
+     * @api
+     * 从地图对象中移除
+     */
     remove() {
         this.stop();
-        delete this._control;
-        delete this._map;
         delete this.update;
+        delete this._control;
+        delete this._units;
+        delete this._map;
     }
 
+    /**
+     * @api
+     * 播放函数
+     */
     play() {
         this._status = 1;
         this._update();
         return this;
     }
 
+    /**
+     * @api
+     * 重新播放
+     */
+    replay() {
+        this.stop();
+        this._control.setPercent(0);
+        this.play();
+    }
+
+    /**
+     * @api
+     * 停止播放
+     */
     stop() {
         this._status = 0;
         if (this._frameId) {
