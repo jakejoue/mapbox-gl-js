@@ -28,11 +28,11 @@ import * as proj from './extend/proj';
 import * as extent from './extend/extent';
 
 // GeoGlobal-layergroup-huangwei-191118 导入图层组相关
-import LayerGroup from './extend/layer_group';
+import LayerGroup from './extend/extension/layer_group';
 // GeoGlobal-flyroute-huangwei-191209 分析路径
-import FlyRoute from './extend/fly_route';
+import FlyRoute from './extend/extension/fly_route';
 // GeoGlobal-boxhandler-huangwei-191122 框选
-import BoxHandler from './ui/handler/box';
+import BoxHandler from './extend/extension/box';
 // GeoGlobal-util-huangwei-191122 工具类
 import * as util from './util/util';
 

@@ -1,12 +1,12 @@
 // @flow
-import { clamp } from '../util/util';
-import { number as interpolate } from '../style-spec/util/interpolate';
-import { METERS_PER_UNIT } from './proj/Units';
-import LngLat from './geo/lng_lat';
+import { clamp } from '../../util/util';
+import { number as interpolate } from '../../style-spec/util/interpolate';
+import { METERS_PER_UNIT } from '../proj/Units';
+import LngLat from '../geo/lng_lat';
 
-import type Map from '../ui/map';
-import type Transform from './geo/transform';
-import type { TaskID } from '../util/task_queue';
+import type Map from '../../ui/map';
+import type Transform from '../geo/transform';
+import type { TaskID } from '../../util/task_queue';
 
 // 一些工具方法
 const util = {

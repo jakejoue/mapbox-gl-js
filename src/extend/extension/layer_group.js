@@ -1,7 +1,7 @@
 // @flow
 "use strict";
 
-import * as util from '../util/util';
+import * as util from '../../util/util';
 
 /**
  * Add a layer group to the map.
