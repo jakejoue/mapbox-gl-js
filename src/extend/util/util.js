@@ -96,7 +96,7 @@ export function deepCopy(
     } else if (t === 'object') {
         for (const i in data) {
             // ignores
-            if (ignores.includes(i)) {
+            if (ignores.indexOf(i) !== -1) {
                 o[i] = data[i];
                 continue;
             }

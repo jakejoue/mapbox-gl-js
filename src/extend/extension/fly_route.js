@@ -356,11 +356,11 @@ export default class FlyRoute {
                         };
 
                         // 缩放
-                        if (Number.isFinite(options.zoom)) {
+                        if (isFinite(options.zoom)) {
                             tr.zoom = options.zoom;
                         }
                         // 方位
-                        if (Number.isFinite(options.bearing)) {
+                        if (isFinite(options.bearing)) {
                             tr.bearing = options.bearing;
                         }
                         // 中心点

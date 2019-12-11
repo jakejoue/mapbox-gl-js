@@ -488,6 +488,13 @@ class SourceCache extends Evented {
             }
         }
 
+        // GeoGlobal-visibleBounds-huangwei-191211
+        if (this.map && this.map._visibleBounds) {
+            idealTileIDs = idealTileIDs.filter((tileID) => {
+                return this.map._visibleBounds.contains(tileID.canonical);
+            });
+        }
+
         // Determine the overzooming/underzooming amounts.
         const zoom = (this._source.roundZoom ? Math.round : Math.floor)(this.getZoom(transform));
         const minCoveringZoom = Math.max(zoom - SourceCache.maxOverzooming, this._source.minzoom);

@@ -101,7 +101,7 @@
                     },
                     source: {
                         type: "geojson",
-                        data: { type: "LineString", coordinates: [...Path] }
+                        data: { type: "LineString", coordinates: Path }
                     }
                 });
                 var marker = new mapboxgl.Marker()
@@ -109,12 +109,12 @@
                     .addTo(map);
 
                 flyRoute = new mapboxgl.FlyRoute(Path, [16, 20]);
-                flyRoute.update = center => {
+                flyRoute.update = function(center) {
                     marker.setLngLat(center);
                 };
                 flyRoute.addTo(map);
 
-                setTimeout(() => {
+                setTimeout(function() {
                     flyRoute.play();
                 }, 2000);
             });
