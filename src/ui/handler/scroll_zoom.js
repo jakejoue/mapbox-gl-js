@@ -257,9 +257,9 @@ class ScrollZoomHandler {
             // GeoGlobal-intZoom-huangwei-191015
             if (this._map._isIntScrollZoom) {
                 if (this._delta > 0) {
-                    this._targetZoom = parseInt(tr.zoom + 1);
+                    this._targetZoom = Math.ceil(tr.zoom + 1);
                 } else if (this._delta < 0) {
-                    this._targetZoom = parseInt(tr.zoom - 1);
+                    this._targetZoom = Math.floor(tr.zoom - 1);
                 }
             }
 
