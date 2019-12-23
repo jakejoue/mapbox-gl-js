@@ -29,8 +29,8 @@ import * as extent from './extend/extent';
 
 // GeoGlobal-layergroup-huangwei-191118 导入图层组相关
 import LayerGroup from './extend/extension/layer_group';
-// GeoGlobal-flyroute-huangwei-191209 分析路径
-import FlyRoute from './extend/extension/fly_route';
+// GeoGlobal-routefly-huangwei-191209 分析路径
+import RouteFly from './extend/extension/route_fly';
 // GeoGlobal-boxhandler-huangwei-191122 框选
 import BoxHandler from './extend/extension/box';
 // GeoGlobal-util-huangwei-191122 工具类
@@ -65,8 +65,8 @@ const exported = {
 
     // GeoGlobal-layergroup-huangwei-191118 图层组
     LayerGroup,
-    // GeoGlobal-flyroute-huangwei-191209 分析路径
-    FlyRoute,
+    // GeoGlobal-routefly-huangwei-191209 分析路径
+    RouteFly,
     // GeoGlobal-boxhandler-huangwei-191122 框选
     BoxHandler,
     // GeoGlobal-util-huangwei-191122 工具类

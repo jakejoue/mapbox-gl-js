@@ -192,7 +192,7 @@ class PosControl {
 }
 
 // 飞行路径
-export default class FlyRoute {
+export default class RouteFly {
     // 地图对象
     _map: Map;
 

@@ -108,7 +108,7 @@
                     .setLngLat(Path[0])
                     .addTo(map);
 
-                flyRoute = new mapboxgl.FlyRoute(Path, [16, 20]);
+                flyRoute = new mapboxgl.RouteFly(Path, [16, 20]);
                 flyRoute.update = function(center) {
                     marker.setLngLat(center);
                 };
