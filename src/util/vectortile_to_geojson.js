@@ -3,7 +3,7 @@ import type {GeoJSONGeometry} from '@mapbox/geojson-types';
 
 // GeoGlobal-vector2geojson-huangwei-191111
 import type {Projection} from '../extend/proj';
-import VectorTileFeature2 from '../extend/VectorTileFeature2';
+import VectorTileFeature2 from '../extend/vector-tile-feature2';
 
 // GeoGlobal-vector2geojson-huangwei-191111
 class Feature {
