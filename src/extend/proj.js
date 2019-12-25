@@ -5,8 +5,12 @@ import Units from './proj/Units.js';
 import Projection from './proj/Projection.js';
 import { add as addProj, clear as clearProj, get as getProj } from './proj/projections.js';
 
+import turf from '@turf/helpers';
+import crosses from '@turf/boolean-crosses';
+turf.corsses = crosses;
+
 // 默认导出
-export { Units, Projection };
+export { Units, Projection, turf };
 
 /**
  * 添加坐标系

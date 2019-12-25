@@ -43,6 +43,7 @@
     "@mapbox/mapbox-gl-rtl-text": "^0.2.1",
     "@mapbox/mapbox-gl-test-suite": "file:test/integration",
     "@octokit/rest": "^15.15.1",
+    "@turf/boolean-crosses": "^6.0.1",
     "babel-eslint": "^10.0.1",
     "browserify": "^16.2.3",
     "d3": "^4.12.0",

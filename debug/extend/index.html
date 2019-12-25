@@ -19,7 +19,7 @@
 <script>
 // 重设坐标系tileSize
 const projection = mapboxgl.proj.get("EPSG:mapbox");
-projection.setTileSize(1024);
+projection.setTileSize(512);
 
 var map = window.map = new mapboxgl.Map({
     container: 'map',
@@ -32,6 +32,38 @@ var map = window.map = new mapboxgl.Map({
     renderInterval: 10,
     isIntScrollZoom: true
 });
+
+function test() {
+    const bounds = map.getBounds();
+    map.setVisibleBounds(bounds)
+
+    const geojson = {
+        type: 'Polygon',
+        coordinates: [[
+            bounds.getNorthEast().toArray(),
+            bounds.getNorthWest().toArray(),
+            bounds.getSouthWest().toArray(),
+            bounds.getSouthEast().toArray(),
+            bounds.getNorthEast().toArray()
+        ]]
+    };
+
+    map.addSource('bounds', {
+        type: 'geojson',
+        data: geojson
+    });
+
+    map.addLayer({
+        id: 'bounds',
+        type: 'fill',
+        source: 'bounds',
+        paint: {
+            'fill-color': "rgba(255,0,0,0.2)",
+        }
+    });
+
+    map.showTileBoundaries = true
+}
 
 </script>
 </body>
