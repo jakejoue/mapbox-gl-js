@@ -125,6 +125,8 @@ class VectorTileSource extends Evented implements Source {
             tileID: tile.tileID,
             zoom: tile.tileID.overscaledZ,
             tileSize: this.tileSize * tile.tileID.overscaleFactor(),
+            // GeoGlobal-tileSize-huangwei-191225 传递原始tileSize
+            originTileSize: this.tileSize,
             type: this.type,
             source: this.id,
             pixelRatio: browser.devicePixelRatio,

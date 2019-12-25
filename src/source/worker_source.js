@@ -24,6 +24,8 @@ export type WorkerTileParameters = TileParameters & {
     zoom: number,
     maxZoom: number,
     tileSize: number,
+    // GeoGlobal-tileSize-huangwei-191225 传递原始tileSize
+    originTileSize: number,
     pixelRatio: number,
     showCollisionBoxes: boolean,
     collectResourceTiming?: boolean,
