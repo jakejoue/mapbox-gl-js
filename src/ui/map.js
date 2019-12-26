@@ -28,8 +28,9 @@ import TaskQueue from '../util/task_queue';
 import webpSupported from '../util/webp_supported';
 import { setCacheLimits } from '../util/tile_request_cache';
 
-// GeoGlobal-visibleBounds-huangwei-191211
-import TileBounds from '../source/tile_bounds';
+// GeoGlobal-visibleFeature-huangwei-191211
+import FeatureBounds from '../extend/feature-bounds';
+import type { Feature } from '../extend/feature-bounds';
 // GeoGlobal-renderInterval-huangwei-191015 频率间隔限制（去除过于快的中间帧）
 import { rateLimit } from '../extend/util/util';
 // GeoGlobal-proj-huangwei-191105
@@ -103,8 +104,6 @@ type MapOptions = {
     transformRequest?: RequestTransformFunction,
     accessToken: string,
 
-    // GeoGlobal-visibleBounds-huangwei-191211
-    visibleBounds: LngLatBoundsLike,
     // GeoGlobal-intZoom-huangwei-191015
     isIntScrollZoom: boolean,
     // GeoGlobal-renderInterval-huangwei-191015
@@ -153,8 +152,6 @@ const defaultOptions = {
     fadeDuration: 300,
     crossSourceCollisions: true,
 
-    // GeoGlobal-visibleBounds-huangwei-191211
-    visibleBounds: null,
     // GeoGlobal-intZoom-huangwei-191015
     isIntScrollZoom: false,
     // GeoGlobal-renderInterval-huangwei-191015
@@ -304,8 +301,8 @@ class Map extends Camera {
     _localIdeographFontFamily: string;
     _requestManager: RequestManager;
 
-    // GeoGlobal-visibleBounds-huangwei-191211
-    _visibleBounds: TileBounds;
+    // GeoGlobal-visibleFeature-huangwei-191211
+    _visibleFeature: FeatureBounds;
     // GeoGlobal-intZoom-huangwei-191015
     _isIntScrollZoom: boolean;
     // GeoGlobal-skipzoom-huangwei-191015 类型定义
@@ -681,21 +678,20 @@ class Map extends Camera {
      */
     getMaxZoom() { return this.transform.maxZoom; }
 
-    // GeoGlobal-visibleBounds-huangwei-191211
-    getVisibleBounds(): LngLatBounds | null {
-        if (this._visibleBounds) {
-            return this._visibleBounds.bounds;
+    // GeoGlobal-visibleFeature-huangwei-191211
+    getVisibleFeature(): Feature | null {
+        if (this._visibleFeature) {
+            return this._visibleFeature.Feature;
         }
         return null;
     }
 
-    // GeoGlobal-visibleBounds-huangwei-191211
-    setVisibleBounds(bounds: LngLatBoundsLike) {
-        if (bounds) {
-            const [[minX, minY], [maxX, maxY]] = LngLatBounds.convert(bounds).toArray();
-            this._visibleBounds = new TileBounds([minX, minY, maxX, maxY], this.projection);
+    // GeoGlobal-visibleFeature-huangwei-191211
+    setVisibleFeature(feature: Feature | null) {
+        if (feature) {
+            this._visibleFeature = new FeatureBounds(feature, this.projection);
         } else {
-            this._visibleBounds = null;
+            this._visibleFeature = null;
         }
         return this._update(true);
     }

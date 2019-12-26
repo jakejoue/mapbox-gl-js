@@ -35,18 +35,20 @@ var map = window.map = new mapboxgl.Map({
 
 function test() {
     const bounds = map.getBounds();
-    map.setVisibleBounds(bounds)
 
     const geojson = {
         type: 'Polygon',
         coordinates: [[
             bounds.getNorthEast().toArray(),
             bounds.getNorthWest().toArray(),
+            bounds.getCenter().toArray(),
             bounds.getSouthWest().toArray(),
             bounds.getSouthEast().toArray(),
             bounds.getNorthEast().toArray()
         ]]
     };
+
+    map.setVisibleFeature(JSON.parse(JSON.stringify(geojson)))
 
     map.addSource('bounds', {
         type: 'geojson',
