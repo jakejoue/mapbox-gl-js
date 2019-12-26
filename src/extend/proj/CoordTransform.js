@@ -117,18 +117,14 @@ class CoordTransform {
     }
 
     getTileBBox(x, y, z) {
-        const zoomScale = this.projection.zoomScale(z);
-        y = (zoomScale - y - 1);
+        const worldSize = this.projection.zoomScale(z);
 
-        const tileWidth = this.maxX - this.minX;
-        const tileHeight = this.maxY - this.minY;
+        const minX = this.lngFromMercatorX(x / worldSize);
+        const maxX = this.lngFromMercatorX((x + 1) / worldSize);
+        const maxY = this.latFromMercatorY(y / worldSize);
+        const minY = this.latFromMercatorY((y + 1) / worldSize);
 
-        const minx = this.minX + tileWidth * x / zoomScale;
-        const miny = this.minY + tileHeight * y / zoomScale;
-        const maxx = this.minY + tileWidth * (x + 1) / zoomScale;
-        const maxy = this.minX + tileHeight * (y + 1) / zoomScale;
-
-        return [minx, miny, maxx, maxy].join(',');
+        return [minX, minY, maxX, maxY].join(',');
     }
 }
 
