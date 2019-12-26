@@ -17,19 +17,14 @@ export type Feature = {
 };
 
 // 瓦片转换为feature
-function tileToFeatures(tileID: CanonicalTileID, projection: Projection): [Feature, Feature] {
+function tileToFeature(tileID: CanonicalTileID, projection: Projection): Feature {
     const worldSize = projection.zoomScale(tileID.z);
     const minX = projection.getTransform().lngFromMercatorX(tileID.x / worldSize);
     const maxX = projection.getTransform().lngFromMercatorX((tileID.x + 1) / worldSize);
     const maxY = projection.getTransform().latFromMercatorY(tileID.y / worldSize);
     const minY = projection.getTransform().latFromMercatorY((tileID.y + 1) / worldSize);
 
-    return [
-        // 四角坐标（左上角开始顺时针，为了叠加性能考虑）
-        helpers.multiPoint([[minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY]]),
-        // 面
-        helpers.polygon([[[minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY], [minX, maxY]]])
-    ];
+    return helpers.polygon([[[minX, maxY], [maxX, maxY], [maxX, minY], [minX, minY], [minX, maxY]]]);
 }
 
 class FeatureBounds {
@@ -53,8 +48,8 @@ class FeatureBounds {
     }
 
     contains(tileID: CanonicalTileID) {
-        const features = tileToFeatures(tileID, this.projection);
-        return features.findIndex(f => !booleanDisjoint(f, this.feature)) !== -1;
+        const feature = tileToFeature(tileID, this.projection);
+        return !booleanDisjoint(feature, this.feature);
     }
 }
 
