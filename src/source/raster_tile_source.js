@@ -8,6 +8,9 @@ import loadTileJSON from './load_tilejson';
 import { postTurnstileEvent, postMapLoadEvent } from '../util/mapbox';
 import TileBounds from './tile_bounds';
 import Texture from '../render/texture';
+// GeoGlobal-FeatureBounds-huangwei-191230
+import FeatureBounds from '../extend/feature-bounds';
+import type { Feature } from '../extend/feature-bounds';
 
 import { cacheEntryPossiblyAdded } from '../util/tile_request_cache';
 
@@ -34,6 +37,9 @@ class RasterTileSource extends Evented implements Source {
     // GeoGlobal-raster-huangwei-191111 支持百度瓦片和Arcgis瓦片
     rasterType: string;
     zoomOffset: number;
+    // GeoGlobal-boundary-huangwei-191230
+    boundary: Feature;
+    featureBounds: FeatureBounds;
 
     bounds: ?[number, number, number, number];
     tileBounds: TileBounds;
@@ -66,13 +72,17 @@ class RasterTileSource extends Evented implements Source {
         this._loaded = false;
 
         this._options = extend({ type: 'raster' }, options);
-        // GeoGlobal-raster-huangwei-191111
-        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'rasterType', 'zoomOffset']));
+        // GeoGlobal-raster-huangwei-191111 // GeoGlobal-boundary-huangwei-191230
+        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'rasterType', 'zoomOffset', 'boundary']));
     }
 
     load() {
         this._loaded = false;
         this.fire(new Event('dataloading', {dataType: 'source'}));
+
+        // GeoGlobal-boundary-huangwei-191230
+        this.setBoundary(this.boundary);
+
         this._tileJSONRequest = loadTileJSON(this._options, this.map._requestManager, (err, tileJSON) => {
             this._tileJSONRequest = null;
             this._loaded = true;
@@ -116,7 +126,9 @@ class RasterTileSource extends Evented implements Source {
     }
 
     hasTile(tileID: OverscaledTileID) {
-        return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
+        // GeoGlobal-boundary-huangwei-191230
+        return (!this.tileBounds || this.tileBounds.contains(tileID.canonical)) &&
+                (!this.featureBounds || this.featureBounds.contains(tileID.canonical));
     }
 
     loadTile(tile: Tile, callback: Callback<void>) {
@@ -180,6 +192,17 @@ class RasterTileSource extends Evented implements Source {
 
     hasTransition() {
         return false;
+    }
+
+    // GeoGlobal-boundary-huangwei-191230
+    setBoundary(boundary: Feature | null) {
+        if (boundary) {
+            this.boundary = boundary;
+            this.featureBounds = new FeatureBounds(boundary, this.map.projection);
+        } else {
+            delete this.boundary;
+            delete this.featureBounds;
+        }
     }
 }
 

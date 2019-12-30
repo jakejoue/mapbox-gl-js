@@ -28,8 +28,7 @@ import TaskQueue from '../util/task_queue';
 import webpSupported from '../util/webp_supported';
 import { setCacheLimits } from '../util/tile_request_cache';
 
-// GeoGlobal-visibleFeature-huangwei-191211
-import FeatureBounds from '../extend/feature-bounds';
+// GeoGlobal-boundary-huangwei-191230
 import type { Feature } from '../extend/feature-bounds';
 // GeoGlobal-renderInterval-huangwei-191015 频率间隔限制（去除过于快的中间帧）
 import { rateLimit } from '../extend/util/util';
@@ -301,8 +300,6 @@ class Map extends Camera {
     _localIdeographFontFamily: string;
     _requestManager: RequestManager;
 
-    // GeoGlobal-visibleFeature-huangwei-191211
-    _visibleFeature: FeatureBounds;
     // GeoGlobal-intZoom-huangwei-191015
     _isIntScrollZoom: boolean;
     // GeoGlobal-skipzoom-huangwei-191015 类型定义
@@ -678,21 +675,9 @@ class Map extends Camera {
      */
     getMaxZoom() { return this.transform.maxZoom; }
 
-    // GeoGlobal-visibleFeature-huangwei-191211
-    getVisibleFeature(): Feature | null {
-        if (this._visibleFeature) {
-            return this._visibleFeature.Feature;
-        }
-        return null;
-    }
-
-    // GeoGlobal-visibleFeature-huangwei-191211
-    setVisibleFeature(feature: Feature | null) {
-        if (feature) {
-            this._visibleFeature = new FeatureBounds(feature, this.projection);
-        } else {
-            this._visibleFeature = null;
-        }
+    // GeoGlobal-boundary-huangwei-191230
+    setVisibleBoundary(feature: Feature | null, sourceId: ?string) {
+        this.style.setVisibleBoundary(feature, sourceId);
         return this._update(true);
     }
 

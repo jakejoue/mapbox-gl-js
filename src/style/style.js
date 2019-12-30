@@ -62,6 +62,7 @@ import type {
 } from '../style-spec/types';
 import type {CustomLayerInterface} from './style_layer/custom_style_layer';
 import type {Validator} from './validate_style';
+import type {Feature} from '../extend/feature-bounds';
 
 const supportedDiffOperations = pick(diffOperations, [
     'addLayer',
@@ -1293,6 +1294,24 @@ class Style extends Evented {
     setGlyphs(url: string) {
         this.glyphManager.setURL(url);
         this.stylesheet.glyphs = url;
+    }
+
+    // GeoGlobal-boundary-huangwei-191230
+    setVisibleBoundary(boundary: Feature | null, sourceId: ?string) {
+        if (sourceId) {
+            const sourceCache = this.sourceCaches[sourceId];
+            if (sourceCache) {
+                const source = sourceCache.getSource();
+                if (source.setBoundary) {
+                    source.setBoundary(boundary);
+                }
+            }
+        } else for (const id in this.sourceCaches) {
+            const source = this.sourceCaches[id].getSource();
+            if (source.setBoundary) {
+                source.setBoundary(boundary);
+            }
+        }
     }
 }
 

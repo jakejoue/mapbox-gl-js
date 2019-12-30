@@ -9,6 +9,9 @@ import TileBounds from './tile_bounds';
 import { ResourceType } from '../util/ajax';
 import browser from '../util/browser';
 import { cacheEntryPossiblyAdded } from '../util/tile_request_cache';
+// GeoGlobal-FeatureBounds-huangwei-191230
+import FeatureBounds from '../extend/feature-bounds';
+import type { Feature } from '../extend/feature-bounds';
 
 import type {Source} from './source';
 import type {OverscaledTileID} from './tile_id';
@@ -27,6 +30,9 @@ class VectorTileSource extends Evented implements Source {
     url: string;
     scheme: string;
     tileSize: number;
+    // GeoGlobal-boundary-huangwei-191230
+    boundary: Feature;
+    featureBounds: FeatureBounds;
 
     _options: VectorSourceSpecification;
     _collectResourceTiming: boolean;
@@ -55,7 +61,8 @@ class VectorTileSource extends Evented implements Source {
         this.isTileClipped = true;
         this._loaded = false;
 
-        extend(this, pick(options, ['url', 'scheme', 'tileSize']));
+        // GeoGlobal-boundary-huangwei-191230
+        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'boundary']));
         this._options = extend({ type: 'vector' }, options);
 
         this._collectResourceTiming = options.collectResourceTiming;
@@ -71,6 +78,10 @@ class VectorTileSource extends Evented implements Source {
     load() {
         this._loaded = false;
         this.fire(new Event('dataloading', {dataType: 'source'}));
+
+        // GeoGlobal-boundary-huangwei-191230
+        this.setBoundary(this.boundary);
+
         // GeoGlobal-raster-huangwei-191111
         this._tileJSONRequest = loadTileJSON(this._options, this.map._requestManager, (err, tileJSON) => {
             this._tileJSONRequest = null;
@@ -98,7 +109,9 @@ class VectorTileSource extends Evented implements Source {
     }
 
     hasTile(tileID: OverscaledTileID) {
-        return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
+        // GeoGlobal-boundary-huangwei-191230
+        return (!this.tileBounds || this.tileBounds.contains(tileID.canonical)) &&
+                (!this.featureBounds || this.featureBounds.contains(tileID.canonical));
     }
 
     onAdd(map: Map) {
@@ -190,6 +203,17 @@ class VectorTileSource extends Evented implements Source {
 
     hasTransition() {
         return false;
+    }
+
+    // GeoGlobal-boundary-huangwei-191230
+    setBoundary(boundary: Feature | null) {
+        if (boundary) {
+            this.boundary = boundary;
+            this.featureBounds = new FeatureBounds(boundary, this.map.projection);
+        } else {
+            delete this.boundary;
+            delete this.featureBounds;
+        }
     }
 }
 
