@@ -611,6 +611,10 @@
     "paint": {
       "type": "paint",
       "doc": "Default paint properties for this layer."
+    },
+    "*": {
+      "type": "*",
+      "doc": "Other keys to configure the layer. GeoGlobal-extend"
     }
   },
   "layout": [
