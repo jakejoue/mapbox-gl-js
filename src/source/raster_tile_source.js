@@ -68,12 +68,16 @@ class RasterTileSource extends Evented implements Source {
         // GeoGlobal-raster-huangwei-191111
         this.rasterType = 'xyz';
         this.zoomOffset = 0;
+        // GeoGlobal-emptyImage-huangwei-200116
+        this.cache = true;
 
         this._loaded = false;
 
         this._options = extend({ type: 'raster' }, options);
-        // GeoGlobal-raster-huangwei-191111 // GeoGlobal-boundary-huangwei-191230
-        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'rasterType', 'zoomOffset', 'boundary']));
+        // GeoGlobal-raster-huangwei-191111
+        // GeoGlobal-boundary-huangwei-191230
+        // GeoGlobal-emptyImage-huangwei-200116
+        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'rasterType', 'zoomOffset', 'boundary', 'cache']));
     }
 
     load() {
@@ -174,7 +178,9 @@ class RasterTileSource extends Evented implements Source {
 
                 callback(null);
             }
-        });
+        },
+        // GeoGlobal-emptyImage-huangwei-200116
+        !this.cache);
     }
 
     abortTile(tile: Tile, callback: Callback<void>) {

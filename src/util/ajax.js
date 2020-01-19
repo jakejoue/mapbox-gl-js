@@ -265,7 +265,8 @@ export const resetImageRequestQueue = () => {
 };
 resetImageRequestQueue();
 
-export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement>): Cancelable {
+// GeoGlobal-emptyImage-huangwei-200116
+export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement>, emptyImage?: boolean): Cancelable {
     // limit concurrent image loads to help with raster sources performance on big screens
     if (numImageRequests >= config.MAX_PARALLEL_IMAGE_REQUESTS) {
         const queued = {
@@ -289,7 +290,8 @@ export const getImage = function(requestParameters: RequestParameters, callback:
             const request = imageQueue.shift();
             const {requestParameters, callback, cancelled} = request;
             if (!cancelled) {
-                request.cancel = getImage(requestParameters, callback).cancel;
+                // GeoGlobal-emptyImage-huangwei-200116
+                request.cancel = getImage(requestParameters, callback, emptyImage).cancel;
             }
         }
     };
@@ -301,7 +303,17 @@ export const getImage = function(requestParameters: RequestParameters, callback:
         advanceImageRequestQueue();
 
         if (err) {
-            callback(err);
+            // GeoGlobal-emptyImage-huangwei-200116 返回一个默认256的透明图片
+            if (emptyImage) {
+                const img: HTMLImageElement = new window.Image();
+                img.src = transparentPngUrl;
+
+                img.onload = () => callback(null, img);
+                img.onerror = () => callback(err);
+            } else {
+                callback(err);
+            }
+            // callback(err);
         } else if (data) {
             const img: HTMLImageElement = new window.Image();
             const URL = window.URL || window.webkitURL;

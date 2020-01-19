@@ -66,6 +66,21 @@
             }));
 
             map.on("load", function() {
+                // fill layer
+                map.addLayer({
+                    id: "room",
+                    type: "fill",
+                    source: {
+                        type: "geojson",
+                        data: geojson
+                    },
+                    paint: {
+                        "fill-color": ["get", "color"],
+                        "fill-opacity": 0.5
+                    }
+                });
+
+                // fill-extrusion layer
                 map.addLayer({
                     id: "room-extrusion",
                     type: "fill-extrusion",
@@ -73,7 +88,10 @@
                         // GeoJSON Data source used in vector tiles, documented at
                         // https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
                         type: "geojson",
-                        data: geojson
+                        data: {
+                            type: "FeatureCollection",
+                            features: []
+                        }
                     },
                     paint: {
                         // See the Mapbox Style Specification for details on data expressions.
@@ -86,11 +104,29 @@
                         "fill-extrusion-height": ["get", "height"],
 
                         // Get fill-extrusion-base from the source 'base_height' property.
-                        "fill-extrusion-base": ["get", "base_height"],
+                        "fill-extrusion-base": ["get", "base-height"],
 
                         // Make extrusions slightly opaque for see through indoor walls.
                         "fill-extrusion-opacity": 0.5
                     }
+                });
+
+                map.on("click", function(e) {
+                    var results = map
+                        .queryRenderedFeatures(e.point, {
+                            layers: ["room"]
+                        })
+                        .map(function(feature) {
+                            return {
+                                type: feature.type,
+                                geometry: feature.geometry,
+                                properties: feature.properties
+                            };
+                        });
+                    map.getSource("room-extrusion").setData({
+                        type: "FeatureCollection",
+                        features: results
+                    });
                 });
             });
         </script>
