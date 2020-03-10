@@ -265,7 +265,8 @@ export const resetImageRequestQueue = () => {
 };
 resetImageRequestQueue();
 
-export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement>): Cancelable {
+// GeoGlobal-noError-huangwei-200310
+export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement>, noError?: boolean = false): Cancelable {
     // limit concurrent image loads to help with raster sources performance on big screens
     if (numImageRequests >= config.MAX_PARALLEL_IMAGE_REQUESTS) {
         const queued = {
@@ -301,7 +302,16 @@ export const getImage = function(requestParameters: RequestParameters, callback:
         advanceImageRequestQueue();
 
         if (err) {
-            callback(err);
+            // GeoGlobal-noError-huangwei-200310
+            if (noError) {
+                const img: HTMLImageElement = new window.Image();
+                const URL = window.URL || window.webkitURL;
+                img.onload = () => {
+                    callback(null, img);
+                    URL.revokeObjectURL(img.src);
+                };
+                img.src =  transparentPngUrl;
+            } else callback(err);
         } else if (data) {
             const img: HTMLImageElement = new window.Image();
             const URL = window.URL || window.webkitURL;

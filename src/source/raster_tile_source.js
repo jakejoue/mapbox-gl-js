@@ -68,12 +68,14 @@ class RasterTileSource extends Evented implements Source {
         // GeoGlobal-raster-huangwei-191111
         this.rasterType = 'xyz';
         this.zoomOffset = 0;
+        // GeoGlobal-noFadingParent-huangwei-200310 禁用上级瓦片缓存，始终返回一张透明的瓦片
+        this.noFadingParent = false;
 
         this._loaded = false;
 
         this._options = extend({ type: 'raster' }, options);
-        // GeoGlobal-raster-huangwei-191111 // GeoGlobal-boundary-huangwei-191230
-        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'rasterType', 'zoomOffset', 'boundary']));
+        // GeoGlobal-raster-huangwei-191111 // GeoGlobal-boundary-huangwei-191230 // GeoGlobal-noFadingParent-huangwei-200310
+        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'rasterType', 'zoomOffset', 'boundary', 'noFadingParent']));
     }
 
     load() {
@@ -140,6 +142,7 @@ class RasterTileSource extends Evented implements Source {
                 rasterType: this.rasterType,
                 zoomOffset: this.zoomOffset
             }), this.url, this.tileSize);
+        // GeoGlobal-noFadingParent-huangwei-200310
         tile.request = getImage(this.map._requestManager.transformRequest(url, ResourceType.Tile), (err, img) => {
             delete tile.request;
 
@@ -174,7 +177,7 @@ class RasterTileSource extends Evented implements Source {
 
                 callback(null);
             }
-        });
+        }, this.noFadingParent);
     }
 
     abortTile(tile: Tile, callback: Callback<void>) {
