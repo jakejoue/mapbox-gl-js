@@ -250,7 +250,7 @@ class SourceCache extends Evented {
             tile.state = 'errored';
             if ((err: any).status !== 404) {
                 // this._source.fire(new ErrorEvent(err, {tile}));
-                // GeoGlobal-errorprint-huangwei-200309 不打印未绑定你
+                // GeoGlobal-errorprint-huangwei-200309 不打印瓦片数据请求错误
                 // eslint-disable-next-line brace-style
             }
             // continue to try loading parent/children tiles if a tile doesn't exist (404)
