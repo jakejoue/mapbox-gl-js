@@ -3,6 +3,8 @@
 import { create as createSource } from './source';
 
 import Tile from './tile';
+// GeoGlobal-errorprint-huangwei-200309 不打印瓦片数据请求错误
+// eslint-disable-next-line no-unused-vars
 import { Event, ErrorEvent, Evented } from '../util/evented';
 import TileCache from './tile_cache';
 import MercatorCoordinate from '../extend/geo/mercator_coordinate';
