@@ -29,19 +29,26 @@
         <script>
             var map = (window.map = new mapboxgl.Map({
                 container: "map",
-                zoom: 12.5,
                 projection: "EPSG:4326",
-                center: [114.2933203, 30.5665867],
+                zoom: 16,
+                center: [118.61359335502925, 31.891743294807817],
                 style: {
                     version: 8,
                     sources: {
                         tdt: {
                             type: "raster",
                             tiles: [
-                                "http://t0.tianditu.com/vec_c/wmts?tk=9aebc7723eee1ef07a73f5ddfc0c1df4&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=c&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
+                                "http://58.213.23.214:83/geostar/NJDLG_DT/wmts?LAYER=NJDLG_DT_10_20&FORMAT=image/tile&TILEMATRIXSET=NJDLG_DT_10_20_Matrix_0&VERSION=1.0.0&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&service=WMTS&request=GetTile"
                             ],
                             tileSize: 256,
-                            zoomOffset: 0,
+                            noFadingParent: true
+                        },
+                        tdtzj: {
+                            type: "raster",
+                            tiles: [
+                                "http://58.213.23.214:83/geostar/NJDLG_ZJ/wmts?LAYER=NJDLG_ZJ_10_20&FORMAT=image/tile&TILEMATRIXSET=NJDLG_ZJ_10_20_Matrix_0&VERSION=1.0.0&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&service=WMTS&request=GetTile"
+                            ],
+                            tileSize: 256,
                             noFadingParent: true
                         }
                     },
@@ -49,13 +56,12 @@
                         {
                             id: "tdt",
                             type: "raster",
-                            layout: { visibility: "visible" },
-                            maxzoom: 19,
-                            metadata: { type: "WMTS" },
-                            minzoom: 1,
-                            name: "vec",
-                            paint: { "raster-opacity": 1 },
                             source: "tdt"
+                        },
+                        {
+                            id: "tdtzj",
+                            type: "raster",
+                            source: "tdtzj"
                         }
                     ]
                 },
