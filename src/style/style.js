@@ -64,6 +64,9 @@ import type {CustomLayerInterface} from './style_layer/custom_style_layer';
 import type {Validator} from './validate_style';
 import type {Feature} from '../extend/feature-bounds';
 
+// GeoGlobal-tileSize-huangwei-191113
+import window from '../util/browser/window';
+
 const supportedDiffOperations = pick(diffOperations, [
     'addLayer',
     'removeLayer',
@@ -514,7 +517,7 @@ class Style extends Evented {
         if (this.map && this.map._collectResourceTiming) (source: any).collectResourceTiming = true;
 
         // GeoGlobal-tileSize-huangwei-191113 设置默认tileSize
-        source.defaultTileSize = this.map.projection.getTileSize();
+        source.defaultTileSize = window.GEOGLOBE_TILESIZE || this.map.projection.getTileSize();
         const sourceCache = this.sourceCaches[id] = new SourceCache(id, source, this.dispatcher);
         sourceCache.style = this;
         sourceCache.setEventedParent(this, () => ({

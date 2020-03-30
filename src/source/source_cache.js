@@ -3,6 +3,8 @@
 import { create as createSource } from './source';
 
 import Tile from './tile';
+// GeoGlobal-errorprint-huangwei-200309 不打印瓦片数据请求错误
+// eslint-disable-next-line no-unused-vars
 import { Event, ErrorEvent, Evented } from '../util/evented';
 import TileCache from './tile_cache';
 import MercatorCoordinate from '../extend/geo/mercator_coordinate';
@@ -248,7 +250,11 @@ class SourceCache extends Evented {
     _tileLoaded(tile: Tile, id: string | number, previousState: TileState, err: ?Error) {
         if (err) {
             tile.state = 'errored';
-            if ((err: any).status !== 404) this._source.fire(new ErrorEvent(err, {tile}));
+            if ((err: any).status !== 404) {
+                // this._source.fire(new ErrorEvent(err, {tile}));
+                // GeoGlobal-errorprint-huangwei-200309 不打印瓦片数据请求错误
+                // eslint-disable-next-line brace-style
+            }
             // continue to try loading parent/children tiles if a tile doesn't exist (404)
             else this.update(this.transform);
             return;
