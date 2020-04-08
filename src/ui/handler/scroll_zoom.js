@@ -255,7 +255,7 @@ class ScrollZoomHandler {
             this._targetZoom = Math.min(tr.maxZoom, Math.max(tr.minZoom, tr.scaleZoom(fromScale * scale)));
 
             // GeoGlobal-intZoom-huangwei-191015
-            if (this._map._isIntScrollZoom) {
+            if (this._map._intScrollZoom) {
                 if (this._delta > 0) {
                     this._targetZoom = Math.ceil(tr.zoom + 1);
                 } else if (this._delta < 0) {

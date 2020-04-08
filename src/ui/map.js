@@ -104,7 +104,7 @@ type MapOptions = {
     accessToken: string,
 
     // GeoGlobal-intZoom-huangwei-191015
-    isIntScrollZoom: boolean,
+    intScrollZoom: boolean,
     // GeoGlobal-renderInterval-huangwei-191015
     renderInterval: number,
     // GeoGlobal-skipzoom-huangwei-191015 是否zoomend和moveed后才发起请求
@@ -152,7 +152,7 @@ const defaultOptions = {
     crossSourceCollisions: true,
 
     // GeoGlobal-intZoom-huangwei-191015
-    isIntScrollZoom: false,
+    intScrollZoom: false,
     // GeoGlobal-renderInterval-huangwei-191015
     renderInterval: 0,
     // GeoGlobal-skipzoom-huangwei-191015
@@ -301,7 +301,7 @@ class Map extends Camera {
     _requestManager: RequestManager;
 
     // GeoGlobal-intZoom-huangwei-191015
-    _isIntScrollZoom: boolean;
+    _intScrollZoom: boolean;
     // GeoGlobal-skipzoom-huangwei-191015 类型定义
     _skipLevelOfZooming: boolean;
     // GeoGlobal-proj-huangwei-191105
@@ -350,7 +350,7 @@ class Map extends Camera {
         // GeoGlobal-proj-huangwei-191105
         const projection = get(options.projection) || get('EPSG:mapbox');
         if (!projection) {
-            throw new Error(`can not find projection:`, options.projection);
+            throw new Error(`can not find projection:${options.projection}`);
         }
 
         if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
@@ -363,8 +363,8 @@ class Map extends Camera {
         // GeoGlobal-proj-huangwei-191105 保存坐标系
         this.projection = projection;
         // GeoGlobal-intZoom-huangwei-191015
-        this._isIntScrollZoom = options.isIntScrollZoom;
-        if (this._isIntScrollZoom && options.zoom) {
+        this._intScrollZoom = options.intScrollZoom;
+        if (this._intScrollZoom && options.zoom) {
             options.zoom = Math.round(options.zoom);
         }
 
