@@ -364,8 +364,8 @@ class Map extends Camera {
         this.projection = projection;
         // GeoGlobal-intZoom-huangwei-191015
         this._intScrollZoom = options.intScrollZoom;
-        if (this._intScrollZoom && options.zoom) {
-            options.zoom = Math.round(options.zoom);
+        if (this._intScrollZoom === true) {
+            options.zoom = Math.round(options.zoom || 0);
         }
 
         this._interactive = options.interactive;

@@ -9,14 +9,14 @@ export default class FreeCRSMap extends Map {
     _mapCRS: any;
 
     constructor(options: any) {
-        let mapCRS = options.mapCRS;
+        let mapCRS = options.mapCRS,
+            units = options.units || 'degrees';
 
         if (mapCRS) {
-            const units = options.units;
             const { topTileExtent, resolutions, tileSize } = mapCRS;
             const projection = new Projection({
                 code: 'mapcrs',
-                units: units || 'degrees',
+                units: options.units,
                 extent: topTileExtent || [-180, -90, 180, 90],
                 resolutions,
                 tileSize
@@ -32,12 +32,13 @@ export default class FreeCRSMap extends Map {
                     resolutions: projection.getResolutions(),
                     tileSize: projection.getTileSize()
                 };
+                units = projection.getUnits();
             }
         }
         super(options);
 
         this._mapCRS = mapCRS;
-
+        this.units = units;
     }
 
     get _tileExtent() {
