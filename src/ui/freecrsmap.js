@@ -13,9 +13,11 @@ export default class FreeCRSMap extends Map {
         let mapCRS = options.mapCRS,
             units = options.units || 'degrees';
 
+        let projection;
+
         if (mapCRS) {
             const { topTileExtent, resolutions, tileSize, units: crsUnits2 } = mapCRS;
-            const projection = new Projection({
+            projection = new Projection({
                 code: 'mapcrs',
                 units: crsUnits2 || options.units,
                 extent: topTileExtent || [-180, -90, 180, 90],
@@ -23,20 +25,19 @@ export default class FreeCRSMap extends Map {
                 tileSize
             });
             options.projection = projection;
-        } else {
-            // 如果传递的是自定义坐标系，构造mapCRS
-            const projection = get(options.projection);
+        } else projection = get(options.projection);
 
-            if (projection && projection.getCode() !== 'EPSG:mapbox') {
-                mapCRS = {
-                    units: projection.getUnits(),
-                    topTileExtent: projection.getExtent(),
-                    resolutions: projection.getResolutions(),
-                    tileSize: projection.getTileSize()
-                };
-                units = projection.getUnits();
-            }
+        // 构建完整的mapCrs
+        if (projection && projection.getCode() !== 'EPSG:mapbox') {
+            mapCRS = {
+                units: projection.getUnits(),
+                topTileExtent: projection.getExtent(),
+                resolutions: projection.getResolutions(),
+                tileSize: projection.getTileSize()
+            };
+            units = projection.getUnits();
         }
+
         super(options);
 
         this._mapCRS = mapCRS;

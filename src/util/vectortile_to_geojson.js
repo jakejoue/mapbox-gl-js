@@ -1,15 +1,17 @@
 // @flow
-import type {GeoJSONGeometry} from '@mapbox/geojson-types';
+import type { GeoJSONGeometry } from '@mapbox/geojson-types';
 
 // GeoGlobal-vector2geojson-huangwei-191111
-import type {Projection} from '../extend/proj';
+import type { Projection } from '../extend/proj';
 import VectorTileFeature2 from '../extend/vector-tile-feature2';
 
 // GeoGlobal-vector2geojson-huangwei-191111
 class Feature {
     type: 'Feature';
     _geometry: ?GeoJSONGeometry;
-    properties: {};
+    properties: {
+        _metadataId?: string
+    };
     id: number | string | void;
 
     // GeoGlobal-vector2geojson-huangwei-191111 坐标系
@@ -62,7 +64,7 @@ class Feature {
             const feature = JSON.parse(_metadata);
             feature.fid = _metadataId;
 
-            feature.toJSON = function() {
+            feature.toJSON = function () {
                 return this;
             };
             // 赋值其他属性

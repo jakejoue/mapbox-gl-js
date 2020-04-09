@@ -24,7 +24,8 @@ const EPSG3857 = new Projection({
 const EPSG4326 = new Projection({
     code: 'EPSG:4326',
     units: Units.DEGREES,
-    extent: [-180, -90, 180, 90]
+    extent: [-180, -270, 180, 90],
+    validlatRange: [-90, 90]
 });
 
 // mapbox

@@ -159,7 +159,7 @@ register('StructArrayLayout2i4ub8', StructArrayLayout2i4ub8);
 class StructArrayLayout4i4ub20 extends StructArray {
     uint8: Uint8Array;
     int16: Int16Array;
-    uint16: Int16Array;
+    uint16: Uint16Array;
 
     _refreshViews() {
         this.uint8 = new Uint8Array(this.arrayBuffer);

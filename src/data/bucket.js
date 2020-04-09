@@ -68,7 +68,7 @@ export type BucketFeature = {|
  */
 export interface Bucket {
     // GeoGlobal-tileSize-huangwei-191113 添加bucket TileSzie属性
-    tileSize: number;
+    +tileSize?: number;
     layerIds: Array<string>;
     hasPattern: boolean;
     +layers: Array<any>;
