@@ -84,7 +84,8 @@ export type VectorSourceSpecification = {
     "scheme"?: "xyz" | "tms",
     "minzoom"?: number,
     "maxzoom"?: number,
-    "attribution"?: string
+    "attribution"?: string,
+    "defaultTileSize": number
 }
 
 export type RasterSourceSpecification = {
@@ -96,7 +97,8 @@ export type RasterSourceSpecification = {
     "maxzoom"?: number,
     "tileSize"?: number,
     "scheme"?: "xyz" | "tms",
-    "attribution"?: string
+    "attribution"?: string,
+    "defaultTileSize": number
 }
 
 export type RasterDEMSourceSpecification = {
@@ -108,7 +110,8 @@ export type RasterDEMSourceSpecification = {
     "maxzoom"?: number,
     "tileSize"?: number,
     "attribution"?: string,
-    "encoding"?: "terrarium" | "mapbox"
+    "encoding"?: "terrarium" | "mapbox",
+    "defaultTileSize": number
 }
 
 export type GeoJSONSourceSpecification = {|
@@ -123,7 +126,8 @@ export type GeoJSONSourceSpecification = {|
     "clusterMaxZoom"?: number,
     "clusterProperties"?: mixed,
     "lineMetrics"?: boolean,
-    "generateId"?: boolean
+    "generateId"?: boolean,
+    "defaultTileSize": number
 |}
 
 export type VideoSourceSpecification = {|
@@ -131,13 +135,15 @@ export type VideoSourceSpecification = {|
     // GeoGlobal-video-huangwei-191111
     "video": HTMLVideoElement,
     "urls": Array<string>,
-    "coordinates": [[number, number], [number, number], [number, number], [number, number]]
+    "coordinates": [[number, number], [number, number], [number, number], [number, number]],
+    "defaultTileSize": number
 |}
 
 export type ImageSourceSpecification = {|
     "type": "image",
     "url": string,
-    "coordinates": [[number, number], [number, number], [number, number], [number, number]]
+    "coordinates": [[number, number], [number, number], [number, number], [number, number]],
+    "defaultTileSize": number
 |}
 
 export type SourceSpecification =

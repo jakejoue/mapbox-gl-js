@@ -13,7 +13,7 @@ class TileBounds {
     maxzoom: number;
     bounds: LngLatBounds;
     // 墨卡托范围
-    mercatorBounds: Array;
+    mercatorBounds: [number, number, number, number];
     // 是否范围为全图
     isGlobal: boolean;
 
