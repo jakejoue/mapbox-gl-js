@@ -1,4 +1,4 @@
-// @flow
+/* eslint-disable flowtype/require-valid-file-annotation */
 
 /**
  * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.

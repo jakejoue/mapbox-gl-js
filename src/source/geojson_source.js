@@ -196,6 +196,18 @@ class GeoJSONSource extends Evented implements Source {
         return this;
     }
 
+    addData() {
+
+    }
+
+    removeData() {
+
+    }
+
+    editData() {
+
+    }
+
     /**
      * For clustered sources, fetches the zoom at which the given cluster expands.
      *

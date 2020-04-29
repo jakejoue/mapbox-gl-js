@@ -13,22 +13,30 @@ export default class FreeCRSMap extends Map {
         let mapCRS = options.mapCRS,
             units = options.units || 'degrees';
 
-        let projection;
+        // 删除投影设置
+        delete options.projection;
 
         if (mapCRS) {
-            const { topTileExtent, resolutions, tileSize, units: crsUnits2 } = mapCRS;
-            projection = new Projection({
-                code: 'mapcrs',
-                units: crsUnits2 || options.units,
-                extent: topTileExtent || [-180, -90, 180, 90],
-                resolutions,
-                tileSize
-            });
-            options.projection = projection;
-        } else projection = get(options.projection);
+            if (typeof (mapCRS) !== 'object') {
+                // 支持代号
+                options.projection = get(mapCRS);
+            } else {
+                // 通过对象构建坐标系
+                const { topTileExtent, resolutions, tileSize, units: crsUnits2 } = mapCRS;
+                options.projection = new Projection({
+                    code: 'mapcrs',
+                    units: crsUnits2 || options.units,
+                    extent: topTileExtent || [-180, -90, 180, 90],
+                    resolutions,
+                    tileSize
+                });
+            }
+        }
 
         // 构建完整的mapCrs
-        if (projection && projection.getCode() !== 'EPSG:mapbox') {
+        if (options.projection) {
+            const projection = options.projection;
+
             mapCRS = {
                 units: projection.getUnits(),
                 topTileExtent: projection.getExtent(),
@@ -45,7 +53,7 @@ export default class FreeCRSMap extends Map {
     }
 
     get _tileExtent() {
-        if (this.projection.getCode() === 'EPSG:mapbox') {
+        if (this.projection.getCode() === 'EPSG:mapbox' || this.projection.originCode === 'EPSG:mapbox') {
             return [-20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892];
         } else {
             return this.projection.getExtent();

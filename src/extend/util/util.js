@@ -9,7 +9,7 @@ import browser from '../../util/browser';
  * @param {*} interval 限制时间
  * @param {*} target 需要附加的对象
  */
-export function rateLimit(fn: Function, interval: Number, target: any): Function {
+export function rateLimit(fn: Function, interval: number, target: any): Function {
     let preTime = null;
 
     const proxy = (...rest) => {
@@ -35,7 +35,7 @@ export function rateLimit(fn: Function, interval: Number, target: any): Function
  * 判断一个对象是否存在
  * @param {*} object 对象
  */
-export function isEmpty(object) {
+export function isEmpty(object: Object): Object {
     let property;
     for (property in object) {
         return false;
@@ -47,11 +47,11 @@ export function isEmpty(object) {
  * typeOf
  * @param {*} obj
  */
-export function typeOf(obj) {
+export function typeOf(obj: any): String {
     const toString = Object.prototype.toString;
     const map = {
         '[object Boolean]': 'boolean',
-        '[object Number]': 'number',
+        '[object number]': 'number',
         '[object String]': 'string',
         '[object Function]': 'function',
         '[object Array]': 'array',
@@ -69,11 +69,11 @@ export function typeOf(obj) {
  * @param {Object} data
  */
 export function deepCopy(
-    data,
-    { valueProcessors = [], keyProcessors = [], ignores = [] } = {}
-) {
+    data: Object,
+    { valueProcessors = [], keyProcessors = [], ignores = [] }: any = {}
+): Object {
     const t = typeOf(data);
-    let o;
+    let o: any;
 
     if (t === 'array') {
         o = [];
@@ -129,7 +129,7 @@ export function deepCopy(
  * @param {*} array 原数组
  * @param {*} fn 方法
  */
-export function findLastIndexOf(array, fn) {
+export function findLastIndexOf(array: any[], fn: Function): number {
     for (let i = array.length - 1; i >= 0; i--) {
         const element = array[i];
         if (fn(element, i, array)) {

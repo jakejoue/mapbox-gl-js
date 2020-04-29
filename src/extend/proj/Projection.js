@@ -1,6 +1,5 @@
 // @flow
 
-import Units from './Units';
 import CoordTransform, { transform } from './CoordTransform';
 
 import { getHeight, getWidth } from '../extent';
@@ -10,7 +9,7 @@ import { deepCopy, findLastIndexOf } from '../util/util';
 
 export type ProjectionOption = {
     code: string,
-    units: Units,
+    units: any,
     extent: Array<number>,
     resolutions?: Array<number>,
     tileSize?: number,
@@ -19,15 +18,18 @@ export type ProjectionOption = {
 
 class Projection {
     code_: string;
-    units_: Units;
+    units_: any;
     extent_: Array<number>;
-    resolutions_: Array<number>;
+    resolutions_: any;
     tileSize_: number;
     validlatRange_: Array<number>
 
     // 计算属性部分
-    maxExtent_: number;
-    transform_: CoordTransform;
+    maxExtent_: number | null;
+    transform_: CoordTransform | null;
+
+    // 源坐标系code
+    originCode: ?string;
 
     constructor(options: ProjectionOption) {
         options = deepCopy(options);
@@ -62,7 +64,7 @@ class Projection {
      */
     getTransform(): CoordTransform {
         // 默认坐标系（混合坐标系）
-        if (this.code_ === 'EPSG:mapbox') {
+        if (this.code_ === 'EPSG:mapbox' || this.originCode === 'EPSG:mapbox') {
             return transform;
         }
 
@@ -77,7 +79,7 @@ class Projection {
         return this.code_;
     }
 
-    getUnits(): Units {
+    getUnits(): any {
         return this.units_;
     }
 
@@ -85,7 +87,7 @@ class Projection {
         return [...this.extent_];
     }
 
-    getResolutions(): Array<number> {
+    getResolutions(): Array<number> | null {
         if (this.resolutions_) {
             return [...this.resolutions_];
         }
@@ -120,7 +122,7 @@ class Projection {
     }
 
     clone(): Projection {
-        return new Projection({
+        const proj = new Projection({
             code: this.code_,
             units: this.units_,
             extent: this.extent_,
@@ -128,6 +130,9 @@ class Projection {
             tileSize: this.tileSize_,
             validlatRange: this.validlatRange_
         });
+        proj.originCode = this.originCode;
+
+        return proj;
     }
 
     /**

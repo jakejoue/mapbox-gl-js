@@ -42,3 +42,10 @@ export const PROJECTIONS = [
     EPSG4326,
     EPSGMAPBOX
 ];
+
+// 相等的坐标系
+export const EqualProjtions = [
+    ['EPSG:3857', '3857'],
+    ['EPSG:4326', '4326', 'EPSG:4490', '4490'],
+    ['EPSG:mapbox', 'web_Mercator', 'mapbox']
+];

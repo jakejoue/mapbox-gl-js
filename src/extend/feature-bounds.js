@@ -12,7 +12,7 @@ import booleanDisjoint from '@turf/boolean-disjoint';
 // feature定义
 export type Feature = {
     type: string,
-    geometry: Array,
+    geometry: any,
     properties: ?Object
 };
 

@@ -41,6 +41,8 @@ function addCircleVertex(layoutVertexArray, x, y, extrudeX, extrudeY) {
  * @private
  */
 class CircleBucket<Layer: CircleStyleLayer | HeatmapStyleLayer> implements Bucket {
+    // GeoGlobal-tileSize-huangwei-191113 添加bucket TileSzie属性
+    tileSize: number;
     index: number;
     zoom: number;
     overscaling: number;

@@ -1,6 +1,6 @@
 // @flow
 
-import { PROJECTIONS } from './proj/epsg.js';
+import { PROJECTIONS, EqualProjtions } from './proj/epsg.js';
 import Units from './proj/Units.js';
 import Projection from './proj/Projection.js';
 import { add as addProj, clear as clearProj, get as getProj } from './proj/projections.js';
@@ -25,8 +25,8 @@ export function addProjections(projections: Array<Projection>) {
 /**
  * 查询坐标系
  */
-export function get(projectionLike: String | Projection): Projection {
-    const projection = typeof projectionLike === 'string' ?
+export function get(projectionLike: string | Projection): Projection | null {
+    const projection: any = typeof projectionLike === 'string' ?
         getProj(projectionLike) : (projectionLike || null);
 
     return projection ? projection.clone() : null;
@@ -39,9 +39,28 @@ export function clearAllProjections() {
     clearProj();
     // 保留默认坐标系
     addProjections(PROJECTIONS);
+    EqualProjtions.forEach(addEqualProjections);
+}
+
+function addEqualProjections(projections: string[]) {
+    const bsaeProjection = get((projections[0]: string));
+    if (bsaeProjection) {
+        projections.slice(1).forEach(proj => {
+            // 克隆并修改code
+            const projection: Projection = bsaeProjection.clone();
+            projection.code_ = proj;
+            // 保留原code
+            projection.originCode = bsaeProjection.getCode();
+            // 添加坐标系
+            addProjection(projection);
+        });
+    }
 }
 
 /**
  * 添加默认坐标系
  */
 addProjections(PROJECTIONS);
+
+// 添加相同参数定义的坐标系
+EqualProjtions.forEach(addEqualProjections);

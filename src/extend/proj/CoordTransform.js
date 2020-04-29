@@ -41,7 +41,7 @@ function mercatorScale(lat: number) {
 }
 
 // 默认转换方法
-const transform = {
+const baseTransform = {
     // 一些静态变量
     maxExtent: 360,
     minX: -180,
@@ -60,9 +60,19 @@ const transform = {
     getTileBBox
 };
 
+const transform = ((baseTransform: any): CoordTransform);
+
 export { transform };
 
 class CoordTransform {
+    projection: any;
+    maxExtent: any;
+    minX: any;
+    minY: any;
+    maxX: any;
+    maxY: any;
+    units: any;
+
     constructor(projection: Projection) {
         this.projection = projection;
 
@@ -116,7 +126,7 @@ class CoordTransform {
         return 1 / lat;
     }
 
-    getTileBBox(x, y, z) {
+    getTileBBox(x: number, y: number, z: number): string {
         const worldSize = this.projection.zoomScale(z);
 
         const minX = this.lngFromMercatorX(x / worldSize);

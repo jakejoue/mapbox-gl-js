@@ -70,6 +70,8 @@ const MAX_LINE_DISTANCE = Math.pow(2, LINE_DISTANCE_BUFFER_BITS - 1) / LINE_DIST
  * @private
  */
 class LineBucket implements Bucket {
+    // GeoGlobal-tileSize-huangwei-191113 添加bucket TileSzie属性
+    tileSize: number;
     distance: number;
     totalDistance: number;
     scaledDistance: number;
