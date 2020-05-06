@@ -7,14 +7,43 @@ import EXTENT from '../data/extent';
 import { ResourceType } from '../util/ajax';
 import browser from '../util/browser';
 
-import type {Source} from './source';
+import type { Source } from './source';
 import type Map from '../ui/map';
 import type Dispatcher from '../util/dispatcher';
 import type Tile from './tile';
 import type Actor from '../util/actor';
-import type {Callback} from '../types/callback';
-import type {GeoJSON, GeoJSONFeature} from '@mapbox/geojson-types';
-import type {GeoJSONSourceSpecification} from '../style-spec/types';
+import type { Callback } from '../types/callback';
+import type { GeoJSON, GeoJSONFeature } from '@mapbox/geojson-types';
+import type { GeoJSONSourceSpecification } from '../style-spec/types';
+
+function filter2Func(filter: any) {
+    const [property, value, relation = '=='] = filter;
+
+    let func = null;
+
+    try {
+        // 表达式模式
+        let str = `return !!((f.properties['${property}'] || f['${property}']) ${relation} ${value});`;
+
+        // like模式
+        if (relation === 'like') {
+            str = `return ((f.properties['${property}'] || f['${property}'] || '') + '').indexOf(${value} + '') !== -1;`;
+        }
+
+        func = new Function('f', str);
+    } catch (err) {
+        func = new Function(`return false;`);
+    }
+
+    // 进行方法包装，总是返回一个有效的flag
+    return f => {
+        try {
+            return func(f);
+        } catch (err) {
+            return false;
+        }
+    };
+}
 
 /**
  * A source containing GeoJSON.
@@ -85,7 +114,7 @@ class GeoJSONSource extends Evented implements Source {
     /**
      * @private
      */
-    constructor(id: string, options: GeoJSONSourceSpecification & {workerOptions?: any, collectResourceTiming: boolean}, dispatcher: Dispatcher, eventedParent: Evented) {
+    constructor(id: string, options: GeoJSONSourceSpecification & { workerOptions?: any, collectResourceTiming: boolean }, dispatcher: Dispatcher, eventedParent: Evented) {
         super();
 
         this.id = id;
@@ -146,7 +175,7 @@ class GeoJSONSource extends Evented implements Source {
     }
 
     load() {
-        this.fire(new Event('dataloading', {dataType: 'source'}));
+        this.fire(new Event('dataloading', { dataType: 'source' }));
         this._updateWorkerData((err) => {
             if (err) {
                 this.fire(new ErrorEvent(err));
@@ -178,7 +207,7 @@ class GeoJSONSource extends Evented implements Source {
      */
     setData(data: GeoJSON | string) {
         this._data = data;
-        this.fire(new Event('dataloading', {dataType: 'source'}));
+        this.fire(new Event('dataloading', { dataType: 'source' }));
         this._updateWorkerData((err) => {
             if (err) {
                 this.fire(new ErrorEvent(err));
@@ -196,16 +225,57 @@ class GeoJSONSource extends Evented implements Source {
         return this;
     }
 
-    addData() {
-
+    // GeoGlobal-GeoJsonExt-huangwei-200506
+    addData(features: Array<GeoJSONFeature>) {
+        const data = JSON.parse(JSON.stringify(this._data));
+        if (data.features) {
+            data.features.push(...features);
+            this.setData(data);
+        } else {
+            this.fire(new ErrorEvent(new Error('this source is not a GeoJson data source!')));
+        }
     }
 
-    removeData() {
+    // GeoGlobal-GeoJsonExt-huangwei-200506
+    removeData(filter: any) {
+        const data = JSON.parse(JSON.stringify(this._data));
+        if (data.features) {
+            if (Array.isArray(filter)) {
+                const func = filter2Func(filter);
 
+                data.features = data.features.filter(f => {
+                    const flag = func(f);
+                    return !flag;
+                });
+            } else if (typeof (filter) === 'number') {
+                data.features.splice(filter, 1);
+            }
+
+            this.setData(data);
+        } else {
+            this.fire(new ErrorEvent(new Error('this source is not a GeoJson data source!')));
+        }
     }
 
-    editData() {
+    // GeoGlobal-GeoJsonExt-huangwei-200506
+    editData(filter: any, feature: GeoJSONFeature) {
+        const data = JSON.parse(JSON.stringify(this._data));
+        if (data.features) {
+            if (Array.isArray(filter)) {
+                const func = filter2Func(filter);
 
+                data.features = data.features.map(f => {
+                    const flag = func(f);
+                    return flag ? feature : f;
+                });
+            } else if (typeof (filter) === 'number') {
+                data.features.splice(filter, 1, feature);
+            }
+
+            this.setData(data);
+        } else {
+            this.fire(new ErrorEvent(new Error('this source is not a GeoJson data source!')));
+        }
     }
 
     /**
