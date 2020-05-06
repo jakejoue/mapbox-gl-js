@@ -85,7 +85,8 @@ function drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMo
         const shouldUseVerticalGradient = layer.paint.get('fill-extrusion-vertical-gradient');
         const uniformValues = image ?
             fillExtrusionPatternUniformValues(matrix, painter, shouldUseVerticalGradient, opacity, coord, crossfade, tile) :
-            fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity);
+            // GeoGlobal-fill-extrusion-huangwei-200430
+            fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity, layer);
 
         // GeoGlobal-drawfillextrusion-huangwei-200316  将CullFaceMode.backCCW改为CullFaceMode.disabled
         program.draw(context, context.gl.TRIANGLES, depthMode, stencilMode, colorMode, CullFaceMode.disabled,

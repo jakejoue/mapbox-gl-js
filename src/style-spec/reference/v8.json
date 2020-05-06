@@ -4219,6 +4219,72 @@
         ]
       },
       "property-type": "data-constant"
+    },
+    "fill-extrusion-intensity": {
+      "type": "number",
+      "default": 1,
+      "doc": "GeoGlobal-fill-extrusion-huangwei-200430，颜色强化，通过正负判断强化方向",
+      "transition": true,
+      "requires": [
+        "fill-extrusion-color"
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0",
+          "android": "5.1.0",
+          "ios": "3.6.0",
+          "macos": "0.5.0"
+        },
+        "data-driven styling": {
+          "js": "0.27.0",
+          "android": "5.1.0",
+          "ios": "3.6.0",
+          "macos": "0.5.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
+    },
+    "fill-extrusion-bottom-color": {
+      "type": "color",
+      "default": "#000000",
+      "doc": "GeoGlobal-fill-extrusion-huangwei-200430，第二个颜色，指定为底部",
+      "transition": true,
+      "requires": [
+        {
+          "!": "fill-extrusion-pattern"
+        }
+      ],
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.27.0",
+          "android": "5.1.0",
+          "ios": "3.6.0",
+          "macos": "0.5.0"
+        },
+        "data-driven styling": {
+          "js": "0.27.0",
+          "android": "5.1.0",
+          "ios": "3.6.0",
+          "macos": "0.5.0"
+        }
+      },
+      "expression": {
+        "interpolated": true,
+        "parameters": [
+          "zoom",
+          "feature",
+          "feature-state"
+        ]
+      },
+      "property-type": "data-driven"
     }
   },
   "paint_line": {

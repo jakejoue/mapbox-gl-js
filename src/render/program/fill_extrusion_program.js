@@ -19,6 +19,8 @@ import type {OverscaledTileID} from '../../source/tile_id';
 import type {UniformValues, UniformLocations} from '../uniform_binding';
 import type {CrossfadeParameters} from '../../style/evaluation_parameters';
 import type Tile from '../../source/tile';
+// GeoGlobal-fill-extrusion-huangwei-200430
+import type StyleLayer from '../../style/style_layer';
 
 export type FillExtrusionUniformsType = {|
     'u_matrix': UniformMatrix4f,
@@ -26,7 +28,9 @@ export type FillExtrusionUniformsType = {|
     'u_lightintensity': Uniform1f,
     'u_lightcolor': Uniform3f,
     'u_vertical_gradient': Uniform1f,
-    'u_opacity': Uniform1f
+    'u_opacity': Uniform1f,
+    // GeoGlobal-fill-extrusion-huangwei-200430
+    'u_type': Uniform1i
 |};
 
 export type FillExtrusionPatternUniformsType = {|
@@ -52,7 +56,9 @@ const fillExtrusionUniforms = (context: Context, locations: UniformLocations): F
     'u_lightintensity': new Uniform1f(context, locations.u_lightintensity),
     'u_lightcolor': new Uniform3f(context, locations.u_lightcolor),
     'u_vertical_gradient': new Uniform1f(context, locations.u_vertical_gradient),
-    'u_opacity': new Uniform1f(context, locations.u_opacity)
+    'u_opacity': new Uniform1f(context, locations.u_opacity),
+    // GeoGlobal-fill-extrusion-huangwei-200430
+    'u_type': new Uniform1i(context, locations.u_type)
 });
 
 const fillExtrusionPatternUniforms = (context: Context, locations: UniformLocations): FillExtrusionPatternUniformsType => ({
@@ -76,7 +82,8 @@ const fillExtrusionUniformValues = (
     matrix: Float32Array,
     painter: Painter,
     shouldUseVerticalGradient: boolean,
-    opacity: number
+    opacity: number,
+    layer: ?StyleLayer
 ): UniformValues<FillExtrusionUniformsType> => {
     const light = painter.style.light;
     const _lp = light.properties.get('position');
@@ -89,13 +96,27 @@ const fillExtrusionUniformValues = (
 
     const lightColor = light.properties.get('color');
 
+    // GeoGlobal-fill-extrusion-huangwei-200430
+    let uType = 0;
+    if (layer) {
+        const intensity = layer.getPaintProperty('fill-extrusion-intensity');
+        const bottomColor = layer.getPaintProperty('fill-extrusion-bottom-color');
+
+        // 渐变变强
+        if (intensity) uType = 1;
+        // 双色
+        if (bottomColor) uType = 2;
+    }
+
     return {
         'u_matrix': matrix,
         'u_lightpos': lightPos,
         'u_lightintensity': light.properties.get('intensity'),
         'u_lightcolor': [lightColor.r, lightColor.g, lightColor.b],
         'u_vertical_gradient': +shouldUseVerticalGradient,
-        'u_opacity': opacity
+        'u_opacity': opacity,
+        // GeoGlobal-fill-extrusion-huangwei-200430
+        'u_type': uType
     };
 };
 
