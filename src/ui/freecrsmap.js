@@ -25,7 +25,7 @@ export default class FreeCRSMap extends Map {
                 const { topTileExtent, resolutions, tileSize, units: crsUnits2 } = mapCRS;
                 options.projection = new Projection({
                     code: 'mapcrs',
-                    units: crsUnits2 || options.units,
+                    units: crsUnits2 || units,
                     extent: topTileExtent || [-180, -90, 180, 90],
                     resolutions,
                     tileSize

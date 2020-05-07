@@ -31,42 +31,29 @@
             var map = (window.map = new mapboxgl.Map({
                 container: "map",
                 projection: "EPSG:4326",
-                center: [-87.618312, 41.866282],
-                zoom: 16,
+                center: [-87.616941, 41.8661978],
+                zoom: 17,
                 pitch: 30,
                 antialias: true,
                 style: {
                     version: 8,
                     sources: {},
-                    layers: []
+                    layers: [],
                 },
                 renderWorldCopies: true,
                 isIntScrollZoom: true,
-                skipLevelOfZooming: true
+                skipLevelOfZooming: true,
             }));
 
-            map.on("load", function() {
-                // fill layer
+            map.on("load", function () {
+                // bc layer
                 // map.addLayer({
-                //     id: "room",
-                //     type: "fill",
-                //     source: {
-                //         type: "geojson",
-                //         data: geojson
-                //     },
+                //     id: "background",
+                //     type: "background",
                 //     paint: {
-                //         "fill-color": ["get", "color"],
-                //         "fill-opacity": 0.5
-                //     }
+                //         "background-color": "#262626",
+                //     },
                 // });
-
-                map.addLayer({
-                    id: 'background',
-                    type: 'background',
-                    paint: {
-                        'background-color': '#262626'
-                    }
-                });
 
                 // fill-extrusion layer
                 map.addLayer({
@@ -76,7 +63,7 @@
                         // GeoJSON Data source used in vector tiles, documented at
                         // https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
                         type: "geojson",
-                        data: geojson
+                        data: window.geojson,
                     },
                     paint: {
                         // See the Mapbox Style Specification for details on data expressions.
@@ -94,29 +81,25 @@
                         // Make extrusions slightly opaque for see through indoor walls.
                         "fill-extrusion-opacity": 1,
 
-                        "fill-extrusion-intensity": -2,
+                        // 颜色增强
+                        "fill-extrusion-intensity": -3,
 
-                        "fill-extrusion-bottom-color": "#ffffff"
-                    }
+                        // 底部颜色（设置改参数，颜色增强参数将会无效）
+                        // "fill-extrusion-bottom-color": "#ffffff"
+                    },
                 });
 
-                // map.on("click", function(e) {
-                //     var results = map
-                //         .queryRenderedFeatures(e.point, {
-                //             layers: ["room"]
-                //         })
-                //         .map(function(feature) {
-                //             return {
-                //                 type: feature.type,
-                //                 geometry: feature.geometry,
-                //                 properties: feature.properties
-                //             };
-                //         });
-                //     map.getSource("room-extrusion").setData({
-                //         type: "FeatureCollection",
-                //         features: results
-                //     });
-                // });
+                map.loadImage("../test/textures/cover.png", function (
+                    img,
+                    img2
+                ) {
+                    map.addImage("cover", img2);
+                    map.setPaintProperty(
+                        "room-extrusion",
+                        "fill-extrusion-pattern",
+                        "cover"
+                    );
+                });
             });
         </script>
     </body>
