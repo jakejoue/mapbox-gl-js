@@ -79,7 +79,7 @@ uniform int u_type;
 attribute vec2 a_pos;
 attribute vec4 a_normal_ed;
 
-varying vec3 v_point;
+varying vec3 v_point_y;
 varying vec4 v_top_color;
 varying vec4 v_bottom_color;
 
@@ -160,7 +160,7 @@ void main() {
     gl_Position = u_matrix * vec4(a_pos, t > 0.0 ? height : base, 1);
 
     // 初始化变量
-    v_point = vec3(t > 0.0 ? height : base, base, height);
+    v_point_y = vec3(t > 0.0 ? height : base, base, height);
 
     // 赋值颜色初始值
     v_top_color = color;

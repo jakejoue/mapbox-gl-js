@@ -47,13 +47,13 @@
 
             map.on("load", function () {
                 // bc layer
-                // map.addLayer({
-                //     id: "background",
-                //     type: "background",
-                //     paint: {
-                //         "background-color": "#262626",
-                //     },
-                // });
+                map.addLayer({
+                    id: "background",
+                    type: "background",
+                    paint: {
+                        "background-color": "#262626",
+                    },
+                });
 
                 // fill-extrusion layer
                 map.addLayer({
@@ -89,15 +89,16 @@
                     },
                 });
 
+                return;
                 map.loadImage("../test/textures/cover.png", function (
                     img,
                     img2
                 ) {
-                    map.addImage("cover", img2);
+                    map.addImage("pattern", img2);
                     map.setPaintProperty(
                         "room-extrusion",
                         "fill-extrusion-pattern",
-                        "cover"
+                        "pattern"
                     );
                 });
             });
