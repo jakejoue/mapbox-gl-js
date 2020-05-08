@@ -30,6 +30,8 @@ export type PaintProps = {|
     // GeoGlobal-fill-extrusion-huangwei-200430
     "fill-extrusion-intensity": DataDrivenProperty<number>,
     "fill-extrusion-bottom-color": DataDrivenProperty<Color>,
+    // GeoGlobal-fill-extrusion-pattern-huangwei-200508
+    "fill-extrusion-pattern-repeat": DataConstantProperty<boolean>,
 |};
 
 const paint: Properties<PaintProps> = new Properties({
@@ -44,6 +46,8 @@ const paint: Properties<PaintProps> = new Properties({
     // GeoGlobal-fill-extrusion-huangwei-200430
     "fill-extrusion-intensity": new DataDrivenProperty(styleSpec["paint_fill-extrusion"]["fill-extrusion-intensity"]),
     "fill-extrusion-bottom-color": new DataDrivenProperty(styleSpec["paint_fill-extrusion"]["fill-extrusion-bottom-color"]),
+    // GeoGlobal-fill-extrusion-pattern-huangwei-200508
+    "fill-extrusion-pattern-repeat": new DataConstantProperty(styleSpec["paint_fill-extrusion"]["fill-extrusion-pattern-repeat"]),
 });
 
 // Note: without adding the explicit type annotation, Flow infers weaker types

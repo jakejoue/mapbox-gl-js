@@ -84,7 +84,8 @@ function drawExtrusionTiles(painter, source, layer, coords, depthMode, stencilMo
 
         const shouldUseVerticalGradient = layer.paint.get('fill-extrusion-vertical-gradient');
         const uniformValues = image ?
-            fillExtrusionPatternUniformValues(matrix, painter, shouldUseVerticalGradient, opacity, coord, crossfade, tile) :
+            // GeoGlobal-fill-extrusion-pattern-huangwei-200508
+            fillExtrusionPatternUniformValues(matrix, painter, shouldUseVerticalGradient, opacity, coord, crossfade, tile, layer) :
             // GeoGlobal-fill-extrusion-huangwei-200430
             fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity, layer);
 

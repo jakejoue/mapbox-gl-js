@@ -96,9 +96,8 @@ varying vec2 v_pos_a;
 varying vec2 v_pos_b;
 varying vec4 v_lighting;
 
-// v_point_y
+// 声明着色器需要的变量
 varying vec3 v_point_y;
-// v_normal_ed
 varying vec4 v_normal_ed;
 
 #pragma mapbox: define lowp float base
@@ -136,9 +135,8 @@ void main() {
 
     gl_Position = u_matrix * vec4(a_pos, z, 1);
 
-    // v_point_y
+    // 初始化着色器变量
     v_point_y = vec3(t > 0.0 ? height : base, base, height);
-    // v_normal_ed
     v_normal_ed = a_normal_ed;
 
     vec2 pos = normal.x == 1.0 && normal.y == 0.0 && normal.z == 16384.0

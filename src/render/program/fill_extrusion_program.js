@@ -20,6 +20,7 @@ import type {UniformValues, UniformLocations} from '../uniform_binding';
 import type {CrossfadeParameters} from '../../style/evaluation_parameters';
 import type Tile from '../../source/tile';
 // GeoGlobal-fill-extrusion-huangwei-200430
+// GeoGlobal-fill-extrusion-pattern-huangwei-200508
 import type StyleLayer from '../../style/style_layer';
 
 export type FillExtrusionUniformsType = {|
@@ -47,7 +48,9 @@ export type FillExtrusionPatternUniformsType = {|
     'u_pixel_coord_lower': Uniform2f,
     'u_scale': Uniform4f,
     'u_fade': Uniform1f,
-    'u_opacity': Uniform1f
+    'u_opacity': Uniform1f,
+    // GeoGlobal-fill-extrusion-pattern-huangwei-200508
+    'u_type': Uniform1i
 |};
 
 const fillExtrusionUniforms = (context: Context, locations: UniformLocations): FillExtrusionUniformsType => ({
@@ -75,7 +78,9 @@ const fillExtrusionPatternUniforms = (context: Context, locations: UniformLocati
     'u_pixel_coord_lower': new Uniform2f(context, locations.u_pixel_coord_lower),
     'u_scale': new Uniform4f(context, locations.u_scale),
     'u_fade': new Uniform1f(context, locations.u_fade),
-    'u_opacity': new Uniform1f(context, locations.u_opacity)
+    'u_opacity': new Uniform1f(context, locations.u_opacity),
+    // GeoGlobal-fill-extrusion-pattern-huangwei-200508
+    'u_type': new Uniform1i(context, locations.u_type)
 });
 
 const fillExtrusionUniformValues = (
@@ -127,12 +132,24 @@ const fillExtrusionPatternUniformValues = (
     opacity: number,
     coord: OverscaledTileID,
     crossfade: CrossfadeParameters,
-    tile: Tile
+    tile: Tile,
+    layer: ?StyleLayer
 ): UniformValues<FillExtrusionPatternUniformsType> => {
+    // GeoGlobal-fill-extrusion-pattern-huangwei-200508
+    let uType = 0;
+    if (layer) {
+        const repeat = layer.paint.get('fill-extrusion-pattern-repeat');
+
+        // 非重复贴图模式
+        if (repeat === false) uType = 1;
+    }
+
     return extend(fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity),
         patternUniformValues(crossfade, painter, tile),
         {
-            'u_height_factor': -Math.pow(2, coord.overscaledZ) / tile.tileSize / 8
+            'u_height_factor': -Math.pow(2, coord.overscaledZ) / tile.tileSize / 8,
+            // GeoGlobal-fill-extrusion-pattern-huangwei-200508
+            'u_type': uType
         });
 };
 

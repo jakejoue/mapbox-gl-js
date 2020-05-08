@@ -4285,6 +4285,26 @@
         ]
       },
       "property-type": "data-driven"
+    },
+    "fill-extrusion-pattern-repeat": {
+      "type": "boolean",
+      "default": true,
+      "doc": "GeoGlobal-fill-extrusion-pattern-huangwei-200508，是否为重复贴图模式",
+      "transition": false,
+      "sdk-support": {
+        "basic functionality": {
+          "js": "0.50.0",
+          "ios": "4.7.0",
+          "macos": "0.13.0"
+        }
+      },
+      "expression": {
+        "interpolated": false,
+        "parameters": [
+          "zoom"
+        ]
+      },
+      "property-type": "data-constant"
     }
   },
   "paint_line": {
