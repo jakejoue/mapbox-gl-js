@@ -45,6 +45,28 @@ function filter2Func(filter: any) {
     };
 }
 
+function toFeatureCollection(data: any) {
+    // 深层拷贝
+    data = JSON.parse(JSON.stringify(data));
+
+    // 非geojson对象
+    if (!data.type) return data;
+
+    if (data.type === 'Feature') {
+        data = {
+            type: 'FeatureCollection',
+            features: [data]
+        };
+    } else if (data.type !== 'FeatureCollection') {
+        data = {
+            type: 'FeatureCollection',
+            features: [{ type: 'Feature', geometry: data, properties: {} }]
+        };
+    }
+
+    return data;
+}
+
 /**
  * A source containing GeoJSON.
  * (See the [Style Specification](https://www.mapbox.com/mapbox-gl-style-spec/#sources-geojson) for detailed documentation of options.)
@@ -227,7 +249,7 @@ class GeoJSONSource extends Evented implements Source {
 
     // GeoGlobal-GeoJsonExt-huangwei-200506
     addData(features: Array<GeoJSONFeature>) {
-        const data = JSON.parse(JSON.stringify(this._data));
+        const data = toFeatureCollection(this._data);
         if (data.features) {
             data.features.push(...features);
             this.setData(data);
@@ -238,7 +260,7 @@ class GeoJSONSource extends Evented implements Source {
 
     // GeoGlobal-GeoJsonExt-huangwei-200506
     removeData(filter: any) {
-        const data = JSON.parse(JSON.stringify(this._data));
+        const data = toFeatureCollection(this._data);
         if (data.features) {
             if (Array.isArray(filter)) {
                 const func = filter2Func(filter);
@@ -259,7 +281,7 @@ class GeoJSONSource extends Evented implements Source {
 
     // GeoGlobal-GeoJsonExt-huangwei-200506
     editData(filter: any, feature: GeoJSONFeature) {
-        const data = JSON.parse(JSON.stringify(this._data));
+        const data = toFeatureCollection(this._data);
         if (data.features) {
             if (Array.isArray(filter)) {
                 const func = filter2Func(filter);
