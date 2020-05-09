@@ -23,14 +23,15 @@ function filter2Func(filter: any) {
 
     try {
         // 表达式模式
-        let str = `return !!((f.properties['${property}'] || f['${property}']) ${relation} ${value});`;
+        let str = `return !!(v ${relation} ${value});`;
 
         // like模式
         if (relation === 'like') {
-            str = `return ((f.properties['${property}'] || f['${property}'] || '') + '').indexOf(${value} + '') !== -1;`;
+            str = `if (v === undefined || v === null) { return false; };
+                return (v + '').indexOf(${value} + '') !== -1;`;
         }
 
-        func = new Function('f', str);
+        func = new Function('v', str);
     } catch (err) {
         func = new Function(`return false;`);
     }
@@ -38,7 +39,8 @@ function filter2Func(filter: any) {
     // 进行方法包装，总是返回一个有效的flag
     return f => {
         try {
-            return func(f);
+            const v = f.properties[property] !== undefined ? f.properties[property] : f[property];
+            return func(v);
         } catch (err) {
             return false;
         }
