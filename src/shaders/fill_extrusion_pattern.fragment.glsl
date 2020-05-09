@@ -60,12 +60,14 @@ varying vec4 v_normal_ed;
 #pragma mapbox: define lowp float height
 #pragma mapbox: define lowp vec4 pattern_from
 #pragma mapbox: define lowp vec4 pattern_to
+#pragma mapbox: define lowp float intensity
 
 void main() {
     #pragma mapbox: initialize lowp float base
     #pragma mapbox: initialize lowp float height
     #pragma mapbox: initialize mediump vec4 pattern_from
     #pragma mapbox: initialize mediump vec4 pattern_to
+    #pragma mapbox: initialize lowp float intensity
 
     vec2 pattern_tl_a = pattern_from.xy;
     vec2 pattern_br_a = pattern_from.zw;
@@ -97,7 +99,16 @@ void main() {
             // 到上个点的.距离与长边.百分比（暂时无用）
             // float x = v_normal_ed.y / 16384.0;
             
-            gl_FragColor = texture2D(u_image, vec2(0.5, 1.0 - y)) * (1.0 + y);
+            gl_FragColor = texture2D(u_image, vec2(0.5, 1.0 - y));
+
+            // 强度增强 (不考虑为0的情况)
+            if (intensity > 0.0) {
+                gl_FragColor *= mix(1.0, abs(intensity), y);
+            }
+            if (intensity < 0.0) {
+                gl_FragColor *= mix(abs(intensity), 1.0, y);
+            }
+
         } else {
             // 顶部取色
             gl_FragColor = texture2D(u_image, vec2(0.5, 1.0));

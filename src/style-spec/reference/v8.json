@@ -4225,9 +4225,6 @@
       "default": 1,
       "doc": "GeoGlobal-fill-extrusion-huangwei-200430，颜色强化，通过正负判断强化方向",
       "transition": true,
-      "requires": [
-        "fill-extrusion-color"
-      ],
       "sdk-support": {
         "basic functionality": {
           "js": "0.27.0",
