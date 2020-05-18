@@ -138,7 +138,7 @@ const fillExtrusionPatternUniformValues = (
     // GeoGlobal-fill-extrusion-pattern-huangwei-200508
     let uType = 0;
     if (layer) {
-        const repeat = layer.paint.get('fill-extrusion-pattern-repeat');
+        const repeat = (layer.paint: any).get('fill-extrusion-pattern-repeat');
 
         // 非重复贴图模式
         if (repeat === false) uType = 1;

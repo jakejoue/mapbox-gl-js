@@ -10,8 +10,8 @@ import { ResourceType } from '../util/ajax';
 import browser from '../util/browser';
 import { cacheEntryPossiblyAdded } from '../util/tile_request_cache';
 // GeoGlobal-FeatureBounds-huangwei-191230
-import FeatureBounds from '../extend/feature-bounds';
-import type { Feature } from '../extend/feature-bounds';
+import FeatureBounds from '../extend/feature_bounds';
+import type { Feature } from '../extend/feature_bounds';
 
 import type {Source} from './source';
 import type {OverscaledTileID} from './tile_id';

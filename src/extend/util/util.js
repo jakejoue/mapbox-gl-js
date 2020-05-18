@@ -97,7 +97,7 @@ export function deepCopy(
         for (const i in data) {
             // ignores
             if (ignores.indexOf(i) !== -1) {
-                o[i] = data[i];
+                (o: any)[i] = data[i];
                 continue;
             }
             // key
@@ -111,7 +111,7 @@ export function deepCopy(
                 _data = processor(_data, key);
             });
             // 已经处理过的数据，不再copy
-            o[key] =
+            (o: any)[key] =
                 _data === data[i] ?
                     deepCopy(_data, {
                         keyProcessors,

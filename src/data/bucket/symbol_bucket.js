@@ -299,6 +299,9 @@ class SymbolBucket implements Bucket {
     allowVerticalPlacement: boolean;
     hasPaintOverrides: boolean;
 
+    // GeoGlobal-tileSize-huangwei-191113 添加bucket TileSzie属性
+    tileSize: number;
+
     constructor(options: BucketParameters<SymbolStyleLayer>) {
         this.collisionBoxArray = options.collisionBoxArray;
         this.zoom = options.zoom;

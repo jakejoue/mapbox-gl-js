@@ -9,8 +9,8 @@ import { postTurnstileEvent, postMapLoadEvent } from '../util/mapbox';
 import TileBounds from './tile_bounds';
 import Texture from '../render/texture';
 // GeoGlobal-FeatureBounds-huangwei-191230
-import FeatureBounds from '../extend/feature-bounds';
-import type { Feature } from '../extend/feature-bounds';
+import FeatureBounds from '../extend/feature_bounds';
+import type { Feature } from '../extend/feature_bounds';
 
 import { cacheEntryPossiblyAdded } from '../util/tile_request_cache';
 

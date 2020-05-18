@@ -39,6 +39,9 @@ import * as util from './util/util';
 // GeoGlobal-freeCrsMap-huangwei-191121 freeCrsMap
 import FreeCRSMap from './ui/freecrsmap';
 
+// GeoGlobal-customLayer-huangwei-200511 CustomLayer
+import CustomLayer from './extend/layer/custom_layer';
+
 const exported = {
     version,
     supported,
@@ -74,6 +77,9 @@ const exported = {
 
     // GeoGlobal-freeCrsMap-huangwei-191121 freeCrsMap
     FreeCRSMap,
+
+    // GeoGlobal-customLayer-huangwei-200511 CustomLayer
+    CustomLayer,
 
     /**
      * Gets and sets the map's [access token](https://www.mapbox.com/help/define-access-token/).

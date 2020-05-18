@@ -275,7 +275,7 @@ class CrossTileSymbolIndex {
     maxBucketInstanceId: number;
     bucketsInCurrentPlacement: {[number]: boolean};
     // GeoGlobal-proj-huangwei-191113
-    projection: number;
+    projection: Projection;
 
     // GeoGlobal-proj-huangwei-191113
     constructor(projection: Projection) {

@@ -17,9 +17,9 @@ import type { GeoJSON, GeoJSONFeature } from '@mapbox/geojson-types';
 import type { GeoJSONSourceSpecification } from '../style-spec/types';
 
 function filter2Func(filter: any) {
-    const [property, value, relation = '=='] = filter;
+    const [property: string, value, relation = '=='] = filter;
 
-    let func = null;
+    let func: any = null;
 
     try {
         // 表达式模式
@@ -37,7 +37,7 @@ function filter2Func(filter: any) {
     }
 
     // 进行方法包装，总是返回一个有效的flag
-    return f => {
+    return (f: any) => {
         try {
             const v = f.properties[property] !== undefined ? f.properties[property] : f[property];
             return func(v);

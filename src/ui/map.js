@@ -29,7 +29,7 @@ import webpSupported from '../util/webp_supported';
 import { setCacheLimits } from '../util/tile_request_cache';
 
 // GeoGlobal-boundary-huangwei-191230
-import type { Feature } from '../extend/feature-bounds';
+import type { Feature } from '../extend/feature_bounds';
 // GeoGlobal-renderInterval-huangwei-191015 频率间隔限制（去除过于快的中间帧）
 import { rateLimit } from '../extend/util/util';
 // GeoGlobal-proj-huangwei-191105

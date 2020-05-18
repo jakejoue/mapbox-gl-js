@@ -62,7 +62,7 @@ import type {
 } from '../style-spec/types';
 import type {CustomLayerInterface} from './style_layer/custom_style_layer';
 import type {Validator} from './validate_style';
-import type {Feature} from '../extend/feature-bounds';
+import type {Feature} from '../extend/feature_bounds';
 
 // GeoGlobal-tileSize-huangwei-191113
 import window from '../util/browser/window';

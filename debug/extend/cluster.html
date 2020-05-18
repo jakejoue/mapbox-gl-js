@@ -30,14 +30,14 @@
             const projection = mapboxgl.proj.get("EPSG:4326");
             const resolutions = [];
             for (let zoom = 0; zoom < 15; zoom++) {
-                resolutions[zoom] = 360 / 256 / Math.pow(2, zoom);
+                resolutions[zoom] = 360 / 512 / Math.pow(2, zoom);
             }
             projection.setResolutions(resolutions);
 
             var map = (window.map = new mapboxgl.Map({
                 container: "map",
                 zoom: 1,
-                projection: projection,
+                projection,
                 center: [-77.01866, 38.888],
                 style: {
                     version: 8,
