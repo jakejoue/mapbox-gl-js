@@ -29,7 +29,6 @@
         <script>
             var map = (window.map = new mapboxgl.Map({
                 container: "map",
-                projection: "EPSG:4326",
                 style: {
                     version: 8,
                     sources: {
@@ -47,27 +46,77 @@
                             type: "raster",
                             source: "tdt",
                         },
-                    ]
+                    ],
                 },
             }));
 
             map.on("load", function () {
+                const x = 0.5;
+                const y = 0.5;
+                const z = 0.125;
+                const d = 0.125;
+
+                const vertexArray = new Float32Array([
+                    x, y, 0,
+                    x + d, y, 0,
+                    x, y + d, z,
+                    x + d, y + d, z,
+                    x, y + d + d, 0,
+                    x + d, y + d + d, 0]);
+                const indexArray = new Uint16Array([
+                    0, 1, 2,
+                    1, 2, 3,
+                    2, 3, 4,
+                    3, 4, 5
+                ]);
+
                 map.addLayer(
                     new mapboxgl.CustomLayer({
                         id: "custom",
-                        vs: `
+                        options: {
+                            vs: `
 attribute vec3 aPos;
 uniform mat4 uMatrix;
 
 void main() {
     gl_Position = uMatrix * vec4(aPos, 1.0);
 }
-`,
-                        fs: `
+                            `,
+                            fs: `
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform vec4 uColor;
+
 void main() {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = uColor;
 }
-`,
+                            `,
+                            index: indexArray,
+                            attributes: [
+                                {
+                                    members: [{name:'aPos', type:'Float32', components: 3}],
+                                    data: vertexArray
+                                }
+                            ],
+                            uniforms: [
+                                {
+                                    name: 'uMatrix',
+                                    type: 'mat4',
+                                    accessor(layer) {
+                                        return layer.matrix;
+                                    }
+                                },
+                                {
+                                    name: 'uColor',
+                                    type: 'color',
+                                    accessor(layer) {
+                                        return "#66ffcc";
+                                    }
+                                }
+                            ]
+                        },
                     })
                 );
             });
