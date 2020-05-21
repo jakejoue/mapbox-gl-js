@@ -12,11 +12,14 @@ attribute float a_opacity;
 
 // 中心点坐标
 uniform vec2 u_pos;
-// 起始弧度
-uniform float u_start_angle;
 // 扇形半径
 uniform float u_radius;
+// 起始弧度
+uniform float u_start_angle;
+// 逆时针旋转
+uniform float u_reverse;
 uniform mat4 u_matrix;
+uniform vec4 u_color;
 
 varying float v_opacity;
 varying float v_angle;
@@ -30,7 +33,13 @@ vec2 getPoint(const vec2 pos, const float angle, const float radius) {
 void main() {
     vec2 pos = u_pos;
     if (a_angle != -1.0) {
-        pos = getPoint(u_pos, u_start_angle + a_angle, u_radius);
+        // 旋转方向
+        float angle = u_start_angle + a_angle;
+        // 是否反向旋转
+        if (u_reverse == 1.0) {
+            angle = -u_start_angle + a_angle;
+        }
+        pos = getPoint(u_pos, angle, u_radius);
     }
     gl_Position = u_matrix * vec4(pos, 0.0, 1.0);
 
@@ -42,19 +51,28 @@ void main() {
 const fs = `
 precision mediump float;
 
+uniform float u_reverse;
 uniform vec4 u_color;
 
 varying float v_opacity;
 varying float v_angle;
 
 void main() {
+    float opacity = v_opacity;
+    // 是否反向旋转
+    if (u_reverse == 1.0) {
+        opacity = 1.0 - v_opacity;
+    }
+
     vec4 color = u_color;
-    color.a = mix(0.01, color.a, v_opacity);
+    color.a = mix(0.01, color.a, opacity);
+
     gl_FragColor = color;
 }
 `;
 
-function createRadarSector({
+// 创建指定扇面
+function createSector({
     // 边上点的个数
     num = 5,
     // 扇形的弧度
@@ -85,13 +103,14 @@ function createRadarSector({
         indices[index + 2] = i + 2;
     }
 
-    return { positions, indices };
+    return { POSITION: positions, INDICES: indices };
 }
 
 type RadarLayerOptions = {
     id: string,
-    positons: [number, number],
+    position: [number, number],
     radius: number,
+    reverse: ?boolean,
     color: ?string,
     num: ?number,
     angle: ?number
@@ -99,32 +118,42 @@ type RadarLayerOptions = {
 
 class RadarLayer extends CustomLayer {
     constructor(options: RadarLayerOptions) {
-        const { id, positons, radius, color, num, angle } = options;
+        const { id, position, radius, reverse = false, color, num, angle } = options;
 
-        const { positions, indices } = createRadarSector({ num, angle });
+        if (!(id && position && radius && color)) {
+            throw new Error('radarLayer：缺少必备参数');
+        }
+
+        const { POSITION, INDICES } = createSector({ num, angle });
         let startRadius = 0;
 
         super({
             id,
             programs: {
                 vs, fs,
-                indices,
+                indices: INDICES,
                 attributes: [
                     {
                         members: [
                             { name: "a_angle", type: "Float32", components: 1 },
                             { name: "a_opacity", type: "Float32", components: 1 },
                         ],
-                        data: positions,
+                        data: POSITION,
                     },
                 ],
                 uniforms: [
                     {
                         name: "u_pos", type: "2f", accessor: layer => {
                             const transform = layer.map.projection.getTransform();
-                            const x = transform.mercatorXfromLng(positons[0]);
-                            const y = transform.mercatorYfromLat(positons[1]);
+                            const x = transform.mercatorXfromLng(position[0]);
+                            const y = transform.mercatorYfromLat(position[1]);
                             return [x, y];
+                        }
+                    },
+                    {
+                        name: "u_radius", type: "1f", accessor: layer => {
+                            const transform = layer.map.projection.getTransform();
+                            return transform.mercatorZfromAltitude(radius, position[1]);
                         }
                     },
                     {
@@ -133,12 +162,7 @@ class RadarLayer extends CustomLayer {
                             return startRadius / 180 * (Math.PI * 2);
                         }
                     },
-                    {
-                        name: "u_radius", type: "1f", accessor: layer => {
-                            const transform = layer.map.projection.getTransform();
-                            return transform.mercatorZfromAltitude(radius, positons[1]);
-                        }
-                    },
+                    { name: "u_reverse", type: "1f", accessor: +Boolean(reverse) },
                     { name: "u_color", type: "color", accessor: color },
                     { name: "u_matrix", type: "mat4", accessor: layer => layer.matrix }
                 ],

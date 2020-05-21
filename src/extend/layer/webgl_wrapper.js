@@ -185,6 +185,7 @@ export class ProgramConfiguration {
 
     freshBind() {
         for (const buffer of this.buffers) {
+            buffer.bind();
             buffer.enableAttributes(this.attributes);
             buffer.setVertexAttribPointers(this.attributes);
         }
