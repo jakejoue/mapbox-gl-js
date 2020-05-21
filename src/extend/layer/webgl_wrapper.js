@@ -9,28 +9,44 @@ import { initShader, getAttribLocations, getUniformLocations } from './webgl_uti
 import { IndexBuffer, VertexBuffer } from './buffer_data';
 import Binders from './uniform_bindings';
 
+const GL = {
+    POINTS: 0x0000,
+    LINES: 0x0001,
+    LINE_LOOP: 0x0002,
+    LINE_STRIP: 0x0003,
+    TRIANGLES: 0x0004,
+    TRIANGLE_STRIP: 0x0005,
+    TRIANGLE_FAN: 0x0006,
+};
+
 export type AttributeArray = Array<{
     members: Array<{ name: string, type: ViewType, +components ?: number, }>,
-    data: BufferArray
+        data: BufferArray
 }>;
 
 export type UniformArray = Array<{
     name: string,
     type: '1i' | '1f' | '2f' | '3f' | '4f' | 'color' | 'mat4',
-    accessor?: () => any
+    accessor?: () => any | any
 }>;
 
 export type ProgramOptions = {
+    id?: string;
     vs: string,
     fs: string,
 
-    index: ?BufferArray;
+    indices: ?BufferArray;
     attributes: ?AttributeArray,
-    uniforms: ?UniformArray
+    uniforms: ?UniformArray,
+
+    drawMode?: string
 };
 
 export class Program {
     options: ProgramOptions;
+
+    id: ?string;
+    drawMode: number;
 
     gl: WebGLRenderingContext;
     program: WebGLProgram;
@@ -38,21 +54,35 @@ export class Program {
     constructor(gl: WebGLRenderingContext, options: ProgramOptions) {
         this.options = options;
 
+        this.id = options.id;
+        this.drawMode = GL[options.drawMode] !== undefined ? GL[options.drawMode] : GL.TRIANGLES;
+
         this.gl = gl;
         this.program = initShader(gl, options.vs, options.fs);
     }
 
+    active() {
+        const gl = this.gl;
+        gl.useProgram(this.program);
+    }
+
     draw(layer: any, configuration: ProgramConfiguration) {
         const gl = this.gl;
-
-        gl.useProgram(this.program);
         configuration.bind(layer);
 
         gl.drawElements(
-            gl.TRIANGLES,
+            this.drawMode,
             configuration.vertexCount,
             gl.UNSIGNED_SHORT,
             0);
+    }
+
+    destroy() {
+        const gl = this.gl;
+        gl.deleteProgram(this.program);
+        delete this.gl;
+        delete this.program;
+        delete this.options;
     }
 }
 
@@ -62,7 +92,7 @@ function createVertexBuffer(program: Program): Array<VertexBuffer> {
 
     for (const attribute of attributes) {
         const { members, data } = attribute;
-        const buffer = new VertexBuffer(program.gl, data, createLayout(members, 1).members);
+        const buffer = new VertexBuffer(program.gl, data, createLayout(members, 1));
         buffers.push(buffer);
     }
     return buffers;
@@ -118,8 +148,8 @@ export class ProgramConfiguration {
         configuration.gl = program.gl;
         configuration.attributes = getAttribLocations(program.gl, program.program);
 
-        if (program.options.index) {
-            configuration.setIndexData(program.options.index);
+        if (program.options.indices) {
+            configuration.setIndexData(program.options.indices);
         }
 
         return configuration;
@@ -162,7 +192,7 @@ export class ProgramConfiguration {
     }
 
     setBufferData(index: number, data: BufferArray) {
-        const buffer = this.buffer[index];
+        const buffer = this.buffers[index];
         if (buffer) {
             buffer.set(data);
         }
@@ -176,5 +206,18 @@ export class ProgramConfiguration {
         } else {
             this.indexBuffer = new IndexBuffer(this.gl, data);
         }
+    }
+
+    destroy() {
+        for (const buffer of this.buffers) {
+            buffer.destroy();
+        }
+        if (this.indexBuffer) this.indexBuffer.destroy();
+
+        delete this.gl;
+        delete this.attributes;
+        delete this.buffers;
+        delete this.indexBuffer;
+        delete this.binders;
     }
 }

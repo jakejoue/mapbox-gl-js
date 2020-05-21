@@ -5,7 +5,7 @@ import { Program, ProgramConfiguration } from './webgl_wrapper';
 
 type CustomLayerOptions = {
     id: string,
-    options: ProgramOptions
+    programs: ProgramOptions | Array<ProgramOptions>
 }
 
 export default class CustomLayer {
@@ -16,8 +16,8 @@ export default class CustomLayer {
     map: any;
     matrix: any;
 
-    program: Program;
-    configuration: ProgramConfiguration;
+    programs: Array<Program>;
+    configurations: Array<ProgramConfiguration>;
 
     // privite
     _options: CustomLayerOptions;
@@ -35,15 +35,49 @@ export default class CustomLayer {
     onAdd(map: any, gl: WebGLRenderingContext) {
         this.map = map;
 
-        this.program = new Program(gl, this._options.options);
-        this.configuration = ProgramConfiguration.createProgramConfiguration(this.program);
+        // 归化为数组
+        let programs = this._options.programs;
+        if (!(programs instanceof Array)) {
+            programs = [programs];
+        }
+
+        this.programs = programs.map(program => new Program(gl, program));
+        this.configurations = this.programs.map(program => ProgramConfiguration.createProgramConfiguration(program));
 
         delete this._options;
+    }
+
+    onRemove() {
+        for (let i = 0; i < this.programs.length; i++) {
+            const program = this.programs[i];
+            const configuration = this.configurations[i];
+
+            configuration.destroy();
+            program.destroy();
+        }
+        delete this.map;
+        delete this.matrix;
+        delete this.programs;
+        delete this.configurations;
     }
 
     render(gl: WebGLRenderingContext, matrix: any) {
         this.matrix = matrix;
 
-        this.program.draw(this, this.configuration);
+        for (let i = 0; i < this.programs.length; i++) {
+            const program = this.programs[i];
+            const configuration = this.configurations[i];
+
+            // 激活当前program
+            program.active();
+            // 绘制前处理
+            if (this.beforeRnder) {
+                this.beforeRnder(program, configuration);
+            }
+            // 绘制数据
+            program.draw(this, configuration);
+        }
     }
+
+    +beforeRnder: (program: Program, configuration: ProgramConfiguration) => void;
 }

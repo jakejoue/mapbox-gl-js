@@ -1,5 +1,5 @@
 // @flow
-import type { StructArrayMember } from '../../util/struct_array';
+import type { StructArrayLayout } from '../../util/struct_array';
 
 export type BufferArray = Int8Array | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array;
 
@@ -11,7 +11,6 @@ export class IndexBuffer {
 
     constructor(gl: WebGLRenderingContext, array: BufferArray) {
         this.gl = gl;
-
         this.set(array);
     }
 
@@ -68,11 +67,13 @@ export class VertexBuffer {
     gl: WebGLRenderingContext;
     buffer: WebGLBuffer;
     attributes: $ReadOnlyArray<StructArrayMember>;
+    itemSize: number;
     length: number;
 
-    constructor(gl: WebGLRenderingContext, array: BufferArray, attributes: $ReadOnlyArray<StructArrayMember>) {
+    constructor(gl: WebGLRenderingContext, array: BufferArray, layout: StructArrayLayout) {
         this.gl = gl;
-        this.attributes = attributes;
+        this.attributes = layout.members;
+        this.itemSize = layout.size;
 
         this.set(array);
     }
@@ -126,7 +127,7 @@ export class VertexBuffer {
                     member.components,
                     (gl: any)[AttributeType[member.type]],
                     false,
-                    0,
+                    this.itemSize,
                     member.offset
                 );
             }

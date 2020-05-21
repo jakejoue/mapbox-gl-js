@@ -105,7 +105,7 @@ class UniformColor extends Uniform<Color> {
     }
 
     set(v: Color | string): void {
-        v = Color.parse(v);
+        v = Color.parse(v) || Color.transparent;
 
         if (v.r !== this.current.r || v.g !== this.current.g ||
             v.b !== this.current.b || v.a !== this.current.a) {

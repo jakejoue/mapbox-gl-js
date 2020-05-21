@@ -41,6 +41,7 @@ import FreeCRSMap from './ui/freecrsmap';
 
 // GeoGlobal-customLayer-huangwei-200511 CustomLayer
 import CustomLayer from './extend/layer/custom_layer';
+import RadarLayer from './extend/layer/radar_layer';
 
 const exported = {
     version,
@@ -80,6 +81,9 @@ const exported = {
 
     // GeoGlobal-customLayer-huangwei-200511 CustomLayer
     CustomLayer,
+    customLayer: {
+        RadarLayer
+    },
 
     /**
      * Gets and sets the map's [access token](https://www.mapbox.com/help/define-access-token/).
