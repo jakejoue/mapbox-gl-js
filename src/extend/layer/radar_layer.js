@@ -19,10 +19,8 @@ uniform float u_start_angle;
 // 逆时针旋转
 uniform float u_reverse;
 uniform mat4 u_matrix;
-uniform vec4 u_color;
 
 varying float v_opacity;
-varying float v_angle;
 
 vec2 getPoint(const vec2 pos, const float angle, const float radius) {
     float x = sin(angle) * radius;
@@ -43,8 +41,12 @@ void main() {
     }
     gl_Position = u_matrix * vec4(pos, 0.0, 1.0);
 
-    v_opacity = a_opacity;
-    v_angle = a_angle;
+    // 非顶点
+    if (a_angle != -1.0 && u_reverse == 1.0) {
+        v_opacity = 1.0 - a_opacity;
+    } else {
+        v_opacity = a_opacity;
+    }
 }
 `;
 
@@ -52,21 +54,13 @@ void main() {
 const fs = `
 precision mediump float;
 
-uniform float u_reverse;
 uniform vec4 u_color;
 
 varying float v_opacity;
-varying float v_angle;
 
 void main() {
-    float opacity = v_opacity;
-    // 是否反向旋转
-    if (u_reverse == 1.0) {
-        opacity = 1.0 - v_opacity;
-    }
-
     vec4 color = u_color;
-    color.a = mix(0.01, color.a, opacity);
+    color.a = mix(0.01, color.a, v_opacity);
 
     gl_FragColor = color;
 }
