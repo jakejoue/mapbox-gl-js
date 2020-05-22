@@ -131,8 +131,6 @@ export class ProgramConfiguration {
     // uniforms变量绑定
     binders: UniformBindings;
 
-    isFreshBindRequired: boolean;
-
     // 需要绘制的顶点次数
     get vertexCount(): number {
         let num = 0;
@@ -160,18 +158,10 @@ export class ProgramConfiguration {
         this.attributes = {};
         this.buffers = buffers || [];
         this.binders = binders || {};
-
-        // 内部常量值
-        this.isFreshBindRequired = true;
     }
 
     bind(layer: any) {
-        // 绑定顶点
-        for (const buffer of this.buffers) {
-            buffer.bind();
-        }
-        // 判断是否要写入缓冲区数据
-        if (this.isFreshBindRequired) this.freshBind();
+        this.freshBind();
 
         // 绑定索引
         if (this.indexBuffer) this.indexBuffer.bind();
@@ -189,7 +179,6 @@ export class ProgramConfiguration {
             buffer.enableAttributes(this.attributes);
             buffer.setVertexAttribPointers(this.attributes);
         }
-        this.isFreshBindRequired = false;
     }
 
     setBufferData(index: number, data: BufferArray) {
@@ -197,7 +186,6 @@ export class ProgramConfiguration {
         if (buffer) {
             buffer.set(data);
         }
-        this.isFreshBindRequired = true;
     }
 
     setIndexData(data: BufferArray) {

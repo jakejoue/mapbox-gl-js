@@ -18,6 +18,8 @@ export class IndexBuffer {
         const gl = this.gl;
         this.destroy();
 
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+
         this.buffer = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, array, gl.STATIC_DRAW);
@@ -81,6 +83,8 @@ export class VertexBuffer {
     set(array: BufferArray) {
         const gl = this.gl;
         this.destroy();
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
         this.buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
