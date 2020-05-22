@@ -59,8 +59,7 @@ uniform vec4 u_color;
 varying float v_opacity;
 
 void main() {
-    vec4 color = u_color;
-    color.a = mix(0.01, color.a, v_opacity);
+    vec4 color = u_color * v_opacity;
 
     gl_FragColor = color;
 }

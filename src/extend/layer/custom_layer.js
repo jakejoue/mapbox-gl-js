@@ -70,14 +70,22 @@ export default class CustomLayer {
 
             // 激活当前program
             program.active();
+
             // 绘制前处理
-            if (this.beforeRnder) {
-                this.beforeRnder(program, configuration);
+            if (this.beforeRender) {
+                this.beforeRender(program, configuration);
             }
+
             // 绘制数据
             program.draw(this, configuration);
+
+            // 绘制后处理
+            if (this.afterRender) {
+                this.afterRender(program, configuration);
+            }
         }
     }
 
-    +beforeRnder: (program: Program, configuration: ProgramConfiguration) => void;
+    +beforeRender: (program: Program, configuration: ProgramConfiguration) => void;
+    +afterRender: (program: Program, configuration: ProgramConfiguration) => void;
 }
