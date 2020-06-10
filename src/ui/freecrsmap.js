@@ -24,12 +24,13 @@ export default class FreeCRSMap extends Map {
                 options.projection = get(mapCRS);
             } else {
                 // 通过对象构建坐标系
-                const { topTileExtent, resolutions, tileSize, units: crsUnits2 } = mapCRS;
+                const { topTileExtent, resolutions, tileSize, units: crsUnits2, validlatRange } = mapCRS;
                 options.projection = new Projection({
                     code: 'mapcrs',
                     units: crsUnits2 || units,
                     extent: topTileExtent || [-180, -90, 180, 90],
                     resolutions,
+                    validlatRange,
                     // GeoGlobal-tileSize-huangwei-191113
                     tileSize: tileSize || window.GEOGLOBE_TILESIZE || 512
                 });
