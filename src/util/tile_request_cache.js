@@ -73,9 +73,10 @@ function stripQueryParameters(url: string) {
         const start = url.indexOf('?');
         return start < 0 ? url : url.slice(0, start);
     } else {
-        // 去除可能存在的proxy
+        // 去除可能存在的proxy和特殊字符转义
         const urlArr = url.split('?');
-        return urlArr.length > 2 ? urlArr.slice(1).join('?') : url;
+        const newUrl = urlArr.length > 2 ? urlArr.slice(1).join('?') : url;
+        return decodeURI(newUrl);
     }
 }
 

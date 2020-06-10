@@ -8,6 +8,7 @@ const vs = `
 precision mediump float;
 
 attribute vec3 a_pos;
+attribute vec2 a_uv;
 
 uniform float u_radius;
 uniform vec2 u_pos;
@@ -34,16 +35,19 @@ uniform vec4 u_color;
 
 varying vec3 v_pos;
 
+// 菲涅耳公式常量
+const float _fresnelBase = 0.01;
+const float _fresnelScale = 1.5;
+const float _fresnelIndensity = 3.0;
+
 void main() {
-    // float dis = distance(v_pos.xy, vec2(0.0, 0.0));
+    float N = 1.0 - abs(v_pos.x);
+    float V = 1.0 - abs(v_pos.y);
+    
+    // 菲涅耳公式
+    float fresnel = _fresnelBase + _fresnelScale * pow(1.0 - dot(N, V), _fresnelIndensity);
 
-    vec4 color = u_color;
-    gl_FragColor = u_color * pow(v_pos.x, 2.0);
-
-    if (v_pos.z <= 0.5) {
-        float z = (1.0 - v_pos.z) * 0.5;
-        gl_FragColor = u_color * pow(z, 2.0);
-    }
+    gl_FragColor = u_color * fresnel;
 }
 `;
 
@@ -51,8 +55,8 @@ type ShieldLayerOptions = {
     id: string,
     position: [number, number],
     radius: number,
-    color: ?string,
-    num: ?number
+    color: string,
+    num: number
 }
 
 class ShieldLayer extends CustomLayer {
@@ -63,7 +67,7 @@ class ShieldLayer extends CustomLayer {
             throw new Error('ShieldLayer：缺少必备参数');
         }
 
-        const { attributes: { POSITION }, indices } = tesselateSphere({ nlat: num, nlong: num * 2, endLong: Math.PI });
+        const { attributes: { POSITION, TEXCOORD_0 }, indices } = tesselateSphere({ nlat: num, nlong: num * 2, endLong: Math.PI });
 
         super({
             id,
@@ -76,11 +80,17 @@ class ShieldLayer extends CustomLayer {
                             { name: "a_pos", type: "Float32", components: 3 }
                         ],
                         data: POSITION.value
+                    },
+                    {
+                        members: [
+                            { name: "a_uv", type: "Float32", components: 2 }
+                        ],
+                        data: TEXCOORD_0.value
                     }
                 ],
                 uniforms: [
                     {
-                        name: "u_pos", type: "2f", accessor: layer => {
+                        name: "u_pos", type: "2f", accessor: (layer: any) => {
                             const transform = layer.map.projection.getTransform();
                             const x = transform.mercatorXfromLng(position[0]);
                             const y = transform.mercatorYfromLat(position[1]);
@@ -88,13 +98,13 @@ class ShieldLayer extends CustomLayer {
                         }
                     },
                     {
-                        name: "u_radius", type: "1f", accessor: layer => {
+                        name: "u_radius", type: "1f", accessor: (layer: any) => {
                             const transform = layer.map.projection.getTransform();
                             return transform.mercatorZfromAltitude(radius, position[1]);
                         }
                     },
                     { name: "u_color", type: "color", accessor: color },
-                    { name: "u_matrix", type: "mat4", accessor: layer => layer.matrix }
+                    { name: "u_matrix", type: "mat4", accessor: (layer: any) => layer.matrix }
                 ],
             }
         });

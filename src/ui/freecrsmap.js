@@ -1,6 +1,8 @@
 // @flow
 import Map from './map';
 import { get, Projection } from '../extend/proj';
+// GeoGlobal-tileSize-huangwei-191113
+import window from '../util/browser/window';
 
 /**
  * @description 用于兼容GeoGlobeAPI的类
@@ -28,7 +30,8 @@ export default class FreeCRSMap extends Map {
                     units: crsUnits2 || units,
                     extent: topTileExtent || [-180, -90, 180, 90],
                     resolutions,
-                    tileSize
+                    // GeoGlobal-tileSize-huangwei-191113
+                    tileSize: tileSize || window.GEOGLOBE_TILESIZE || 512
                 });
             }
         }

@@ -69,7 +69,9 @@ class Transform {
 
         // GeoGlobal-coord-huangwei-191105
         // this.maxValidLatitude = 85.051129; // constant
-        [this.minValidLatitude, this.maxValidLatitude] = this.projection.getValidlatRange();
+        const [minValidLatitude, maxValidLatitude] = this.projection.getValidlatRange();
+        this.minValidLatitude = minValidLatitude;
+        this.maxValidLatitude = maxValidLatitude;
 
         this._renderWorldCopies = renderWorldCopies === undefined ? true : renderWorldCopies;
         this._minZoom = minZoom || 0;

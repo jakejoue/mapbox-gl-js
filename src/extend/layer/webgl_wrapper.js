@@ -27,7 +27,7 @@ export type AttributeArray = Array<{
 export type UniformArray = Array<{
     name: string,
     type: '1i' | '1f' | '2f' | '3f' | '4f' | 'color' | 'mat4',
-    accessor?: () => any | any
+    accessor?: any
 }>;
 
 export type ProgramOptions = {
@@ -55,7 +55,7 @@ export class Program {
         this.options = options;
 
         this.id = options.id;
-        this.drawMode = GL[options.drawMode] !== undefined ? GL[options.drawMode] : GL.TRIANGLES;
+        this.drawMode = GL[(options.drawMode: any)] !== undefined ? GL[options.drawMode] : GL.TRIANGLES;
 
         this.gl = gl;
         this.program = initShader(gl, options.vs, options.fs);

@@ -69,10 +69,10 @@
                 .then(data => {
                     const { layer, source } = data;
 
-                    if (layer.sprite != null && layer.sprite != "") {
+                    if (layer.sprite != null && layer.sprite !== "") {
                         map.style.loadSprite(layer.sprite);
                     }
-                    if (layer.glyphs != null && layer.glyphs != "") {
+                    if (layer.glyphs != null && layer.glyphs !== "") {
                         map.style.setGlyphs(layer.glyphs);
                     }
 
@@ -80,7 +80,7 @@
                     if (map.style.glyphManager.url !== "") {
                         map.addSource(source.id, source);
 
-                        for (let key in layer.layerData) {
+                        for (const key in layer.layerData) {
                             map.addLayer(layer.layerData[key]);
                         }
                     } else {

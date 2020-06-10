@@ -6,14 +6,14 @@ class Uniform<T> {
     gl: WebGLRenderingContext;
     location: ?WebGLUniformLocation;
     current: T;
-    accessor: ?T | (layer: any) => T;
+    accessor: any;
 
     constructor(gl: WebGLRenderingContext, location: WebGLUniformLocation) {
         this.gl = gl;
         this.location = location;
     }
 
-    update(layer) {
+    update(layer: any) {
         if (!this.accessor) return;
 
         let v = this.accessor;
@@ -105,7 +105,7 @@ class UniformColor extends Uniform<Color> {
     }
 
     set(v: Color | string): void {
-        v = Color.parse(v) || Color.transparent;
+        v = Color.parse((v: any)) || Color.transparent;
 
         if (v.r !== this.current.r || v.g !== this.current.g ||
             v.b !== this.current.b || v.a !== this.current.a) {
