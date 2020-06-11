@@ -94,7 +94,7 @@
             };
 
             map.on("load", () => {
-                map.showTileBoundaries = true;
+                // map.showTileBoundaries = true;
 
                 map.addSource("line", {
                     type: "geojson",
@@ -109,6 +109,7 @@
                     paint: {
                         "line-color": "red",
                         "line-width": 14,
+                        'line-height': 50,
                         "line-gradient": [
                             "interpolate",
                             ["linear"],

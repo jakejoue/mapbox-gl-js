@@ -28,6 +28,7 @@ varying highp float v_lineprogress;
 #pragma mapbox: define mediump float gapwidth
 #pragma mapbox: define lowp float offset
 #pragma mapbox: define mediump float width
+#pragma mapbox: define highp float height
 
 void main() {
     #pragma mapbox: initialize lowp float blur
@@ -35,6 +36,7 @@ void main() {
     #pragma mapbox: initialize mediump float gapwidth
     #pragma mapbox: initialize lowp float offset
     #pragma mapbox: initialize mediump float width
+    #pragma mapbox: initialize highp float height
 
     // the distance over which the line edge fades out.
     // Retina devices need a smaller distance to avoid aliasing.
@@ -76,7 +78,7 @@ void main() {
     mediump vec2 offset2 = offset * a_extrude * scale * normal.y * mat2(t, -u, u, t);
 
     vec4 projected_extrude = u_matrix * vec4(dist / u_ratio, 0.0, 0.0);
-    gl_Position = u_matrix * vec4(pos + offset2 / u_ratio, 0.0, 1.0) + projected_extrude;
+    gl_Position = u_matrix * vec4(pos + offset2 / u_ratio, height, 1.0) + projected_extrude;
 
     // calculate how much the perspective view squishes or stretches the extrude
     float extrude_length_without_perspective = length(dist);

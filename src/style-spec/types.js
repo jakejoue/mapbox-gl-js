@@ -206,7 +206,9 @@ export type LineLayerSpecification = {|
         "line-blur"?: DataDrivenPropertyValueSpecification<number>,
         "line-dasharray"?: PropertyValueSpecification<Array<number>>,
         "line-pattern"?: DataDrivenPropertyValueSpecification<string>,
-        "line-gradient"?: ExpressionSpecification
+        "line-gradient"?: ExpressionSpecification,
+        // GeoGlobal-line-height-huangwei-200611
+        "line-height"?: DataDrivenPropertyValueSpecification<number>
     |}
 |}
 
