@@ -36,13 +36,13 @@ uniform vec4 u_color;
 varying vec3 v_pos;
 
 // 菲涅耳公式常量
-const float _fresnelBase = 0.01;
-const float _fresnelScale = 1.5;
-const float _fresnelIndensity = 3.0;
+const float _fresnelBase = 0.1;
+const float _fresnelScale = 1.0;
+const float _fresnelIndensity = 20.0;
 
 void main() {
-    float N = 1.0 - abs(v_pos.x);
-    float V = 1.0 - abs(v_pos.y);
+    float N = 1.0 - length(v_pos.xy);
+    float V = 1.0 - abs(v_pos.z);
     
     // 菲涅耳公式
     float fresnel = _fresnelBase + _fresnelScale * pow(1.0 - dot(N, V), _fresnelIndensity);
@@ -61,7 +61,7 @@ type ShieldLayerOptions = {
 
 class ShieldLayer extends CustomLayer {
     constructor(options: ShieldLayerOptions) {
-        const { id, position, radius, color, num = 15 } = options;
+        const { id, position, radius, color, num = 25 } = options;
 
         if (!(id && position && radius && color)) {
             throw new Error('ShieldLayer：缺少必备参数');
