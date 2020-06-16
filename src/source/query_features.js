@@ -19,18 +19,21 @@ function getPixelPosMatrix(transform, tileID) {
     return mat4.multiply(t, t, transform.calculatePosMatrix(tileID.toUnwrapped()));
 }
 
+// GeoGlobal-3dLayers-huangwei-200611 3D类型图层
+const THREEDLAYERS = ['fill-extrusion', 'line'];
+
 function queryIncludes3DLayer(layers?: Array<string>, styleLayers: {[string]: StyleLayer}, sourceID: string) {
     if (layers) {
         for (const layerID of layers) {
             const layer = styleLayers[layerID];
-            if (layer && layer.source === sourceID && layer.type === 'fill-extrusion') {
+            if (layer && layer.source === sourceID && THREEDLAYERS.includes(layer.type)) {
                 return true;
             }
         }
     } else {
         for (const key in styleLayers) {
             const layer = styleLayers[key];
-            if (layer.source === sourceID && layer.type === 'fill-extrusion') {
+            if (layer.source === sourceID && THREEDLAYERS.includes(layer.type)) {
                 return true;
             }
         }
