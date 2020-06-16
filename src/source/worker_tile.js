@@ -56,7 +56,7 @@ class WorkerTile {
         this.pixelRatio = params.pixelRatio;
         this.tileSize = params.tileSize;
         // GeoGlobal-tileSize-huangwei-191225 传递原始tileSize
-        this.originTileSize = params.originTileSize;
+        this.originTileSize = params.originTileSize || 512;
         this.source = params.source;
         this.overscaling = this.tileID.overscaleFactor();
         this.showCollisionBoxes = params.showCollisionBoxes;
