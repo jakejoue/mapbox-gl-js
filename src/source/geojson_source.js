@@ -399,6 +399,8 @@ class GeoJSONSource extends Evented implements Source {
             zoom: tile.tileID.overscaledZ,
             maxZoom: this.maxzoom,
             tileSize: this.tileSize,
+            // GeoGlobal-tileSize-huangwei-191225 传递原始tileSize
+            originTileSize: this.tileSize,
             source: this.id,
             pixelRatio: browser.devicePixelRatio,
             showCollisionBoxes: this.map.showCollisionBoxes
