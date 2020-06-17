@@ -4,7 +4,7 @@
 // copyright 2011 Google Inc. new BSD License
 // (http://www.opensource.org/licenses/bsd-license.php).
 /* eslint-disable max-statements, complexity */
-function tesselateSphere(props) {
+function tesselateSphere(props: any) {
     const { nlat = 10, nlong = 10, startLong = 0, endLong = 2 * Math.PI } = props;
     let { radius = 1 } = props;
 
@@ -46,7 +46,7 @@ function tesselateSphere(props) {
             const uy = cosPhi;
             const uz = sinTheta * sinPhi;
 
-            const r = radius(ux, uy, uz, u, v);
+            const r = (radius: any)(ux, uy, uz, u, v);
 
             positions[i3 + 0] = r * ux;
             positions[i3 + 1] = r * uy;

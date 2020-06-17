@@ -1279,12 +1279,12 @@ class Style extends Evented {
         this._spriteRequest = loadSprite(sprite, this.map._requestManager, (err, images) => {
             this._spriteRequest = null;
             if (err) {
-                this.fire('error', err);
+                this.fire(new ErrorEvent(err));
             } else if (images) {
                 for (const id in images) {
                     const imgid = imgPrefix + id;
                     if (this.imageManager.getImage(imgid)) {
-                        this.fire('error', {error: new Error('An image with this name already exists.')});
+                        this.fire(new ErrorEvent('An image with this name already exists.'));
                         continue;
                     }
                     this.imageManager.addImage(imgid, images[id]);

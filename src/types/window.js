@@ -170,4 +170,6 @@ export interface Window extends EventTarget, IDBEnvironment {
     msCancelAnimationFrame(handle: number): void;
     webkitRequestAnimationFrame(callback: (timestamp: number) => void): number;
     webkitCancelAnimationFrame(handle: number): void;
+
+    GEOGLOBE_TILESIZE?: number;
 }

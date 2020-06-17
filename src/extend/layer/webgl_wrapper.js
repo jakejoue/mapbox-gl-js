@@ -55,7 +55,7 @@ export class Program {
         this.options = options;
 
         this.id = options.id;
-        this.drawMode = GL[(options.drawMode: any)] !== undefined ? GL[options.drawMode] : GL.TRIANGLES;
+        this.drawMode = GL[(options.drawMode: any)] !== undefined ? GL[(options.drawMode: any)] : GL.TRIANGLES;
 
         this.gl = gl;
         this.program = initShader(gl, options.vs, options.fs);

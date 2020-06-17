@@ -1,6 +1,6 @@
 // @flow
 
-function circle({ radius = 1, segments = 3, thetaStart = 0, thetaLength = Math.PI / 6 }) {
+function circle({ radius = 1, segments = 3, thetaStart = 0, thetaLength = Math.PI / 6 }: any) {
     segments = segments !== undefined ? Math.max(3, segments) : 8;
 
     // buffers

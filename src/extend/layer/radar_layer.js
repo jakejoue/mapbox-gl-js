@@ -71,7 +71,7 @@ function createSector({
     num = 5,
     // 扇形的弧度
     angle = Math.PI / 6,
-}) {
+}: { num: number, angle: number }) {
     // 顶点个数
     const numVertices = num + 1;
     const numPolygon = num - 1;
@@ -118,7 +118,7 @@ class RadarLayer extends CustomLayer {
             throw new Error('radarLayer：缺少必备参数');
         }
 
-        const { POSITION, INDICES } = createSector({ num, angle });
+        const { POSITION, INDICES } = createSector(({ num, angle }: any));
         let startRadius = 0;
 
         super({
@@ -162,6 +162,10 @@ class RadarLayer extends CustomLayer {
                 ],
             }
         });
+    }
+
+    afterRender() {
+        this.map.triggerRepaint();
     }
 }
 

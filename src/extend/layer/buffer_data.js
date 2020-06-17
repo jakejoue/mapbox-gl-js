@@ -1,5 +1,5 @@
 // @flow
-import type { StructArrayLayout } from '../../util/struct_array';
+import type { StructArrayLayout, StructArrayMember } from '../../util/struct_array';
 
 export type BufferArray = Int8Array | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array | Float32Array;
 
