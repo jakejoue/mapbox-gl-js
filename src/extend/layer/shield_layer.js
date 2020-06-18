@@ -3,25 +3,21 @@ import CustomLayer from './custom_layer';
 
 import tesselateSphere from './geometry/sphere';
 
+import { mat4 } from 'gl-matrix';
+
 // 顶点着色器
 const vs = `
 precision mediump float;
 
 attribute vec3 a_pos;
-attribute vec2 a_uv;
 
-uniform float u_radius;
-uniform vec2 u_pos;
+uniform mat4 u_obj_matrix;
 uniform mat4 u_matrix;
 
 varying vec3 v_pos;
 
 void main() {
-    // 缩放和平移
-    vec3 pos = a_pos * u_radius;
-    pos.xy += u_pos;
-
-    gl_Position = u_matrix * vec4(pos, 1.0);
+    gl_Position = u_matrix * u_obj_matrix * vec4(a_pos, 1.0);
 
     v_pos = a_pos;
 }
@@ -67,7 +63,8 @@ class ShieldLayer extends CustomLayer {
             throw new Error('ShieldLayer：缺少必备参数');
         }
 
-        const { attributes: { POSITION, TEXCOORD_0 }, indices } = tesselateSphere({ nlat: num, nlong: num * 2, endLong: Math.PI });
+        const { attributes: { POSITION }, indices } = tesselateSphere({ nlat: num, nlong: num * 2, endLong: Math.PI });
+        let objm = null;
 
         super({
             id,
@@ -80,30 +77,30 @@ class ShieldLayer extends CustomLayer {
                             { name: "a_pos", type: "Float32", components: 3 }
                         ],
                         data: POSITION.value
-                    },
-                    {
-                        members: [
-                            { name: "a_uv", type: "Float32", components: 2 }
-                        ],
-                        data: TEXCOORD_0.value
                     }
                 ],
                 uniforms: [
-                    {
-                        name: "u_pos", type: "2f", accessor: (layer: any) => {
-                            const transform = layer.map.projection.getTransform();
-                            const x = transform.mercatorXfromLng(position[0]);
-                            const y = transform.mercatorYfromLat(position[1]);
-                            return [x, y];
-                        }
-                    },
-                    {
-                        name: "u_radius", type: "1f", accessor: (layer: any) => {
-                            const transform = layer.map.projection.getTransform();
-                            return transform.mercatorZfromAltitude(radius, position[1]);
-                        }
-                    },
                     { name: "u_color", type: "color", accessor: color },
+                    {
+                        name: "u_obj_matrix", type: "mat4", accessor: (layer: any) => {
+                            if (!objm) {
+                                const transform = layer.map.projection.getTransform();
+                                const x = transform.mercatorXfromLng(position[0]);
+                                const y = transform.mercatorYfromLat(position[1]);
+                                const scale = transform.mercatorZfromAltitude(radius, position[1]);
+
+                                const m = mat4.create();
+                                // 平移
+                                mat4.translate(m, m, [x, y, 0]);
+
+                                // 缩放
+                                mat4.scale(m, m, [scale, -scale, scale]);
+
+                                objm = m;
+                            }
+                            return objm;
+                        }
+                    },
                     { name: "u_matrix", type: "mat4", accessor: (layer: any) => layer.matrix }
                 ],
             }
@@ -113,7 +110,7 @@ class ShieldLayer extends CustomLayer {
     beforeRender(program: any) {
         const gl = program.gl;
         gl.enable(gl.CULL_FACE);
-        gl.cullFace(gl.FRONT);
+        gl.cullFace(gl.BACK);
     }
 
     afterRender(program: any) {

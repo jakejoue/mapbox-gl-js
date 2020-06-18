@@ -43,6 +43,7 @@ import FreeCRSMap from './ui/freecrsmap';
 import CustomLayer from './extend/layer/custom_layer';
 import RadarLayer from './extend/layer/radar_layer';
 import ShieldLayer from './extend/layer/shield_layer';
+import ImageCircle from './extend/layer/image_circle_layer';
 
 const exported = {
     version,
@@ -82,9 +83,10 @@ const exported = {
 
     // GeoGlobal-customLayer-huangwei-200511 CustomLayer
     CustomLayer,
-    customLayer: {
+    custom: {
         RadarLayer,
-        ShieldLayer
+        ShieldLayer,
+        ImageCircle
     },
 
     /**

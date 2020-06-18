@@ -17,7 +17,7 @@ uniform float u_radius;
 // 起始弧度
 uniform float u_start_angle;
 // 逆时针旋转
-uniform float u_reverse;
+uniform bool u_reverse;
 uniform mat4 u_matrix;
 
 varying float v_opacity;
@@ -34,7 +34,7 @@ void main() {
         // 旋转方向
         float angle = u_start_angle + a_angle;
         // 是否反向旋转
-        if (u_reverse == 1.0) {
+        if (u_reverse) {
             angle = -u_start_angle + a_angle;
         }
         pos = getPoint(u_pos, angle, u_radius);
@@ -42,7 +42,7 @@ void main() {
     gl_Position = u_matrix * vec4(pos, 0.0, 1.0);
 
     // 非顶点
-    if (a_angle != -1.0 && u_reverse == 1.0) {
+    if (a_angle != -1.0 && u_reverse) {
         v_opacity = 1.0 - a_opacity;
     } else {
         v_opacity = a_opacity;
@@ -156,7 +156,7 @@ class RadarLayer extends CustomLayer {
                             return startRadius / 180 * (Math.PI * 2);
                         }
                     },
-                    { name: "u_reverse", type: "1f", accessor: +Boolean(reverse) },
+                    { name: "u_reverse", type: "1i", accessor: +Boolean(reverse) },
                     { name: "u_color", type: "color", accessor: color },
                     { name: "u_matrix", type: "mat4", accessor: layer => layer.matrix }
                 ],

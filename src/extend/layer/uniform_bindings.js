@@ -115,6 +115,35 @@ class UniformColor extends Uniform<Color> {
     }
 }
 
+class UniformImage extends Uniform<Image> {
+    texture: WebGLTexture;
+
+    constructor(gl: WebGLRenderingContext, location: WebGLUniformLocation) {
+        super(gl, location);
+        this.current = new Image();
+        this.texture = gl.createTexture();
+    }
+
+    set(v: Image): void {
+        const gl = this.gl;
+
+        // Flip the image's y axis
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+        // Enable texture unit0
+        gl.activeTexture(gl.TEXTURE0);
+        // Bind the texture object to the target
+        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+
+        // Set the texture parameters
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        // Set the texture image
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, v);
+
+        // Set the texture unit 0 to the sampler
+        gl.uniform1i(this.location, 0);
+    }
+}
+
 const emptyMat4 = new Float32Array(16);
 class UniformMatrix4f extends Uniform<Float32Array> {
     constructor(gl: WebGLRenderingContext, location: WebGLUniformLocation) {
@@ -148,6 +177,7 @@ export default {
     '3f': Uniform3f,
     '4f': Uniform4f,
     'color': UniformColor,
+    'image': UniformImage,
     'mat4': UniformMatrix4f,
 };
 
