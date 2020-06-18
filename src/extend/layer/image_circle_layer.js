@@ -1,4 +1,6 @@
 // @flow
+import window from '../../util/window';
+
 import CustomLayer from './custom_layer';
 
 import { mat4 } from 'gl-matrix';
@@ -10,15 +12,18 @@ precision mediump float;
 attribute vec2 a_pos;
 
 varying vec2 v_pos;
+varying vec2 v_uv;
 
 // 对象转换方式
-uniform mat4 u_obj_matrix;
 uniform mat4 u_matrix;
+uniform mat4 u_obj_matrix;
+uniform mat4 u_rotate_matrix;
 
 void main() {
-    gl_Position = u_matrix * u_obj_matrix * vec4(a_pos, 0.0, 1.0);
+    gl_Position = u_matrix * u_obj_matrix * u_rotate_matrix * vec4(a_pos, 0.0, 1.0);
 
     v_pos = a_pos;
+    v_uv = a_pos * 0.5 + vec2(0.5, 0.5);
 }
 `;
 
@@ -27,15 +32,18 @@ const fs = `
 precision mediump float;
 
 varying vec2 v_pos;
+varying vec2 v_uv;
 
-// uniform vec4 u_color;
+uniform sampler2D u_sampler;
+uniform vec4 u_color;
 
 void main() {
     if (length(v_pos) > 1.0) {
         discard;
     }
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-    // gl_FragColor = u_color;
+
+    vec4 color = texture2D(u_sampler, v_uv);
+    gl_FragColor = color * u_color;
 }
 `;
 
@@ -43,21 +51,31 @@ type ImageCircleOptions = {
     id: string,
     position: [number, number],
     radius: number,
-    reverse: ?boolean,
-    color: ?string
+    url: string,
+    color: ?string,
+    reverse: ?boolean
 }
 
 class ImageCircle extends CustomLayer {
-    constructor(options: ImageCircleOptions) {
-        const { id, position, radius, reverse = false, color } = options;
+    imageLoaded: boolean;
 
-        if (!(id && position && radius && color)) {
-            throw new Error('radarLayer：缺少必备参数');
+    constructor(options: ImageCircleOptions) {
+        const { id, position, radius, url, color = "white", reverse = false } = options;
+
+        if (!(id && position && radius && url)) {
+            throw new Error('ImageCircle：缺少必备参数');
         }
 
-        const startRadius = 0;
+        // 加载贴图图片
+        const image = new window.Image();
+        image.onload = () => {
+            this.imageLoaded = true;
+        };
+        image.src = url;
 
+        // 定义需要用到的变换矩阵
         let objm = null;
+        let timer = 0;
 
         super({
             id,
@@ -85,13 +103,8 @@ class ImageCircle extends CustomLayer {
                     },
                 ],
                 uniforms: [
-                    // {
-                    //     name: "u_start_angle", type: "1f", accessor: () => {
-                    //         startRadius += 1;
-                    //         return startRadius / 180 * (Math.PI * 2);
-                    //     }
-                    // },
-                    // { name: "u_color", type: "color", accessor: color },
+                    { name: "u_color", type: "color", accessor: color },
+                    { name: "u_sampler", type: "image", accessor: image },
                     {
                         name: "u_obj_matrix", type: "mat4", accessor: layer => {
                             if (!objm) {
@@ -113,10 +126,31 @@ class ImageCircle extends CustomLayer {
                             return objm;
                         }
                     },
+                    {
+                        name: "u_rotate_matrix", type: "mat4", accessor: () => {
+                            const m = mat4.create();
+
+                            timer += reverse ? 1 : -1;
+                            mat4.rotateZ(m, m, timer / 180 * Math.PI);
+
+                            return m;
+                        }
+                    },
                     { name: "u_matrix", type: "mat4", accessor: layer => layer.matrix }
                 ],
             }
         });
+
+    }
+
+    render(gl: WebGLRenderingContext, matrix: any) {
+        if (this.imageLoaded) {
+            super.render(gl, matrix);
+        }
+    }
+
+    afterRender() {
+        this.map.triggerRepaint();
     }
 }
 

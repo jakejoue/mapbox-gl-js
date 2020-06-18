@@ -127,20 +127,29 @@ class UniformImage extends Uniform<Image> {
     set(v: Image): void {
         const gl = this.gl;
 
-        // Flip the image's y axis
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-        // Enable texture unit0
-        gl.activeTexture(gl.TEXTURE0);
-        // Bind the texture object to the target
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        if (this.current !== v) {
+            // Enable texture unit0
+            gl.activeTexture(gl.TEXTURE0);
+            // Bind the texture object to the target
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
-        // Set the texture parameters
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-        // Set the texture image
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, v);
+            // Flip the image's y axis
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+            // rbg乘以a分量
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+            // Set the texture parameters
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            // Set the texture image
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, v);
 
-        // Set the texture unit 0 to the sampler
-        gl.uniform1i(this.location, 0);
+            this.current = v;
+
+            // Set the texture unit 0 to the sampler
+            gl.uniform1i(this.location, 0);
+        } else {
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        }
     }
 }
 

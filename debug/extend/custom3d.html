@@ -17,6 +17,7 @@
             body,
             #map {
                 height: 100%;
+                background-color: black;
             }
         </style>
     </head>
@@ -32,7 +33,7 @@
                 projection: "4326",
                 center: [114.43479371391822, 30.462614537827378],
                 zoom: 13,
-                // pitch: 60,
+                pitch: 60,
                 style: {
                     version: 8,
                     sources: {
@@ -56,17 +57,17 @@
             }));
 
             map.on("load", function () {
-                // map.addLayer(
-                //     new mapboxgl.custom.RadarLayer({
-                //         id: "radar",
-                //         position: [114.40630698285497, 30.460335067623575],
-                //         radius: 1000,
-                //         color: "rgba(0, 128, 255, 0.6)",
-                //         // 扇形弧度 和 扇形边的点
-                //         angle: Math.PI / 3,
-                //         num: 30,
-                //     })
-                // );
+                map.addLayer(
+                    new mapboxgl.custom.RadarLayer({
+                        id: "radar",
+                        position: [114.40630698285497, 30.460335067623575],
+                        radius: 1000,
+                        color: "rgba(0, 128, 255, 0.6)",
+                        // 扇形弧度 和 扇形边的点
+                        angle: Math.PI / 3,
+                        num: 30,
+                    })
+                );
 
                 map.addLayer(
                     new mapboxgl.custom.ShieldLayer({
@@ -82,9 +83,10 @@
                         id: "image-circle-1",
                         position: [114.43479371391822, 30.462614537827378],
                         radius: 1000,
-                        color: "rgba(0, 128, 255, 0.6)",
+                        url: "../test/textures/circular.png",
+                        color: "red",
                         // 是否为逆时针旋转
-                        reverse: true,
+                        // reverse: true,
                     })
                 );
 
