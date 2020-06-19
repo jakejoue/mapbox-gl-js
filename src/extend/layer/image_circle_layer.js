@@ -66,12 +66,8 @@ class ImageCircle extends CustomLayer {
             throw new Error('ImageCircle：缺少必备参数');
         }
 
-        // 加载贴图图片
+        // 定义要加载的图片
         const image = new window.Image();
-        image.onload = () => {
-            this.imageLoaded = true;
-        };
-        image.src = url;
 
         // 定义需要用到的变换矩阵
         let objm = null;
@@ -141,6 +137,11 @@ class ImageCircle extends CustomLayer {
             }
         });
 
+        // 加载纹理
+        image.onload = () => {
+            this.imageLoaded = true;
+        };
+        image.src = url;
     }
 
     render(gl: WebGLRenderingContext, matrix: any) {

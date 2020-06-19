@@ -26,7 +26,7 @@ export type AttributeArray = Array<{
 
 export type UniformArray = Array<{
     name: string,
-    type: '1i' | '1f' | '2f' | '3f' | '4f' | 'color' | 'mat4',
+    type: '1i' | '1f' | '2f' | '3f' | '4f' | 'color' | 'image' | 'mat4',
     accessor?: any
 }>;
 

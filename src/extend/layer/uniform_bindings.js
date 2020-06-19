@@ -136,7 +136,7 @@ class UniformImage extends Uniform<Image> {
             // Flip the image's y axis
             gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
             // rbg乘以a分量
-            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
             // Set the texture parameters
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
             // Set the texture image
