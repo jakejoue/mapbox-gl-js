@@ -68,6 +68,7 @@ class ImageCircle extends CustomLayer {
 
         // 定义要加载的图片
         const image = new window.Image();
+        image.crossOrigin = 'anonymous';
 
         // 定义需要用到的变换矩阵
         let objm = null;
