@@ -8,7 +8,9 @@ import type Map from '../map';
 
 type Options = {
     compact?: boolean,
-    customAttribution?: string | Array<string>
+    customAttribution?: string | Array<string>,
+    // GeoGlobal-attribute-huangwei-191111 自定义dom内容
+    map_attr?: string
 };
 
 /**

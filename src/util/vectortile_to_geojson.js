@@ -9,9 +9,7 @@ import VectorTileFeature2 from '../extend/vector_tile_feature2';
 class Feature {
     type: 'Feature';
     _geometry: ?GeoJSONGeometry;
-    properties: {
-        _metadataId?: string
-    };
+    properties: any;
     id: number | string | void;
 
     // GeoGlobal-vector2geojson-huangwei-191111 坐标系
@@ -39,9 +37,9 @@ class Feature {
             // GeoGlobal-vector2geojson-huangwei-191111 转换为Geojson传递坐标系
             this._geometry = VectorTileFeature2.prototype.toGeoJSON.call(
                 this._vectorTileFeature,
-                this._vectorTileFeature._x,
-                this._vectorTileFeature._y,
-                this._vectorTileFeature._z,
+                (this._vectorTileFeature: any)._x,
+                (this._vectorTileFeature: any)._y,
+                (this._vectorTileFeature: any)._z,
                 this._projection
             ).geometry;
 
@@ -77,7 +75,7 @@ class Feature {
                     i === 'geometry' ||
                     i === 'properties')
                     continue;
-                feature[i] = this[i];
+                feature[i] = (this: any)[i];
             }
             return feature;
         }
