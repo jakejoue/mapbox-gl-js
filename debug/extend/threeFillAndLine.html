@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapbox GL JS debug page</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <link rel="stylesheet" href="../../dist/mapbox-gl.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <script src="../../dist/mapbox-gl-dev.js"></script>
+        <script src="../access_token_generated.js"></script>
+        <script src="./indoor-3d-map.js"></script>
+        <script>
+            var map = (window.map = new mapboxgl.Map({
+                container: "map",
+                projection: "EPSG:4326",
+                center: [-87.616941, 41.8661978],
+                zoom: 17,
+                pitch: 30,
+                antialias: true,
+                style: {
+                    version: 8,
+                    sources: {},
+                    layers: [],
+                },
+                renderWorldCopies: true,
+                isIntScrollZoom: true,
+                skipLevelOfZooming: true,
+            }));
+
+            map.on("load", function () {
+                // bc layer
+                map.addLayer({
+                    id: "background",
+                    type: "background",
+                    paint: {
+                        "background-color": "#262626",
+                    },
+                });
+
+                map.addSource("geoJsonSource", {
+                    type: "geojson",
+                    data: window.geojson,
+                });
+
+                // fill-extrusion layer
+                map.addLayer({
+                    id: "room-extrusion",
+                    type: "fill-extrusion",
+                    source: "geoJsonSource",
+                    paint: {
+                        "fill-extrusion-color": "#66ffcc",
+                        "fill-extrusion-height": 40,
+                    },
+                });
+
+                // line-layer
+                map.addLayer({
+                    id: "room-line",
+                    type: "line",
+                    source: "geoJsonSource",
+                    paint: {
+                        "line-height": 40,
+                    },
+                });
+            });
+        </script>
+    </body>
+</html>
