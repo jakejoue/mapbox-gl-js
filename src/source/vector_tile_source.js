@@ -62,7 +62,8 @@ class VectorTileSource extends Evented implements Source {
         this._loaded = false;
 
         // GeoGlobal-boundary-huangwei-191230
-        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'boundary']));
+        // GeoGlobal-skipEmptyTile-huangwei-200723
+        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'boundary', 'skipEmptyTile']));
         this._options = extend({ type: 'vector' }, options);
 
         this._collectResourceTiming = options.collectResourceTiming;
@@ -162,6 +163,11 @@ class VectorTileSource extends Evented implements Source {
 
             if (tile.aborted)
                 return callback(null);
+
+            // GeoGlobal-skipEmptyTile-huangwei-200723
+            if (err && !this.skipEmptyTile) {
+                return callback(err);
+            }
 
             if (err && err.status !== 404) {
                 return callback(err);

@@ -71,6 +71,9 @@ export interface Source {
     serialize(): Object;
 
     +prepare?: () => void;
+
+    // GeoGlobal-boundary-huangwei-191230
+    +setBoundary?: (any) => void;
 }
 
 type SourceStatics = {
