@@ -92,7 +92,7 @@ function updateScale(map, container, options) {
     const maxWidth = options && options.maxWidth || 100;
 
     const y = map._container.clientHeight / 2;
-    const maxMeters = getDistance(map.unproject([0, y]), map.unproject([maxWidth, y]));
+    const maxMeters = getDistance(map, map.unproject([0, y]), map.unproject([maxWidth, y]));
     // The real distance corresponding to 100px scale length is rounded off to
     // near pretty number and the scale length for the same is found out.
     // Default unit of the scale is based on User's locale.
@@ -125,7 +125,13 @@ function setScale(container, maxWidth, maxDistance, unit) {
     container.innerHTML = distance + unit;
 }
 
-function getDistance(latlng1, latlng2) {
+function getDistance(map, latlng1, latlng2) {
+
+    // GeoGlobal-scale-control-huangwei-200821 支持非degrees的单位类型
+    if (map.projection.getUnits() !== 'degrees') {
+        return latlng2.lng - latlng1.lng;
+    }
+
     // Uses spherical law of cosines approximation.
     const R = 6371000;
 
