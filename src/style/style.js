@@ -1284,7 +1284,7 @@ class Style extends Evented {
                 for (const id in images) {
                     const imgid = imgPrefix + id;
                     if (this.imageManager.getImage(imgid)) {
-                        this.fire(new ErrorEvent('An image with this name already exists.'));
+                        this.fire(new ErrorEvent(new Error('An image with this name already exists.')));
                         continue;
                     }
                     this.imageManager.addImage(imgid, images[id]);

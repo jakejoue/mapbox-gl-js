@@ -98,6 +98,11 @@ export class RequestManager {
             // return formatUrl(urlObject);
             // GeoGlobal-projext-huangwei-191105 修改获取字体和图片的url拼接方式
             const url = formatUrl(urlObject);
+            if (/token=/i.test(url)) {
+                const urls = url.split('?');
+                const query = urls.pop();
+                return `${urls.join('?')}${format}${extension}?${query}`;
+            }
             return url + format + extension;
         }
         urlObject.path = `/styles/v1${urlObject.path}/sprite${format}${extension}`;
