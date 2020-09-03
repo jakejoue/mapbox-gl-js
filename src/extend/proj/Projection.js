@@ -10,7 +10,7 @@ import { deepCopy, findLastIndexOf } from '../util/util';
 export type ProjectionOption = {
     code: string,
     units: any,
-    extent: Array<number>,
+    extent: [number, number, number, number],
     resolutions?: Array<number>,
     tileSize?: number,
     validlatRange?: Array<number>
@@ -19,7 +19,7 @@ export type ProjectionOption = {
 class Projection {
     code_: string;
     units_: any;
-    extent_: Array<number>;
+    extent_: [number, number, number, number];
     resolutions_: any;
     tileSize_: number;
     validlatRange_: Array<number>
@@ -83,7 +83,7 @@ class Projection {
         return this.units_;
     }
 
-    getExtent(): Array<number> {
+    getExtent(): [number, number, number, number] {
         return [...this.extent_];
     }
 

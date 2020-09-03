@@ -78,8 +78,8 @@ class VideoSource extends ImageSource {
             // 如果存在子元素
             for (let i = 0; i < options.video.children.length; i++) {
                 const element = options.video.children[i];
-                if (element.src) {
-                    options.urls.push(element.src);
+                if ('src' in element) {
+                    options.urls.push((element: any).src);
                 }
             }
         }

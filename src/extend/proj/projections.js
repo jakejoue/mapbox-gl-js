@@ -15,13 +15,13 @@ export function clear() {
 /**
  * 通过code获取坐标系
  */
-export function get(code) {
+export function get(code: string) {
     return cache[code] || null;
 }
 
 /**
  * 添加坐标系
  */
-export function add(code, projection) {
+export function add(code: string, projection: any) {
     cache[code] = projection;
 }

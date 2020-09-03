@@ -33,6 +33,8 @@ class VectorTileSource extends Evented implements Source {
     // GeoGlobal-boundary-huangwei-191230
     boundary: Feature;
     featureBounds: FeatureBounds;
+    // GeoGlobal-skipEmptyTile-huangwei-200723
+    skipEmptyTile: boolean;
 
     _options: VectorSourceSpecification;
     _collectResourceTiming: boolean;

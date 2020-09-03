@@ -34,7 +34,7 @@ class TileBounds {
         this.isGlobal = equals(bounds, projection.getExtent());
     }
 
-    validateBounds(bounds: [number, number, number, number]) {
+    validateBounds(bounds: [number, number, number, number]): [number, number, number, number] {
         // make sure the bounds property contains valid longitude and latitudes
         if (!Array.isArray(bounds) || bounds.length !== 4) return this.projection.getExtent();
 

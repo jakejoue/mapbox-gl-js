@@ -40,6 +40,8 @@ class RasterTileSource extends Evented implements Source {
     // GeoGlobal-boundary-huangwei-191230
     boundary: Feature;
     featureBounds: FeatureBounds;
+    // GeoGlobal-noFadingParent-huangwei-200310 禁用上级瓦片缓存，始终返回一张透明的瓦片
+    noFadingParent: boolean;
 
     bounds: ?[number, number, number, number];
     tileBounds: TileBounds;
