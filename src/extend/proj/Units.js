@@ -4,6 +4,7 @@
  * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, `'tile-pixels'` or
  * `'us-ft'`.
  * @enum {string}
+ * @private
  */
 const Units = {
     DEGREES: 'degrees',
@@ -18,7 +19,7 @@ const Units = {
  * Meters per unit lookup table.
  * @const
  * @type {Object<Units, number>}
- * @api
+ * @private
  */
 export const METERS_PER_UNIT = {};
 // use the radius of the Normal sphere

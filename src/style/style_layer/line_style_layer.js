@@ -164,6 +164,7 @@ function offsetLine(rings, offset) {
 /**
  * GeoGlobal-line-height-huangwei-200611
  * 三维线段坐标投影为像素坐标
+ * @private
  */
 function projectLine(geometry: Array<Array<Point>>, z: number, m: Float32Array) {
     const projectedTop = [];
@@ -201,6 +202,7 @@ function projectLine(geometry: Array<Array<Point>>, z: number, m: Float32Array) 
 /**
  * GeoGlobal-line-height-huangwei-200611
  * extent坐标转为像素坐标
+ * @private
  */
 function projectQueryGeometry(queryGeometry: Array<Point>, pixelPosMatrix: Float32Array, transform: Transform, z: number) {
     const projectedQueryGeometry = [];

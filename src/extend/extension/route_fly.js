@@ -1,12 +1,12 @@
 // @flow
-import { clamp } from '../../util/util';
-import { number as interpolate } from '../../style-spec/util/interpolate';
-import { METERS_PER_UNIT } from '../proj/Units';
-import LngLat from '../geo/lng_lat';
+import { clamp } from "../../util/util";
+import { number as interpolate } from "../../style-spec/util/interpolate";
+import { METERS_PER_UNIT } from "../proj/Units";
+import LngLat from "../geo/lng_lat";
 
-import type Map from '../../ui/map';
-import type Transform from '../geo/transform';
-import type { TaskID } from '../../util/task_queue';
+import type Map from "../../ui/map";
+import type Transform from "../geo/transform";
+import type { TaskID } from "../../util/task_queue";
 
 // 一些工具方法
 const util = {
@@ -26,14 +26,17 @@ const util = {
     },
     calcBearing(coord1: Array, coord2: Array): number {
         if (coord1 && coord2) {
-            const angle = Math.atan2(coord2[1] - coord1[1], coord2[0] - coord1[0]);
-            return 90 - angle / Math.PI * 180;
+            const angle = Math.atan2(
+                coord2[1] - coord1[1],
+                coord2[0] - coord1[0]
+            );
+            return 90 - (angle / Math.PI) * 180;
         }
     },
     scalePoint(scale: number, coord1: Array, coord2: Array): Array {
         scale = clamp(scale, 0, 1);
         return coord1.map((c, i) => c + (coord2[i] - c) * scale);
-    }
+    },
 };
 
 // 路径计算控制器
@@ -60,7 +63,7 @@ class PosControl {
         this.LENGTH = util.lengthArray(path);
         this.ZOOMRANGE = zoomRange;
 
-        const zs = path.map(c => c[2]).filter(v => typeof v === 'number');
+        const zs = path.map((c) => c[2]).filter((v) => typeof v === "number");
         this.MIN_Z = Math.min(...zs);
         this.MAX_Z = Math.max(...zs);
 
@@ -89,54 +92,39 @@ class PosControl {
         this.passLength = 0;
         this.calcNextPoint(percent * this.LENGTH, {
             index: 1,
-            cPoint: this.PATH[0]
+            cPoint: this.PATH[0],
         });
         this.rotateOptions = [];
     }
-    /**
-     * @api
-     * 获取已经通过的线段信息
-     */
+    // 获取已经通过的线段信息
     getPassLine(): Array {
         const path = this.PATH.slice(0, this.preIndex + 2);
         path.pop();
         return [...path, [...this.currentPoint]];
     }
-    /**
-     * @api
-     * 获取当前点
-     */
+    // 获取当前点
     getCurrentPoint(): Array {
         return [...this.currentPoint];
     }
-    /**
-     * @api
-     * 获取方位信息
-     */
+    // 获取方位信息
     getBearing(): number {
-        return util.calcBearing(this.currentPoint, this.PATH[this.preIndex + 1]);
+        return util.calcBearing(
+            this.currentPoint,
+            this.PATH[this.preIndex + 1]
+        );
     }
-    /**
-     * @api
-     * 获取当前缩放
-     */
+    // 获取当前缩放
     getZoom(cPoint = this.currentPoint): number {
         const currentZ = cPoint[2];
         if (currentZ && this.ZOOMRANGE) {
             return (
                 this.ZOOMRANGE[0] +
                 ((currentZ - this.MIN_Z) / (this.MAX_Z - this.MIN_Z)) *
-                (this.ZOOMRANGE[1] - this.ZOOMRANGE[0])
+                    (this.ZOOMRANGE[1] - this.ZOOMRANGE[0])
             );
         }
     }
-    /**
-     * @api
-     * 计算下一个点
-     * @param {number} distance 距离下一个点的距离
-     * @param {number} index 上个点的索引
-     * @param {boolean} update 是否自动更新已经通过路径长度
-     */
+    // 计算下一个点
     calcNextPoint(
         distance = this.speed,
         { index = this.preIndex + 1, cPoint = this.currentPoint } = {}
@@ -173,7 +161,7 @@ class PosControl {
                     // 添加旋转点
                     this.rotateOptions.push({
                         point: [...cPoint],
-                        bearing: util.calcBearing(cPoint, this.PATH[index])
+                        bearing: util.calcBearing(cPoint, this.PATH[index]),
                     });
                 }
             } else {
@@ -191,7 +179,9 @@ class PosControl {
     }
 }
 
-// 飞行路径
+/**
+ * @description 飞行路径
+ */
 export default class RouteFly {
     // 地图对象
     _map: Map;
@@ -214,19 +204,19 @@ export default class RouteFly {
     constructor(path: Array, zoomRange?: Array) {
         // 路径有效性判断
         if (!path || path.length <= 1) {
-            throw new Error('flyroute: 无效的飞行轨迹！');
+            throw new Error("flyroute: 无效的飞行轨迹！");
         }
 
         // 缩放范围判断
         if (zoomRange) {
             const [min, max] = zoomRange;
             if (!min || !max || min >= max) {
-                throw new Error('无效的zoomRange！');
+                throw new Error("无效的zoomRange！");
             }
         }
 
         // 坐标单位
-        this._units = 'degrees';
+        this._units = "degrees";
 
         // 初始化成员变量
         this._status = 0;
@@ -237,11 +227,15 @@ export default class RouteFly {
 
     // 速度（整数）
     get Speed(): number {
-        return Math.round(this._control.getSpeed() / (1 / METERS_PER_UNIT[this._units]));
+        return Math.round(
+            this._control.getSpeed() / (1 / METERS_PER_UNIT[this._units])
+        );
     }
     set Speed(value: number) {
         value = Math.max(0, value);
-        this._control.setSpeed(Math.round(value) * (1 / METERS_PER_UNIT[this._units]));
+        this._control.setSpeed(
+            Math.round(value) * (1 / METERS_PER_UNIT[this._units])
+        );
     }
 
     // 百分比
@@ -341,40 +335,42 @@ export default class RouteFly {
                     control.calcNextPoint();
 
                     // 添加旋转中间帧
-                    this._frame((k, { point, bearing }) => {
-                        // 旋转中函数
-                        if (k === 0) {
-                            tr.center = LngLat.convert(point);
-                        }
-                        // 更新bearing角度
-                        tr.bearing = bearing;
-                    }, () => {
-                        const options = {
-                            center: control.getCurrentPoint(),
-                            bearing: +control.getBearing(),
-                            zoom: +control.getZoom()
-                        };
+                    this._frame(
+                        (k, { point, bearing }) => {
+                            // 旋转中函数
+                            if (k === 0) {
+                                tr.center = LngLat.convert(point);
+                            }
+                            // 更新bearing角度
+                            tr.bearing = bearing;
+                        },
+                        () => {
+                            const options = {
+                                center: control.getCurrentPoint(),
+                                bearing: +control.getBearing(),
+                                zoom: +control.getZoom(),
+                            };
 
-                        // 缩放
-                        if (isFinite(options.zoom)) {
-                            tr.zoom = options.zoom;
-                        }
-                        // 方位
-                        if (isFinite(options.bearing)) {
-                            tr.bearing = options.bearing;
-                        }
-                        // 中心点
-                        if (options.center) {
-                            tr.center = LngLat.convert(options.center);
-                        }
+                            // 缩放
+                            if (isFinite(options.zoom)) {
+                                tr.zoom = options.zoom;
+                            }
+                            // 方位
+                            if (isFinite(options.bearing)) {
+                                tr.bearing = options.bearing;
+                            }
+                            // 中心点
+                            if (options.center) {
+                                tr.center = LngLat.convert(options.center);
+                            }
 
-                        // 外部更新
-                        if (this.update) this.update(options.center, this);
+                            // 外部更新
+                            if (this.update) this.update(options.center, this);
 
-                        // 继续下一帧率
-                        this._update();
-                    });
-
+                            // 继续下一帧率
+                            this._update();
+                        }
+                    );
                 } else {
                     this.stop();
                 }
@@ -408,7 +404,10 @@ export default class RouteFly {
                     const nextFrame = () => {
                         const k = i / l;
                         map._requestRenderFrame(() => {
-                            frame(k, { point, bearing: interpolate(startBearing, bearing, k) });
+                            frame(k, {
+                                point,
+                                bearing: interpolate(startBearing, bearing, k),
+                            });
 
                             // 完成单个拐点
                             if (k >= 1) {

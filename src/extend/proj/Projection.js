@@ -16,6 +16,9 @@ export type ProjectionOption = {
     validlatRange?: Array<number>
 }
 
+/**
+ * @description 投影坐标系，用于计算地图瓦片和进行坐标转换的类
+ */
 class Projection {
     code_: string;
     units_: any;

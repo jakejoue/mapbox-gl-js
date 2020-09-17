@@ -4,6 +4,11 @@
 import * as util from '../../util/util';
 
 /**
+ * @description 图层组操作
+ * @namespace LayerGroup
+ */
+
+/**
  * Add a layer group to the map.
  *
  * @param {Map} map
@@ -12,6 +17,7 @@ import * as util from '../../util/util';
  * @param {string} [beforeId] The layer id or group id after which the group
  *     will be inserted. If ommitted the group is added to the bottom of the
  *     style.
+ * @memberof LayerGroup
  */
 function addGroup(map, id, layers, beforeId) {
     const beforeLayerId = normalizeBeforeId(map, beforeId);
@@ -29,6 +35,7 @@ function addGroup(map, id, layers, beforeId) {
  * @param {string} [beforeId] An existing layer id after which the new layer
  *     will be inserted. If ommitted the layer is added to the bottom of
  *     the group.
+ * @memberof LayerGroup
  */
 function addLayerToGroup(map, groupId, layer, beforeId, ignoreBeforeIdCheck) {
     if (beforeId && !ignoreBeforeIdCheck && (!isLayer(map, beforeId) || getLayerGroup(map, beforeId) !== groupId)) {
@@ -47,6 +54,7 @@ function addLayerToGroup(map, groupId, layer, beforeId, ignoreBeforeIdCheck) {
  *
  * @param {Map} map
  * @param {string} id The id of the group to be removed.
+ * @memberof LayerGroup
  */
 function removeGroup(map, id) {
     const layers = map.getStyle().layers;
@@ -62,6 +70,7 @@ function removeGroup(map, id) {
  *
  * @param {Map} map
  * @param {string} id The id of the group to be removed.
+ * @memberof LayerGroup
  */
 function moveGroup(map, id, beforeId) {
     const beforeLayerId = normalizeBeforeId(map, beforeId);
@@ -80,6 +89,7 @@ function moveGroup(map, id, beforeId) {
  * @param {Map} map
  * @param {string} id The id of the group.
  * @returns {Array}
+ * @memberof LayerGroup
  */
 function getLayersfromGroup(map, id) {
     const layerArr = [];
@@ -98,6 +108,7 @@ function getLayersfromGroup(map, id) {
  * @param {Map} map
  * @param {string} id The id of the group.
  * @returns {string}
+ * @memberof LayerGroup
  */
 function getGroupFirstLayerId(map, id) {
     return getLayerIdFromIndex(map, getGroupFirstLayerIndex(map, id));
@@ -109,6 +120,7 @@ function getGroupFirstLayerId(map, id) {
  * @param {Map} map
  * @param {string} id The id of the group.
  * @returns {string}
+ * @memberof LayerGroup
  */
 function getGroupLastLayerId(map, id) {
     return getLayerIdFromIndex(map, getGroupLastLayerIndex(map, id));

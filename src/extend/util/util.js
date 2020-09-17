@@ -8,6 +8,7 @@ import browser from '../../util/browser';
  * @param {*} fn 需要均匀的函数
  * @param {*} interval 限制时间
  * @param {*} target 需要附加的对象
+ * @private
  */
 export function rateLimit(fn: Function, interval: number, target: any): Function {
     let preTime = null;
@@ -34,6 +35,7 @@ export function rateLimit(fn: Function, interval: number, target: any): Function
 /**
  * 判断一个对象是否存在
  * @param {*} object 对象
+ * @private
  */
 export function isEmpty(object: Object): Object {
     let property;
@@ -46,6 +48,7 @@ export function isEmpty(object: Object): Object {
 /**
  * typeOf
  * @param {*} obj
+ * @private
  */
 export function typeOf(obj: any): String {
     const toString = Object.prototype.toString;
@@ -67,6 +70,7 @@ export function typeOf(obj: any): String {
 /**
  * 对象深赋值
  * @param {Object} data
+ * @private
  */
 export function deepCopy(
     data: Object,
@@ -128,6 +132,7 @@ export function deepCopy(
  * 末端查找
  * @param {*} array 原数组
  * @param {*} fn 方法
+ * @private
  */
 export function findLastIndexOf(array: any[], fn: Function): number {
     for (let i = array.length - 1; i >= 0; i--) {
