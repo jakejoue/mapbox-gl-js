@@ -114,6 +114,7 @@
     "start-bench": "run-p build-token watch-benchmarks start-server",
     "start-docs": "run-s build-prod-min build-css build-docs && NODE_OPTIONS=\"--max_old_space_size=2048\" DEPLOY_ENV=local batfish start",
     "lint": "eslint --cache --ignore-path .gitignore src test bench debug/*.html",
+    "build-docs": "documentation build -f html --config ./docs/documentation.yml --output docs src/index.js",
     "lint-docs": "documentation lint src/index.js",
     "lint-css": "stylelint 'src/css/mapbox-gl.css'",
     "test": "run-s lint lint-css lint-docs test-flow test-unit",
