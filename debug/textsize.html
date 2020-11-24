@@ -173,10 +173,6 @@
                 hash: false,
             }));
 
-            map.showTileBoundaries = true;
-
-            setTimeout(() => console.log(JSON.stringify(map.getStyle())));
-
             // 添加图标点
             function addsymbol() {
                 map.addSource("airport", {
@@ -200,6 +196,10 @@
                     source: "airport",
                     layout: {
                         "icon-image": "airfield-11",
+                        "icon-size": 3,
+                    },
+                    paint: {
+                        "symbol-height": 1000,
                     },
                 };
 
@@ -215,13 +215,16 @@
                         "text-size": 67,
                         "text-field": "你好！",
                     },
+                    paint: {
+                        "symbol-height": 100,
+                    },
                 };
 
                 map.addLayer(symbol);
                 map.addLayer(symbol1);
             }
 
-            map.on('load', function () {
+            map.on("load", function () {
                 addsymbol();
                 //鼠标移动，鼠标图形改变
                 map.on("mousemove", function (e) {
