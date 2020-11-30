@@ -80,7 +80,8 @@
     "jsdoc/require-param-description": "warn",
     "jsdoc/require-param-name": "warn",
     "jsdoc/require-returns": "warn",
-    "jsdoc/require-returns-description": "warn"
+    "jsdoc/require-returns-description": "warn",
+    "linebreak-style": "off"
   },
   "settings": {
     "jsdoc":{
