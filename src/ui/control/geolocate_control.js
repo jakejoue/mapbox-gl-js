@@ -5,7 +5,7 @@ import DOM from '../../util/dom';
 import window from '../../util/window';
 import {extend, bindAll, warnOnce} from '../../util/util';
 import assert from 'assert';
-import LngLat from '../../geo/lng_lat';
+import LngLat from '../../extend/geo/lng_lat';
 import Marker from '../marker';
 
 import type Map from '../map';

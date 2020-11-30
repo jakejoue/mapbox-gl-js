@@ -4,7 +4,7 @@ import browser from '../util/browser';
 
 import {Placement} from '../symbol/placement';
 
-import type Transform from '../geo/transform';
+import type Transform from '../extend/geo/transform';
 import type StyleLayer from './style_layer';
 import type SymbolStyleLayer from './style_layer/symbol_style_layer';
 import type Tile from '../source/tile';

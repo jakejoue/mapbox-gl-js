@@ -21,7 +21,7 @@ import {PossiblyEvaluated} from '../style/properties';
 
 import type StyleLayer from '../style/style_layer';
 import type {FeatureFilter} from '../style-spec/feature_filter';
-import type Transform from '../geo/transform';
+import type Transform from '../extend/geo/transform';
 import type {FilterSpecification, PromoteIdSpecification} from '../style-spec/types';
 
 import {FeatureIndexArray} from './array_types';

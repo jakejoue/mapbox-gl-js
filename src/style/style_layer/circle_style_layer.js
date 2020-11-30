@@ -11,7 +11,7 @@ import {vec4} from 'gl-matrix';
 import Point from '@mapbox/point-geometry';
 
 import type {FeatureState} from '../../style-spec/expression';
-import type Transform from '../../geo/transform';
+import type Transform from '../../extend/geo/transform';
 import type {Bucket, BucketParameters} from '../../data/bucket';
 import type {LayoutProps, PaintProps} from './circle_style_layer_properties';
 import type {LayerSpecification} from '../../style-spec/types';

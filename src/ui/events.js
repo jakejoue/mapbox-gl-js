@@ -7,7 +7,7 @@ import Point from '@mapbox/point-geometry';
 import {extend} from '../util/util';
 
 import type Map from './map';
-import type LngLat from '../geo/lng_lat';
+import type LngLat from '../extend/geo/lng_lat';
 
 /**
  * `MapMouseEvent` is the event type for mouse-related map events.

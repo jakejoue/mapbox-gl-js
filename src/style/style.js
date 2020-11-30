@@ -46,7 +46,7 @@ const emitValidationErrors = (evented: Evented, errors: ?$ReadOnlyArray<{message
     _emitValidationErrors(evented, errors && errors.filter(error => error.identifier !== 'source.canvas'));
 
 import type Map from '../ui/map';
-import type Transform from '../geo/transform';
+import type Transform from '../extend/geo/transform';
 import type {StyleImage} from './style_image';
 import type {StyleGlyph} from './style_glyph';
 import type {Callback} from '../types/callback';

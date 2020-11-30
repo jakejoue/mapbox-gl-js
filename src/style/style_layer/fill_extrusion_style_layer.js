@@ -13,7 +13,7 @@ import Point from '@mapbox/point-geometry';
 import type {FeatureState} from '../../style-spec/expression';
 import type {BucketParameters} from '../../data/bucket';
 import type {PaintProps} from './fill_extrusion_style_layer_properties';
-import type Transform from '../../geo/transform';
+import type Transform from '../../extend/geo/transform';
 import type {LayerSpecification} from '../../style-spec/types';
 
 class FillExtrusionStyleLayer extends StyleLayer {

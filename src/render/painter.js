@@ -51,7 +51,7 @@ const draw = {
     custom
 };
 
-import type Transform from '../geo/transform';
+import type Transform from '../extend/geo/transform';
 import type Tile from '../source/tile';
 import type {OverscaledTileID} from '../source/tile_id';
 import type Style from '../style/style';

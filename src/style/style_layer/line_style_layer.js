@@ -15,7 +15,7 @@ import Step from '../../style-spec/expression/definitions/step';
 import type {FeatureState, ZoomConstantExpression} from '../../style-spec/expression';
 import type {Bucket, BucketParameters} from '../../data/bucket';
 import type {LayoutProps, PaintProps} from './line_style_layer_properties';
-import type Transform from '../../geo/transform';
+import type Transform from '../../extend/geo/transform';
 import type {LayerSpecification} from '../../style-spec/types';
 
 class LineFloorwidthProperty extends DataDrivenProperty<number> {

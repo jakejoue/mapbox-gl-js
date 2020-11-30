@@ -12,7 +12,7 @@ import assert from 'assert';
 
 import * as projection from '../symbol/projection';
 
-import type Transform from '../geo/transform';
+import type Transform from '../extend/geo/transform';
 import type {SingleCollisionBox} from '../data/bucket/symbol_bucket';
 import type {
     GlyphOffsetArray,

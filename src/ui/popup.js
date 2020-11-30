@@ -4,14 +4,14 @@ import {extend, bindAll} from '../util/util';
 import {Event, Evented} from '../util/evented';
 import {MapMouseEvent} from '../ui/events';
 import DOM from '../util/dom';
-import LngLat from '../geo/lng_lat';
+import LngLat from '../extend/geo/lng_lat';
 import Point from '@mapbox/point-geometry';
 import window from '../util/window';
 import smartWrap from '../util/smart_wrap';
 import {type Anchor, anchorTranslate, applyAnchorClass} from './anchor';
 
 import type Map from './map';
-import type {LngLatLike} from '../geo/lng_lat';
+import type {LngLatLike} from '../extend/geo/lng_lat';
 import type {PointLike} from '@mapbox/point-geometry';
 
 const defaultOptions = {

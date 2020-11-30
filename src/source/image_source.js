@@ -8,7 +8,7 @@ import {RasterBoundsArray} from '../data/array_types';
 import rasterBoundsAttributes from '../data/raster_bounds_attributes';
 import SegmentVector from '../data/segment';
 import Texture from '../render/texture';
-import MercatorCoordinate from '../geo/mercator_coordinate';
+import MercatorCoordinate from '../extend/geo/mercator_coordinate';
 
 import type {Source} from './source';
 import type {CanvasSourceSpecification} from './canvas_source';

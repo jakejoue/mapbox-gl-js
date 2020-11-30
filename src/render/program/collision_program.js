@@ -9,7 +9,7 @@ import pixelsToTileUnits from '../../source/pixels_to_tile_units';
 
 import type Context from '../../gl/context';
 import type {UniformValues, UniformLocations} from '../uniform_binding';
-import type Transform from '../../geo/transform';
+import type Transform from '../../extend/geo/transform';
 import type Tile from '../../source/tile';
 
 export type CollisionUniformsType = {|

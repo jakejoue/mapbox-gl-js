@@ -3,7 +3,7 @@
 import {getTileBBox} from '@mapbox/whoots-js';
 import EXTENT from '../data/extent';
 import Point from '@mapbox/point-geometry';
-import MercatorCoordinate from '../geo/mercator_coordinate';
+import MercatorCoordinate from '../extend/geo/mercator_coordinate';
 
 import assert from 'assert';
 import {register} from '../util/web_worker_transfer';

@@ -2,7 +2,7 @@
 
 import DOM from '../util/dom';
 import window from '../util/window';
-import LngLat from '../geo/lng_lat';
+import LngLat from '../extend/geo/lng_lat';
 import Point from '@mapbox/point-geometry';
 import smartWrap from '../util/smart_wrap';
 import {bindAll, extend} from '../util/util';
@@ -10,7 +10,7 @@ import {type Anchor, anchorTranslate, applyAnchorClass} from './anchor';
 import {Event, Evented} from '../util/evented';
 import type Map from './map';
 import type Popup from './popup';
-import type {LngLatLike} from "../geo/lng_lat";
+import type {LngLatLike} from "../extend/geo/lng_lat";
 import type {MapMouseEvent, MapTouchEvent} from './events';
 import type {PointLike} from '@mapbox/point-geometry';
 

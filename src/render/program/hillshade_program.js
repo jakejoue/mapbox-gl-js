@@ -11,7 +11,7 @@ import {
     Uniform4f
 } from '../uniform_binding';
 import EXTENT from '../../data/extent';
-import MercatorCoordinate from '../../geo/mercator_coordinate';
+import MercatorCoordinate from '../../extend/geo/mercator_coordinate';
 
 import type Context from '../../gl/context';
 import type {UniformValues, UniformLocations} from '../uniform_binding';
