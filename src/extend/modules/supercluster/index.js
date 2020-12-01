@@ -21,8 +21,17 @@ const defaultOptions = {
 };
 
 export default class Supercluster {
-    constructor(options) {
+    // GeoGlobal-proj-huangwei workerproj
+    constructor(options, projection) {
+        // GeoGlobal-proj-huangwei workerproj
+        this.projection = projection;
+        this.converter = getConverter(projection);
+
         this.options = extend(Object.create(defaultOptions), options);
+        // GeoGlobal-proj-huangwei resolutions 如果是自适应分辨率，maxZoom则为已知
+        if(this.projection.maxZoom) {
+            this.options.maxZoom = Math.min(this.options.maxZoom, this.projection.maxZoom - 1)
+        }
         this.trees = new Array(this.options.maxZoom + 1);
     }
 
@@ -40,7 +49,7 @@ export default class Supercluster {
         let clusters = [];
         for (let i = 0; i < points.length; i++) {
             if (!points[i].geometry) continue;
-            clusters.push(createPointCluster(points[i], i));
+            clusters.push(this.converter.createPointCluster(points[i], i));
         }
         this.trees[maxZoom + 1] = new KDBush(clusters, getX, getY, nodeSize, Float32Array);
 
@@ -79,11 +88,11 @@ export default class Supercluster {
         }
 
         const tree = this.trees[this._limitZoom(zoom)];
-        const ids = tree.range(lngX(minLng), latY(maxLat), lngX(maxLng), latY(minLat));
+        const ids = tree.range(this.converter.lngX(minLng), this.converter.latY(maxLat), this.converter.lngX(maxLng), this.converter.latY(minLat));
         const clusters = [];
         for (const id of ids) {
             const c = tree.points[id];
-            clusters.push(c.numPoints ? getClusterJSON(c) : this.points[c.index]);
+            clusters.push(c.numPoints ? this.converter.getClusterJSON(c) : this.points[c.index]);
         }
         return clusters;
     }
@@ -99,13 +108,14 @@ export default class Supercluster {
         const origin = index.points[originId];
         if (!origin) throw new Error(errorMsg);
 
-        const r = this.options.radius / (this.options.extent * Math.pow(2, originZoom - 1));
+        // GeoGlobal-proj-huangwei resolutions
+        const r = this.options.radius / (this.options.extent * this.projection.zoomScale(originZoom - 1));
         const ids = index.within(origin.x, origin.y, r);
         const children = [];
         for (const id of ids) {
             const c = index.points[id];
             if (c.parentId === clusterId) {
-                children.push(c.numPoints ? getClusterJSON(c) : this.points[c.index]);
+                children.push(c.numPoints ? this.converter.getClusterJSON(c) : this.points[c.index]);
             }
         }
 
@@ -126,7 +136,8 @@ export default class Supercluster {
 
     getTile(z, x, y) {
         const tree = this.trees[this._limitZoom(z)];
-        const z2 = Math.pow(2, z);
+        // GeoGlobal-proj-huangwei resolutions
+        const z2 = this.projection.zoomScale(z);
         const {extent, radius} = this.options;
         const p = radius / extent;
         const top = (y - p) / z2;
@@ -231,7 +242,8 @@ export default class Supercluster {
     _cluster(points, zoom) {
         const clusters = [];
         const {radius, extent, reduce, minPoints} = this.options;
-        const r = radius / (extent * Math.pow(2, zoom));
+        // GeoGlobal-proj-huangwei resolutions
+        const r = radius / (extent * this.projection.zoomScale(zoom));
 
         // loop through each point
         for (let i = 0; i < points.length; i++) {
@@ -333,29 +345,6 @@ function createCluster(x, y, id, numPoints, properties) {
     };
 }
 
-function createPointCluster(p, id) {
-    const [x, y] = p.geometry.coordinates;
-    return {
-        x: lngX(x), // projected point coordinates
-        y: latY(y),
-        zoom: Infinity, // the last zoom the point was processed at
-        index: id, // index of the source feature in the original input array,
-        parentId: -1 // parent cluster id
-    };
-}
-
-function getClusterJSON(cluster) {
-    return {
-        type: 'Feature',
-        id: cluster.id,
-        properties: getClusterProperties(cluster),
-        geometry: {
-            type: 'Point',
-            coordinates: [xLng(cluster.x), yLat(cluster.y)]
-        }
-    };
-}
-
 function getClusterProperties(cluster) {
     const count = cluster.numPoints;
     const abbrev =
@@ -369,25 +358,6 @@ function getClusterProperties(cluster) {
     });
 }
 
-// longitude/latitude to spherical mercator in [0..1] range
-function lngX(lng) {
-    return lng / 360 + 0.5;
-}
-function latY(lat) {
-    const sin = Math.sin(lat * Math.PI / 180);
-    const y = (0.5 - 0.25 * Math.log((1 + sin) / (1 - sin)) / Math.PI);
-    return y < 0 ? 0 : y > 1 ? 1 : y;
-}
-
-// spherical mercator to longitude/latitude
-function xLng(x) {
-    return (x - 0.5) * 360;
-}
-function yLat(y) {
-    const y2 = (180 - y * 360) * Math.PI / 180;
-    return 360 * Math.atan(Math.exp(y2)) / Math.PI - 90;
-}
-
 function extend(dest, src) {
     for (const id in src) dest[id] = src[id];
     return dest;
@@ -398,4 +368,45 @@ function getX(p) {
 }
 function getY(p) {
     return p.y;
+}
+
+// 获取转换方法
+function getConverter(projection) {
+    return {
+        projection,
+        lngX(lng) {
+            return this.projection.getTransform().mercatorXfromLng(lng);
+        },
+        latY(lat) {
+            let y = this.projection.getTransform().mercatorYfromLat(lat);
+            return y < 0 ? 0 : y > 1 ? 1 : y;
+        },
+        xLng(x) {
+            return this.projection.getTransform().lngFromMercatorX(x);
+        },
+        yLat(y) {
+            return this.projection.getTransform().latFromMercatorY(y);
+        },
+        createPointCluster(p, id) {
+            const [x, y] = p.geometry.coordinates;
+            return {
+                x: this.lngX(x), // projected point coordinates
+                y: this.latY(y),
+                zoom: Infinity, // the last zoom the point was processed at
+                index: id, // index of the source feature in the original input array,
+                parentId: -1 // parent cluster id
+            };
+        },
+        getClusterJSON(cluster) {
+            return {
+                type: 'Feature',
+                id: cluster.id,
+                properties: getClusterProperties(cluster),
+                geometry: {
+                    type: 'Point',
+                    coordinates: [this.xLng(cluster.x), this.yLat(cluster.y)]
+                }
+            };
+        }
+    }
 }
