@@ -1,0 +1,8 @@
+# 第三方模块目录
+*/node_modules/*
+
+# 公共资源目录
+*/debug/*
+
+# 打包目录
+**/extend/modules/**
