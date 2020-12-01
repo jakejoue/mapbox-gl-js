@@ -36,8 +36,8 @@ class RasterTileSource extends Evented implements Source {
     rasterType: string;
     zoomOffset: number;
     // GeoGlobal-boundary-huangwei
-    boundary: Feature;
-    featureBounds: FeatureBounds;
+    // boundary: Feature;
+    // featureBounds: FeatureBounds;
     // GeoGlobal-noFadingParent-huangwei 禁用上级瓦片缓存，始终返回一张透明的瓦片
     noFadingParent: boolean;
 

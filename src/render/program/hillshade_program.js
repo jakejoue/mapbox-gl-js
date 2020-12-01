@@ -104,7 +104,9 @@ const hillshadeUniformPrepareValues = (
 
 function getTileLatRange(painter: Painter, tileID: OverscaledTileID) {
     // for scaling the magnitude of a points slope by its latitude
-    const tilesAtZoom = Math.pow(2, tileID.canonical.z);
+    // const tilesAtZoom = Math.pow(2, tileID.canonical.z);
+    // GeoGlobal-proj-huangwei resolutions
+    const tilesAtZoom = painter.projection.zoomScale(tileID.canonical.z);
     const y = tileID.canonical.y;
     // GeoGlobal-proj-huangwei coord
     return [

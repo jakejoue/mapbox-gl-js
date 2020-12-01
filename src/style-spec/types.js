@@ -139,6 +139,8 @@ export type GeoJSONSourceSpecification = {|
 
 export type VideoSourceSpecification = {|
     "type": "video",
+    // GeoGlobal-video-huangwei
+    "video": HTMLVideoElement,
     "urls": Array<string>,
     "coordinates": [[number, number], [number, number], [number, number], [number, number]]
 |}

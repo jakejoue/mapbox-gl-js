@@ -73,6 +73,9 @@ function loadVectorTile(params: WorkerTileParameters, callback: LoadVectorDataCa
  * @private
  */
 class VectorTileWorkerSource implements WorkerSource {
+    // GeoGlobal-proj-huangwei workerproj
+    projection: Projection;
+
     actor: Actor;
     layerIndex: StyleLayerIndex;
     availableImages: Array<string>;

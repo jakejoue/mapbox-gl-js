@@ -66,6 +66,26 @@ class VideoSource extends ImageSource {
         this._loaded = false;
         const options = this.options;
 
+        // GeoGlobal-video-huangwei 支持传递自定义videoDom
+
+        // 保证url一定存在一个空数组
+        options.urls = options.urls || [];
+
+        // GeoGlobal-video-huangwei-191111 支持传递自定义videoDom
+        if (options.video && options.video instanceof HTMLVideoElement) {
+            // video本身src
+            if (options.video.src) {
+                options.urls.push(options.video.src);
+            }
+            // 如果存在子元素
+            for (let i = 0; i < options.video.children.length; i++) {
+                const element = options.video.children[i];
+                if ('src' in element) {
+                    options.urls.push((element: any).src);
+                }
+            }
+        }
+
         this.urls = [];
         for (const url of options.urls) {
             this.urls.push(this.map._requestManager.transformRequest(url, ResourceType.Source).url);

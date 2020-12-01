@@ -449,10 +449,15 @@
       "doc": "The data type of the video source."
     },
     "urls": {
-      "required": true,
+      "required": false,
       "type": "array",
       "value": "string",
       "doc": "URLs to video content in order of preferred format."
+    },
+    "video": {
+      "required": false,
+      "type": "*",
+      "doc": "GeoGlobal 扩展video属性"
     },
     "coordinates": {
       "required": true,
