@@ -27,6 +27,10 @@ import {prewarm, clearPrewarmedResources} from './util/global_worker_pool';
 import {clearTileCache} from './util/tile_request_cache';
 import {PerformanceUtils} from './util/performance';
 
+// GeoGlobal-proj-huangwei 引用坐标系相关
+import * as proj from './extend/proj';
+import * as extent from './extend/extent';
+
 const exported = {
     version,
     supported,
@@ -47,6 +51,11 @@ const exported = {
     MercatorCoordinate,
     Evented,
     config,
+
+    // GeoGlobal-proj-huangwei-191015 proj 导入坐标系相关
+    proj,
+    extent,
+
     /**
      * Initializes resources like WebWorkers that can be shared across maps to lower load
      * times in some situations. `mapboxgl.workerUrl` and `mapboxgl.workerCount`, if being

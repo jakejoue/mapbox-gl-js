@@ -817,7 +817,9 @@ class Camera extends Evented {
 
         const from = tr.project(locationAtOffset);
         const delta = tr.project(center).sub(from);
-        const finalScale = tr.zoomScale(zoom - startZoom);
+        // GeoGlobal-proj-huangwei resolutions 修复自定义分辨率的缩放问题
+        // const finalScale = tr.zoomScale(zoom - startZoom);
+        const finalScale = tr.zoomScale(zoom) / tr.zoomScale(startZoom);
 
         let around, aroundPoint;
 
@@ -861,13 +863,16 @@ class Camera extends Evented {
             if (around) {
                 tr.setLocationAtPoint(around, aroundPoint);
             } else {
-                const scale = tr.zoomScale(tr.zoom - startZoom);
+                // GeoGlobal-proj-huangwei resolutions 修复自定义分辨率的缩放问题
+                // const scale = tr.zoomScale(tr.zoom - startZoom);
+                const scale = tr.zoomScale(tr.zoom) / tr.zoomScale(startZoom);
                 const base = zoom > startZoom ?
                     Math.min(2, finalScale) :
                     Math.max(0.5, finalScale);
                 const speedup = Math.pow(base, 1 - k);
                 const newCenter = tr.unproject(from.add(delta.mult(k * speedup)).mult(scale));
-                tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap() : newCenter, pointAtOffset);
+                // GeoGlobal-proj-huangwei 坐标范围
+                tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap(tr.projection) : newCenter, pointAtOffset);
             }
 
             this._fireMoveEvents(eventData);
@@ -1032,7 +1037,9 @@ class Camera extends Evented {
         const pitch = 'pitch' in options ? +options.pitch : startPitch;
         const padding = 'padding' in options ? options.padding : tr.padding;
 
-        const scale = tr.zoomScale(zoom - startZoom);
+        // GeoGlobal-proj-huangwei resolutions 修复自定义分辨率的缩放问题
+        const scale = tr.zoomScale(zoom) / tr.zoomScale(startZoom);
+        // const scale = tr.zoomScale(zoom - startZoom);
         const offsetAsPoint = Point.convert(options.offset);
         let pointAtOffset = tr.centerPoint.add(offsetAsPoint);
         const locationAtOffset = tr.pointLocation(pointAtOffset);
@@ -1056,7 +1063,9 @@ class Camera extends Evented {
             const minZoom = clamp(Math.min(options.minZoom, startZoom, zoom), tr.minZoom, tr.maxZoom);
             // w<sub>m</sub>: Maximum visible span, measured in pixels with respect to the initial
             // scale.
-            const wMax = w0 / tr.zoomScale(minZoom - startZoom);
+            // GeoGlobal-proj-huangwei resolutions 修复自定义分辨率的缩放问题
+            // const wMax = w0 / tr.zoomScale(minZoom - startZoom);
+            const wMax = w0 / (tr.zoomScale(minZoom) / tr.zoomScale(startZoom));
             rho = Math.sqrt(wMax / u1 * 2);
         }
 
@@ -1146,7 +1155,8 @@ class Camera extends Evented {
             }
 
             const newCenter = k === 1 ? center : tr.unproject(from.add(delta.mult(u(s))).mult(scale));
-            tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap() : newCenter, pointAtOffset);
+            // GeoGlobal-proj-huangwei 坐标范围
+            tr.setLocationAtPoint(tr.renderWorldCopies ? newCenter.wrap(tr.projection) : newCenter, pointAtOffset);
 
             this._fireMoveEvents(eventData);
 
@@ -1229,13 +1239,17 @@ class Camera extends Evented {
     // If a path crossing the antimeridian would be shorter, extend the final coordinate so that
     // interpolating between the two endpoints will cross it.
     _normalizeCenter(center: LngLat) {
+        // GeoGlobal-proj-huangwei 地图范围
         const tr = this.transform;
         if (!tr.renderWorldCopies || tr.lngRange) return;
 
+        const maxExtent = tr.projection.getMaxExtent();
+        const half = maxExtent / 2;
+
         const delta = center.lng - tr.center.lng;
         center.lng +=
-            delta > 180 ? -360 :
-            delta < -180 ? 360 : 0;
+            delta > half ? -maxExtent :
+            delta < -half ? maxExtent : 0;
     }
 }
 
