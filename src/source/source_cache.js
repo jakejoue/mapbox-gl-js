@@ -3,6 +3,8 @@
 import {create as createSource} from './source';
 
 import Tile from './tile';
+// GeoGlobal-errorprint-huangwei 不打印瓦片数据请求错误
+// eslint-disable-next-line no-unused-vars
 import {Event, ErrorEvent, Evented} from '../util/evented';
 import TileCache from './tile_cache';
 import MercatorCoordinate from '../extend/geo/mercator_coordinate';
@@ -252,7 +254,11 @@ class SourceCache extends Evented {
     _tileLoaded(tile: Tile, id: string, previousState: TileState, err: ?Error) {
         if (err) {
             tile.state = 'errored';
-            if ((err: any).status !== 404) this._source.fire(new ErrorEvent(err, {tile}));
+            if ((err: any).status !== 404) {
+                // GeoGlobal-errorprint-huangwei
+                // this._source.fire(new ErrorEvent(err, {tile}));
+                // eslint-disable-next-line brace-style
+            }
             // continue to try loading parent/children tiles if a tile doesn't exist (404)
             else this.update(this.transform);
             return;
@@ -441,7 +447,9 @@ class SourceCache extends Evented {
         // This enables us to reuse the tiles at more ideal locations and prevent flickering.
         const prevLng = this._prevLng === undefined ? lng : this._prevLng;
         const lngDifference = lng - prevLng;
-        const worldDifference = lngDifference / 360;
+        // GeoGlobal-proj-huangwei 坐标范围
+        const worldDifference = lngDifference / this.map.projection.getMaxExtent();
+        // const worldDifference = lngDifference / 360;
         const wrapDelta = Math.round(worldDifference);
         this._prevLng = lng;
 
@@ -831,9 +839,10 @@ class SourceCache extends Evented {
             const scale = Math.pow(2, transform.zoom - tile.tileID.overscaledZ);
             const queryPadding = maxPitchScaleFactor * tile.queryPadding * EXTENT / tile.tileSize / scale;
 
+            // GeoGlobal-proj-huangwei coord
             const tileSpaceBounds = [
-                tileID.getTilePoint(new MercatorCoordinate(minX, minY)),
-                tileID.getTilePoint(new MercatorCoordinate(maxX, maxY))
+                tileID.getTilePoint(new MercatorCoordinate(minX, minY, 0, this.map.projection)),
+                tileID.getTilePoint(new MercatorCoordinate(maxX, maxY, 0, this.map.projection))
             ];
 
             if (tileSpaceBounds[0].x - queryPadding < EXTENT && tileSpaceBounds[0].y - queryPadding < EXTENT &&

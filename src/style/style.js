@@ -148,7 +148,8 @@ class Style extends Evented {
         this.imageManager.setEventedParent(this);
         this.glyphManager = new GlyphManager(map._requestManager, options.localIdeographFontFamily);
         this.lineAtlas = new LineAtlas(256, 512);
-        this.crossTileSymbolIndex = new CrossTileSymbolIndex();
+        // GeoGlobal-proj-huangwei
+        this.crossTileSymbolIndex = new CrossTileSymbolIndex(map.projection);
 
         this._layers = {};
         this._serializedLayers = {};

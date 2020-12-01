@@ -7,7 +7,8 @@ import rewind from '@mapbox/geojson-rewind';
 import GeoJSONWrapper from './geojson_wrapper';
 import vtpbf from 'vt-pbf';
 import Supercluster from 'supercluster';
-import geojsonvt from 'geojson-vt';
+// import geojsonvt from 'geojson-vt';
+import geojsonvt from '../extend/modules/geojson-vt';
 import assert from 'assert';
 import VectorTileWorkerSource from './vector_tile_worker_source';
 import {createExpression} from '../style-spec/expression';
@@ -24,6 +25,9 @@ import type {LoadVectorDataCallback} from './vector_tile_worker_source';
 import type {RequestParameters, ResponseCallback} from '../util/ajax';
 import type {Callback} from '../types/callback';
 import type {GeoJSONFeature} from '@mapbox/geojson-types';
+
+// GeoGlobal-proj-huangwei workerproj
+import type {Projection} from '../extend/proj';
 
 export type LoadGeoJSONParameters = {
     request?: RequestParameters,
@@ -106,8 +110,10 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * See {@link GeoJSONWorkerSource#loadGeoJSON}.
      * @private
      */
-    constructor(actor: Actor, layerIndex: StyleLayerIndex, availableImages: Array<string>, loadGeoJSON: ?LoadGeoJSON) {
-        super(actor, layerIndex, availableImages, loadGeoJSONTile);
+    // GeoGlobal-proj-huangwei workerproj
+    constructor(actor: Actor, projection: Projection, layerIndex: StyleLayerIndex, availableImages: Array<string>, loadGeoJSON: ?LoadGeoJSON) {
+        // GeoGlobal-proj-huangwei workerproj
+        super(actor, projection, layerIndex, availableImages, loadGeoJSONTile);
         if (loadGeoJSON) {
             this.loadGeoJSON = loadGeoJSON;
         }

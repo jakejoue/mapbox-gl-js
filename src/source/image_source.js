@@ -183,11 +183,13 @@ class ImageSource extends Evented implements Source {
         // may be outside the tile, because raster tiles aren't clipped when rendering.
 
         // transform the geo coordinates into (zoom 0) tile space coordinates
-        const cornerCoords = coordinates.map(MercatorCoordinate.fromLngLat);
+        // GeoGlobal-proj-huangwei coord
+        const cornerCoords = coordinates.map(coord => MercatorCoordinate.fromLngLat(coord, 0, this.map.projection));
 
         // Compute the coordinates of the tile we'll use to hold this image's
         // render data
-        this.tileID = getCoordinatesCenterTileID(cornerCoords);
+        // GeoGlobal-proj-huangwei resolutions
+        this.tileID = getCoordinatesCenterTileID(cornerCoords, this.map);
 
         // Constrain min/max zoom to our tile's zoom level in order to force
         // SourceCache to request this tile (no matter what the map's zoom
@@ -279,7 +281,8 @@ class ImageSource extends Evented implements Source {
  * @returns centerpoint
  * @private
  */
-export function getCoordinatesCenterTileID(coords: Array<MercatorCoordinate>) {
+// GeoGlobal-proj-huangwei resolutions
+export function getCoordinatesCenterTileID(coords: Array<MercatorCoordinate>, map: Map) {
     let minX = Infinity;
     let minY = Infinity;
     let maxX = -Infinity;
@@ -296,7 +299,9 @@ export function getCoordinatesCenterTileID(coords: Array<MercatorCoordinate>) {
     const dy = maxY - minY;
     const dMax = Math.max(dx, dy);
     const zoom = Math.max(0, Math.floor(-Math.log(dMax) / Math.LN2));
-    const tilesAtZoom = Math.pow(2, zoom);
+    // const tilesAtZoom = Math.pow(2, zoom);
+    // GeoGlobal-proj-huangwei resolutions
+    const tilesAtZoom = map.projection.zoomScale(zoom);
 
     return new CanonicalTileID(
             zoom,

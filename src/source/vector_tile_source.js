@@ -103,7 +103,8 @@ class VectorTileSource extends Evented implements Source {
                 this.fire(new ErrorEvent(err));
             } else if (tileJSON) {
                 extend(this, tileJSON);
-                if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
+                // GeoGlobal-proj-huangwei coord
+                if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.map.projection, this.minzoom, this.maxzoom);
                 postTurnstileEvent(tileJSON.tiles, this.map._requestManager._customAccessToken);
                 postMapLoadEvent(tileJSON.tiles, this.map._getMapId(), this.map._requestManager._skuToken, this.map._requestManager._customAccessToken);
 
@@ -182,7 +183,8 @@ class VectorTileSource extends Evented implements Source {
     }
 
     loadTile(tile: Tile, callback: Callback<void>) {
-        const url = this.map._requestManager.normalizeTileURL(tile.tileID.canonical.url(this.tiles, this.scheme));
+        // GeoGlobal-tileUrl-huangwei
+        const url = this.map._requestManager.normalizeTileURL(tile.tileID.canonical.url(this.tiles, this.map.projection, this.scheme));
         const params = {
             request: this.map._requestManager.transformRequest(url, ResourceType.Tile),
             uid: tile.uid,

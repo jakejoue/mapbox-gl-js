@@ -307,7 +307,8 @@ export const resetImageRequestQueue = () => {
 };
 resetImageRequestQueue();
 
-export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement | ImageBitmap>): Cancelable {
+// GeoGlobal-noError-huangwei-200310
+export const getImage = function(requestParameters: RequestParameters, callback: Callback<HTMLImageElement | ImageBitmap>, noError?: boolean = false): Cancelable {
     if (webpSupported.supported) {
         if (!requestParameters.headers) {
             requestParameters.headers = {};
@@ -338,7 +339,9 @@ export const getImage = function(requestParameters: RequestParameters, callback:
             const request = imageQueue.shift();
             const {requestParameters, callback, cancelled} = request;
             if (!cancelled) {
-                request.cancel = getImage(requestParameters, callback).cancel;
+                // GeoGlobal-noError-huangwei-200310
+                request.cancel = getImage(requestParameters, callback, noError).cancel;
+                // request.cancel = getImage(requestParameters, callback).cancel;
             }
         }
     };
@@ -350,7 +353,17 @@ export const getImage = function(requestParameters: RequestParameters, callback:
         advanceImageRequestQueue();
 
         if (err) {
-            callback(err);
+            // callback(err);
+            // GeoGlobal-noError-huangwei-200310
+            if (noError) {
+                const img: HTMLImageElement = new window.Image();
+                const URL = window.URL || window.webkitURL;
+                img.onload = () => {
+                    callback(null, img);
+                    URL.revokeObjectURL(img.src);
+                };
+                img.src =  transparentPngUrl;
+            } else callback(err);
         } else if (data) {
             if (offscreenCanvasSupported()) {
                 arrayBufferToImageBitmap(data, callback);

@@ -126,6 +126,11 @@ class Painter {
     debugOverlayTexture: Texture;
     debugOverlayCanvas: HTMLCanvasElement;
 
+    // GeoGlobal-proj-huangwei
+    get projection() {
+        return this.transform.projection;
+    }
+
     constructor(gl: WebGLRenderingContext, transform: Transform) {
         this.context = new Context(gl);
         this.transform = transform;
@@ -138,7 +143,8 @@ class Painter {
         this.numSublayers = SourceCache.maxUnderzooming + SourceCache.maxOverzooming + 1;
         this.depthEpsilon = 1 / Math.pow(2, 16);
 
-        this.crossTileSymbolIndex = new CrossTileSymbolIndex();
+        // GeoGlobal-proj-huangwei
+        this.crossTileSymbolIndex = new CrossTileSymbolIndex(this.projection);
 
         this.gpuTimers = {};
     }

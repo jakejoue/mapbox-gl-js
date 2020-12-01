@@ -19,6 +19,9 @@ import type Actor from '../util/actor';
 import type StyleLayerIndex from '../style/style_layer_index';
 import type {Callback} from '../types/callback';
 
+// GeoGlobal-proj-huangwei workerproj
+import type {Projection} from '../extend/proj';
+
 export type LoadVectorTileResult = {
     vectorTile: VectorTile;
     rawData: ArrayBuffer;
@@ -84,7 +87,11 @@ class VectorTileWorkerSource implements WorkerSource {
      * loads the pbf at `params.url`.
      * @private
      */
-    constructor(actor: Actor, layerIndex: StyleLayerIndex, availableImages: Array<string>, loadVectorData: ?LoadVectorData) {
+    // GeoGlobal-proj-huangwei workerproj
+    constructor(actor: Actor, projection: Projection, layerIndex: StyleLayerIndex, availableImages: Array<string>, loadVectorData: ?LoadVectorData) {
+        // GeoGlobal-proj-huangwei workerproj
+        this.projection = projection;
+
         this.actor = actor;
         this.layerIndex = layerIndex;
         this.availableImages = availableImages;

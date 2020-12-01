@@ -30,6 +30,11 @@ import {PerformanceMarkers, PerformanceUtils} from '../util/performance';
 
 import {setCacheLimits} from '../util/tile_request_cache';
 
+// GeoGlobal-proj-huangwei
+import {Projection, get} from '../extend/proj.js';
+// GeoGlobal-renderInterval-huangwei
+import {rateLimit} from '../extend/util/util';
+
 import type {PointLike} from '@mapbox/point-geometry';
 import type {RequestTransformFunction} from '../util/mapbox';
 import type {LngLatLike} from '../extend/geo/lng_lat';
@@ -102,7 +107,16 @@ type MapOptions = {
     maxTileCacheSize?: number,
     transformRequest?: RequestTransformFunction,
     accessToken: string,
-    locale?: Object
+    locale?: Object,
+
+    // GeoGlobal-intZoom-huangwei
+    intScrollZoom: boolean,
+    // GeoGlobal-renderInterval-huangwei
+    renderInterval: number,
+    // GeoGlobal-skipzoom-huangwei 是否zoomend和moveed后才发起请求
+    skipLevelOfZooming: boolean,
+    // GeoGlobal-proj-huangwei 坐标系参数
+    projection: string
 };
 
 const defaultMinZoom = -2;
@@ -151,7 +165,16 @@ const defaultOptions = {
     transformRequest: null,
     accessToken: null,
     fadeDuration: 300,
-    crossSourceCollisions: true
+    crossSourceCollisions: true,
+
+    // GeoGlobal-intZoom-huangwei
+    intScrollZoom: false,
+    // GeoGlobal-renderInterval-huangwei
+    renderInterval: 0,
+    // GeoGlobal-skipzoom-huangwei 是否zoomend和moveed后才发起请求
+    skipLevelOfZooming: false,
+    // GeoGlobal-proj-huangwei 坐标系参数
+    projection: 'EPSG:mapbox'
 };
 
 /**
@@ -310,6 +333,13 @@ class Map extends Camera {
     _removed: boolean;
     _clickTolerance: number;
 
+    // GeoGlobal-intZoom-huangwei
+    _intScrollZoom: boolean;
+    // GeoGlobal-skipzoom-huangwei
+    _skipLevelOfZooming: boolean;
+    // GeoGlobal-proj-huangwei
+    projection: Projection;
+
     /**
      * The map's {@link ScrollZoomHandler}, which implements zooming in and out with a scroll wheel or trackpad.
      * Find more details and examples using `scrollZoom` in the {@link ScrollZoomHandler} section.
@@ -380,8 +410,23 @@ class Map extends Camera {
             throw new Error(`maxPitch must be less than or equal to ${defaultMaxPitch}`);
         }
 
-        const transform = new Transform(options.minZoom, options.maxZoom, options.minPitch, options.maxPitch, options.renderWorldCopies);
+        // GeoGlobal-proj-huangwei
+        const projection = get(options.projection) || get('EPSG:mapbox');
+        if (!projection) {
+            throw new Error(`can not find projection:${options.projection}`);
+        }
+
+        // GeoGlobal-proj-huangwei
+        const transform = new Transform(projection, options.minZoom, options.maxZoom, options.minPitch, options.maxPitch, options.renderWorldCopies);
         super(transform, options);
+
+        // GeoGlobal-proj-huangwei
+        this.projection = projection;
+        // GeoGlobal-intZoom-huangwei
+        this._intScrollZoom = options.intScrollZoom;
+        if (this._intScrollZoom === true) {
+            options.zoom = Math.round(options.zoom || 0);
+        }
 
         this._interactive = options.interactive;
         this._maxTileCacheSize = options.maxTileCacheSize;
@@ -432,9 +477,22 @@ class Map extends Camera {
             throw new Error(`Failed to initialize WebGL.`);
         }
 
-        this.on('move', () => this._update(false));
-        this.on('moveend', () => this._update(false));
-        this.on('zoom', () => this._update(true));
+        // GeoGlobal-renderInterval-huangwei
+        extend(this, {'triggerRepaint':rateLimit(this.triggerRepaint, options.renderInterval, this)});
+
+        // GeoGlobal-skipzoom-huangwei 外部赋值
+        this._skipLevelOfZooming = options.skipLevelOfZooming;
+        if (!this._skipLevelOfZooming) {
+            this.on('move', () => this._update(false));
+            this.on('moveend', () => this._update(false));
+            this.on('zoom', () => this._update(true));
+        } else {
+            this.on('moveend', () => this._update(false));
+            this.on('zoomend', () => this._update(true));
+        }
+        // this.on('move', () => this._update(false));
+        // this.on('moveend', () => this._update(false));
+        // this.on('zoom', () => this._update(true));
 
         if (typeof window !== 'undefined') {
             window.addEventListener('online', this._onWindowOnline, false);
@@ -2486,7 +2544,11 @@ class Map extends Camera {
         // need for the current transform
         if (this.style && this._sourcesDirty) {
             this._sourcesDirty = false;
-            this.style._updateSources(this.transform);
+            // GeoGlobal-skipzoom-huangwei 是否请求判断
+            if (this._skipLevelOfZooming ? (!this.isZooming() && !this.isRotating()) : true) {
+                this.style._updateSources(this.transform);
+            }
+            // this.style._updateSources(this.transform);
         }
 
         this._placementDirty = this.style && this.style._updatePlacement(this.painter.transform, this.showCollisionBoxes, this._fadeDuration, this._crossSourceCollisions);

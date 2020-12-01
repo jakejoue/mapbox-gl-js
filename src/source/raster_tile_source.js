@@ -32,6 +32,15 @@ class RasterTileSource extends Evented implements Source {
     scheme: string;
     tileSize: number;
 
+    // GeoGlobal-raster-huangwei 支持百度瓦片和Arcgis瓦片
+    rasterType: string;
+    zoomOffset: number;
+    // GeoGlobal-boundary-huangwei
+    boundary: Feature;
+    featureBounds: FeatureBounds;
+    // GeoGlobal-noFadingParent-huangwei 禁用上级瓦片缓存，始终返回一张透明的瓦片
+    noFadingParent: boolean;
+
     bounds: ?[number, number, number, number];
     tileBounds: TileBounds;
     roundZoom: boolean;
@@ -57,8 +66,14 @@ class RasterTileSource extends Evented implements Source {
         this.tileSize = 512;
         this._loaded = false;
 
+        // GeoGlobal-raster-huangwei
+        this.rasterType = 'xyz';
+        this.zoomOffset = 0;
+        // GeoGlobal-noFadingParent-huangwei
+        this.noFadingParent = false;
+
         this._options = extend({type: 'raster'}, options);
-        extend(this, pick(options, ['url', 'scheme', 'tileSize']));
+        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'rasterType', 'zoomOffset', 'boundary', 'noFadingParent']));
     }
 
     load() {
@@ -71,7 +86,8 @@ class RasterTileSource extends Evented implements Source {
                 this.fire(new ErrorEvent(err));
             } else if (tileJSON) {
                 extend(this, tileJSON);
-                if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
+                // GeoGlobal-proj-huangwei coord
+                if (tileJSON.bounds) this.tileBounds = new TileBounds(tileJSON.bounds, this.map.projection, this.minzoom, this.maxzoom);
 
                 postTurnstileEvent(tileJSON.tiles);
                 postMapLoadEvent(tileJSON.tiles, this.map._getMapId(), this.map._requestManager._skuToken);
@@ -110,7 +126,13 @@ class RasterTileSource extends Evented implements Source {
     }
 
     loadTile(tile: Tile, callback: Callback<void>) {
-        const url = this.map._requestManager.normalizeTileURL(tile.tileID.canonical.url(this.tiles, this.scheme), this.tileSize);
+        // GeoGlobal-raster-huangwei
+        const url = this.map._requestManager.normalizeTileURL(tile.tileID.canonical.url(this.tiles, this.map.projection, {
+            scheme: this.scheme,
+            rasterType: this.rasterType,
+            zoomOffset: this.zoomOffset
+        }), this.tileSize);
+        // GeoGlobal-noFadingParent-huangwei
         tile.request = getImage(this.map._requestManager.transformRequest(url, ResourceType.Tile), (err, img) => {
             delete tile.request;
 
@@ -145,7 +167,7 @@ class RasterTileSource extends Evented implements Source {
 
                 callback(null);
             }
-        });
+        }, this.noFadingParent);
     }
 
     abortTile(tile: Tile, callback: Callback<void>) {

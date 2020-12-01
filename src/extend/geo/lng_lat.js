@@ -41,22 +41,29 @@ class LngLat {
         }
         this.lng = +lng;
         this.lat = +lat;
-        if (this.lat > 90 || this.lat < -90) {
-            throw new Error('Invalid LngLat latitude value: must be between -90 and 90');
-        }
+
+        // GeoGlobal-proj-huangwei 取消范围限制
+        // if (this.lat > 90 || this.lat < -90) {
+        //     throw new Error('Invalid LngLat latitude value: must be between -90 and 90');
+        // }
     }
 
     /**
      * Returns a new `LngLat` object whose longitude is wrapped to the range (-180, 180).
      *
+     * @param {any} projection
      * @returns {LngLat} The wrapped `LngLat` object.
      * @example
      * var ll = new mapboxgl.LngLat(286.0251, 40.7736);
      * var wrapped = ll.wrap();
      * wrapped.lng; // = -73.9749
      */
-    wrap() {
-        return new LngLat(wrap(this.lng, -180, 180), this.lat);
+    wrap(projection: any) {
+        // return new LngLat(wrap(this.lng, -180, 180), this.lat);
+
+        // GeoGlobal-proj-huangwei 坐标范围
+        const extent = projection.getExtent();
+        return new LngLat(wrap(this.lng, extent[0], extent[2]), this.lat);
     }
 
     /**
@@ -84,6 +91,7 @@ class LngLat {
     }
 
     /**
+     * TODO-GEO: PROJ
      * Returns the approximate distance between a pair of coordinates in meters
      * Uses the Haversine Formula (from R.W. Sinnott, "Virtues of the Haversine", Sky and Telescope, vol. 68, no. 2, 1984, p. 159)
      *

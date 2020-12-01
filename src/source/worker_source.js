@@ -12,6 +12,8 @@ import type DEMData from '../data/dem_data';
 import type {StyleGlyph} from '../style/style_glyph';
 import type {StyleImage} from '../style/style_image';
 import type {PromoteIdSpecification} from '../style-spec/types';
+// GeoGlobal-proj-huangwei workerproj
+import type {Projection} from '../extend/proj';
 import window from '../util/window';
 const {ImageBitmap} = window;
 
@@ -26,6 +28,8 @@ export type WorkerTileParameters = TileParameters & {
     zoom: number,
     maxZoom: number,
     tileSize: number,
+    // GeoGlobal-tileSize-huangwei 传递原始tileSize
+    originTileSize: number,
     promoteId: ?PromoteIdSpecification,
     pixelRatio: number,
     showCollisionBoxes: boolean,
@@ -71,6 +75,9 @@ export type WorkerDEMTileCallback = (err: ?Error, result: ?DEMData) => void;
  * @param layerIndex
  */
 export interface WorkerSource {
+    // GeoGlobal-proj-huangwei workerproj
+    projection: Projection;
+
     availableImages: Array<string>,
     // Disabled due to https://github.com/facebook/flow/issues/5208
     // constructor(actor: Actor, layerIndex: StyleLayerIndex): WorkerSource;

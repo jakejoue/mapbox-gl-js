@@ -24,6 +24,9 @@ import type {Callback} from '../types/callback';
 import type {LayerSpecification} from '../style-spec/types';
 import type {PluginState} from './rtl_text_plugin';
 
+// GeoGlobal-proj-huangwei workerproj
+import Projection from '../extend/proj/Projection';
+
 /**
  * @private
  */
@@ -36,6 +39,9 @@ export default class Worker {
     workerSources: {[_: string]: {[_: string]: {[_: string]: WorkerSource } } };
     demWorkerSources: {[_: string]: {[_: string]: RasterDEMTileWorkerSource } };
     referrer: ?string;
+
+    // GeoGlobal-proj-huangwei 存放当前地图所用坐标系
+    projcetions: { [string]: Projection };
 
     constructor(self: WorkerGlobalScopeInterface) {
         this.self = self;
@@ -69,6 +75,9 @@ export default class Worker {
             globalRTLTextPlugin['processBidirectionalText'] = rtlTextPlugin.processBidirectionalText;
             globalRTLTextPlugin['processStyledBidirectionalText'] = rtlTextPlugin.processStyledBidirectionalText;
         };
+
+        // GeoGlobal-proj-huangwei 初始化坐标系容器
+        this.projcetions = {};
     }
 
     setReferrer(mapID: string, referrer: string) {
@@ -210,7 +219,9 @@ export default class Worker {
                     this.actor.send(type, data, callback, mapId);
                 }
             };
-            this.workerSources[mapId][type][source] = new (this.workerSourceTypes[type]: any)((actor: any), this.getLayerIndex(mapId), this.getAvailableImages(mapId));
+
+            // GeoGlobal-proj-huangwei workerproj
+            this.workerSources[mapId][type][source] = new (this.workerSourceTypes[type]: any)((actor: any), this.projcetions[mapId], this.getLayerIndex(mapId), this.getAvailableImages(mapId));
         }
 
         return this.workerSources[mapId][type][source];

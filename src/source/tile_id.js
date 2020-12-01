@@ -1,9 +1,11 @@
 // @flow
 
-import {getTileBBox} from '@mapbox/whoots-js';
+// import {getTileBBox} from '@mapbox/whoots-js';
 import EXTENT from '../data/extent';
 import Point from '@mapbox/point-geometry';
 import MercatorCoordinate from '../extend/geo/mercator_coordinate';
+// GeoGlobal-proj-huangwei resolutions
+import type {Projection} from '../extend/proj';
 
 import assert from 'assert';
 import {register} from '../util/web_worker_transfer';
@@ -15,9 +17,10 @@ export class CanonicalTileID {
     key: string;
 
     constructor(z: number, x: number, y: number) {
-        assert(z >= 0 && z <= 25);
-        assert(x >= 0 && x < Math.pow(2, z));
-        assert(y >= 0 && y < Math.pow(2, z));
+        // GeoGlobal-proj-huangwei resolutions
+        // assert(z >= 0 && z <= 25);
+        // assert(x >= 0 && x < Math.pow(2, z));
+        // assert(y >= 0 && y < Math.pow(2, z));
         this.z = z;
         this.x = x;
         this.y = y;
@@ -29,21 +32,67 @@ export class CanonicalTileID {
     }
 
     // given a list of urls, choose a url template and return a tile URL
-    url(urls: Array<string>, scheme: ?string) {
-        const bbox = getTileBBox(this.x, this.y, this.z);
-        const quadkey = getQuadkey(this.z, this.x, this.y);
+    // GeoGlobal-proj-huangwei resoutions
+    // GeoGlobal-tileUrl-huangwei
+    url(urls: Array<string>,  projection: Projection, options?: any = 'xyz') {
+        // 参数赋值
+        let scheme, rasterType, zoomOffset;
+        if ((typeof options) === 'string') {
+            scheme = options;
+        } else {
+            scheme = options.scheme || 'xyz';
+            rasterType = options.rasterType;
+            zoomOffset = options.zoomOffset;
+        }
+
+        let x = this.x, y = this.y, z = this.z;
+
+        // 其他参数计算（先进行计算）
+        const bbox = projection.getTransform().getTileBBox(x, y, z);
+        const quadkey = getQuadkey(z, x, y);
+
+        // 栅格切片（不同坐标原点的不同换算）
+        if (rasterType && rasterType !== scheme) {
+            // 百度地图
+            if (rasterType === 'baidu') {
+                const zz = projection.zoomScale(z) / 2;
+                x = x - zz;
+                y = zz - y - 1;
+            }
+        }
+        // scheme
+        if (scheme === 'tms') {
+            y = projection.zoomScale(z) - y - 1;
+        }
+        // zoom偏转
+        if (zoomOffset) {
+            z = z - Number.parseInt(zoomOffset);
+        }
 
         return urls[(this.x + this.y) % urls.length]
             .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
-            .replace('{z}', String(this.z))
-            .replace('{x}', String(this.x))
-            .replace('{y}', String(scheme === 'tms' ? (Math.pow(2, this.z) - this.y - 1) : this.y))
+            .replace('{z}', String(Math.round(z)))
+            .replace('{x}', String(Math.round(x)))
+            .replace('{y}', String(Math.round(y)))
             .replace('{quadkey}', quadkey)
-            .replace('{bbox-epsg-3857}', bbox);
+            .replace('{bbox-epsg-3857}', bbox)
+            .replace('{bbox}', bbox);
+
+        // const bbox = getTileBBox(this.x, this.y, this.z);
+        // const quadkey = getQuadkey(this.z, this.x, this.y);
+
+        // return urls[(this.x + this.y) % urls.length]
+        //     .replace('{prefix}', (this.x % 16).toString(16) + (this.y % 16).toString(16))
+        //     .replace('{z}', String(this.z))
+        //     .replace('{x}', String(this.x))
+        //     .replace('{y}', String(scheme === 'tms' ? (Math.pow(2, this.z) - this.y - 1) : this.y))
+        //     .replace('{quadkey}', quadkey)
+        //     .replace('{bbox-epsg-3857}', bbox);
     }
 
     getTilePoint(coord: MercatorCoordinate) {
-        const tilesAtZoom = Math.pow(2, this.z);
+        // GeoGlobal-proj-huangwei resolutions
+        const tilesAtZoom = coord.projection.zoomScale(this.z);
         return new Point(
             (coord.x * tilesAtZoom - this.x) * EXTENT,
             (coord.y * tilesAtZoom - this.y) * EXTENT);
@@ -175,7 +224,8 @@ export class OverscaledTileID {
     }
 
     getTilePoint(coord: MercatorCoordinate) {
-        return this.canonical.getTilePoint(new MercatorCoordinate(coord.x - this.wrap, coord.y));
+        // GeoGlobal-proj-huangwei coord
+        return this.canonical.getTilePoint(new MercatorCoordinate(coord.x - this.wrap, coord.y, coord.z, coord.projection));
     }
 }
 
