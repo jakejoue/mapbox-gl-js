@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapbox GL JS debug page</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <link rel="stylesheet" href="../../dist/mapbox-gl.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <script src="../../dist/mapbox-gl-dev.js"></script>
+        <script src="../access_token_generated.js"></script>
+        <script src="./indoor-3d-map.js"></script>
+        <script>
+            var map = (window.map = new mapboxgl.Map({
+                container: "map",
+                projection: "EPSG:4326",
+                center: [-87.616941, 41.8661978],
+                zoom: 17,
+                pitch: 30,
+                antialias: true,
+                style: {
+                    version: 8,
+                    sources: {},
+                    layers: [],
+                },
+                renderWorldCopies: true,
+                isIntScrollZoom: true,
+                skipLevelOfZooming: true,
+            }));
+
+            map.on("load", function () {
+                // bc layer
+                map.addLayer({
+                    id: "background",
+                    type: "background",
+                    paint: {
+                        "background-color": "#262626",
+                    },
+                });
+
+                // fill-extrusion layer
+                map.addLayer({
+                    id: "room-extrusion",
+                    type: "fill-extrusion",
+                    source: {
+                        // GeoJSON Data source used in vector tiles, documented at
+                        // https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
+                        type: "geojson",
+                        data: window.geojson,
+                    },
+                    paint: {
+                        // See the Mapbox Style Specification for details on data expressions.
+                        // https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions
+
+                        // Get the fill-extrusion-color from the source 'color' property.
+                        "fill-extrusion-color": "#66ffcc",
+
+                        // Get fill-extrusion-height from the source 'height' property.
+                        "fill-extrusion-height": ["get", "height"],
+
+                        // Get fill-extrusion-base from the source 'base_height' property.
+                        "fill-extrusion-base": ["get", "base-height"],
+
+                        // Make extrusions slightly opaque for see through indoor walls.
+                        "fill-extrusion-opacity": 1,
+
+                        // 颜色增强
+                        "fill-extrusion-intensity": -3,
+
+                        // 底部颜色（设置改参数，颜色增强参数将会无效）
+                        // "fill-extrusion-bottom-color": "#ff0000",
+
+                        // 是否为重复贴图模式
+                        "fill-extrusion-pattern-repeat": false
+                    },
+                });
+
+                map.loadImage("../test/textures/cover.jpg", function (
+                    img,
+                    img2
+                ) {
+                    map.addImage("pattern", img2);
+                    map.setPaintProperty(
+                        "room-extrusion",
+                        "fill-extrusion-pattern",
+                        "pattern"
+                    );
+                });
+            });
+        </script>
+    </body>
+</html>

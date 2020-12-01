@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapbox GL JS debug page</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <link rel="stylesheet" href="../../dist/mapbox-gl.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <script src="../../dist/mapbox-gl-dev.js"></script>
+        <script src="../access_token_generated.js"></script>
+        <script>
+            var map = (window.map = new mapboxgl.Map({
+                container: "map",
+                zoom: 12.5,
+                projection: "EPSG:4326",
+                center: [114.2933203, 30.5665867],
+                style: {
+                    version: 8,
+                    sources: {
+                        tdt: {
+                            type: "raster",
+                            tiles: [
+                                "http://t0.tianditu.com/vec_c/wmts?tk=9aebc7723eee1ef07a73f5ddfc0c1df4&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=c&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
+                            ],
+                            tileSize: 256,
+                            zoomOffset: 0
+                        }
+                    },
+                    layers: [
+                        {
+                            id: "tdt",
+                            type: "raster",
+                            layout: { visibility: "visible" },
+                            maxzoom: 19,
+                            metadata: { type: "WMTS" },
+                            minzoom: 1,
+                            name: "vec",
+                            paint: { "raster-opacity": 1 },
+                            source: "tdt"
+                        }
+                    ]
+                },
+                hash: true,
+                renderWorldCopies: true,
+                isIntScrollZoom: true,
+                skipLevelOfZooming: true
+            }));
+
+            map.on("load", function() {
+                // 测试路径
+                var Path = [
+                    [117.14873093111817, 34.27711885568744, 1],
+                    [117.14987888452941, 34.277897630202524, 2],
+                    [117.15153827751908, 34.278014961020276, 3],
+                    [117.15250206637819, 34.27786410711203, 4],
+                    [117.15342395137401, 34.27734449920539, 5],
+                    [117.15399384391685, 34.27687517593523, 6],
+                    [117.15439612100403, 34.2764645180738, 7],
+                    [117.15456373645969, 34.275944910167155, 8],
+                    [117.15447992873305, 34.275534252305725, 9],
+                    [117.15402736700702, 34.275014644399384, 10],
+                    [117.15287920114832, 34.27515711753509, 10],
+                    [117.1517729391552, 34.275986814030794, 1],
+                    [117.15073372334251, 34.27623823721112, 1],
+                    [117.14954365362036, 34.27602033712129, 1],
+                    [117.14941794203031, 34.27530797144335, 1],
+                    [117.14971964984682, 34.27465427117385, 1],
+                    [117.15070020025229, 34.27410952094956, 1],
+                    [117.15215845469834, 34.27407599785876, 1],
+                    [117.15372565919057, 34.27397542858639, 1],
+                    [117.15529286368275, 34.2743274210391, 1],
+                    [117.15557780995294, 34.27560967925985, 1],
+                    [117.15584599467923, 34.277336118432835, 1]
+                ];
+
+                map.addLayer({
+                    id: "testline2",
+                    type: "line",
+                    paint: {
+                        "line-color": "red",
+                        "line-opacity": 0.6,
+                        "line-width": 4
+                    },
+                    source: {
+                        type: "geojson",
+                        data: { type: "LineString", coordinates: Path }
+                    }
+                });
+                var marker = new mapboxgl.Marker()
+                    .setLngLat(Path[0])
+                    .addTo(map);
+
+                flyRoute = new mapboxgl.RouteFly(Path, [16, 20]);
+                flyRoute.update = function(center) {
+                    marker.setLngLat(center);
+                };
+                flyRoute.addTo(map);
+
+                setTimeout(function() {
+                    flyRoute.play();
+                }, 2000);
+            });
+        </script>
+    </body>
+</html>

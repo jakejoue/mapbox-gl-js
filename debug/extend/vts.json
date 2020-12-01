@@ -1,0 +1,519 @@
+{
+  "layer": {
+    "layerData": [
+      {
+        "id": "省_Project_0_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_0_1",
+            "name": "省_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "省_Project_0_0"
+        },
+        "paint": {
+          "fill-color": "rgba(205,247,236,1)",
+          "fill-opacity": 1,
+          "fill-outline-color": "rgba(205,247,236,1)"
+        },
+        "source-layer": "省_Project",
+        "type": "fill",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "省_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "省_Project_0_1ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_0_1",
+            "name": "省_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "省_Project_0_1"
+        },
+        "paint": {
+          "line-color": "rgba(110,110,110,1)",
+          "line-opacity": 1,
+          "line-width": 1
+        },
+        "source-layer": "省_Project",
+        "type": "line",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "省_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "省copy_1_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_1_3",
+            "name": "省copy"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "省copy_1_0"
+        },
+        "paint": {
+          "fill-color": "rgba(206,222,242,1)",
+          "fill-opacity": 1,
+          "fill-outline-color": "rgba(206,222,242,1)"
+        },
+        "source-layer": "省copy",
+        "type": "fill",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "省copy",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "省copy_1_1ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_1_3",
+            "name": "省copy"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "省copy_1_1"
+        },
+        "paint": {
+          "line-color": "rgba(110,110,110,1)",
+          "line-opacity": 1,
+          "line-width": 1
+        },
+        "source-layer": "省copy",
+        "type": "line",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "省copy",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "市_Project_2_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_2_5",
+            "name": "市_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "市_Project_2_0"
+        },
+        "paint": {
+          "fill-color": "rgba(212,250,238,1)",
+          "fill-opacity": 1,
+          "fill-outline-color": "rgba(212,250,238,1)"
+        },
+        "source-layer": "市_Project",
+        "type": "fill",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "市_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "市_Project_2_1ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_2_5",
+            "name": "市_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "市_Project_2_1"
+        },
+        "paint": {
+          "line-color": "rgba(110,110,110,1)",
+          "line-opacity": 1,
+          "line-width": 1
+        },
+        "source-layer": "市_Project",
+        "type": "line",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "市_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "县区_Project_3_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_3_7",
+            "name": "县区_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "县区_Project_3_0"
+        },
+        "paint": {
+          "fill-color": "rgba(195,230,250,1)",
+          "fill-opacity": 1,
+          "fill-outline-color": "rgba(195,230,250,1)"
+        },
+        "source-layer": "县区_Project",
+        "type": "fill",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "县区_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "县区_Project_3_1ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_3_7",
+            "name": "县区_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "县区_Project_3_1"
+        },
+        "paint": {
+          "line-color": "rgba(110,110,110,1)",
+          "line-opacity": 1,
+          "line-width": 1
+        },
+        "source-layer": "县区_Project",
+        "type": "line",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "县区_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "国line_Project_4_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_4_9",
+            "name": "国line_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "国line_Project_4_0"
+        },
+        "paint": {
+          "line-color": "rgba(20,148,0,1)",
+          "line-opacity": 1,
+          "line-width": 1.333
+        },
+        "source-layer": "国line_Project",
+        "type": "line",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "国line_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "国line_Project2_5_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_5_11",
+            "name": "国line_Project2"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "国line_Project2_5_0"
+        },
+        "paint": {
+          "line-color": "rgba(0,176,114,1)",
+          "line-opacity": 1,
+          "line-width": 1.333
+        },
+        "source-layer": "国line_Project2",
+        "type": "line",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "国line_Project2",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "省line_Project_6_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_6_13",
+            "name": "省line_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "省line_Project_6_0"
+        },
+        "paint": {
+          "line-color": "rgba(0,76,148,1)",
+          "line-opacity": 1,
+          "line-width": 1.333
+        },
+        "source-layer": "省line_Project",
+        "type": "line",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "省line_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "市line_Project_7_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_7_15",
+            "name": "市line_Project"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "市line_Project_7_0"
+        },
+        "paint": {
+          "line-color": "rgba(0,128,104,1)",
+          "line-opacity": 1,
+          "line-width": 1.333
+        },
+        "source-layer": "市line_Project",
+        "type": "line",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "市line_Project",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "市点_9_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "icon-image": "市点_9_0",
+          "icon-size": 1,
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_9_19",
+            "name": "市点"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "市点_9_0"
+        },
+        "paint": {
+          "icon-opacity": 1,
+          "text-opacity": 1
+        },
+        "source-layer": "市点",
+        "type": "symbol",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "市点",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "县点shp_10_0ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "icon-image": "县点shp_10_0",
+          "icon-size": 1,
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_10_21",
+            "name": "县点shp"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "县点shp_10_0"
+        },
+        "paint": {
+          "icon-opacity": 1,
+          "text-opacity": 1
+        },
+        "source-layer": "县点shp",
+        "type": "symbol",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "县点shp",
+        "minzoom": 4,
+        "maxzoom": 9
+      },
+      {
+        "id": "省点_8_2ded86080-0044-11ea-92f8-f1ff261981de",
+        "layout": {
+          "icon-image": "省点_8_2",
+          "icon-size": 1,
+          "text-anchor": "bottom-left",
+          "text-field": "{NAME}",
+          "text-font": [
+            "宋体 常规"
+          ],
+          "text-max-width": 10,
+          "text-offset": [
+            0.667,
+            -0.267
+          ],
+          "text-size": 11,
+          "visibility": "visible"
+        },
+        "metadata": {
+          "geostar_catalog": {
+            "aliasname": "",
+            "id": "metadata_8_17",
+            "name": "省点"
+          },
+          "type": "VTS",
+          "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+          "visibility": "visible",
+          "originId": "省点_8_2"
+        },
+        "paint": {
+          "icon-opacity": 1,
+          "text-color": "rgba(0,0,0,1)",
+          "text-opacity": 1
+        },
+        "source-layer": "省点",
+        "type": "symbol",
+        "source": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+        "name": "省点",
+        "minzoom": 4,
+        "maxzoom": 9
+      }
+    ],
+    "sprite": "http://127.0.0.1:5500/proxy/qgqp/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetSymbol&STYLENAME=qgys.gmaox&SYMBOLNAME=sprite",
+    "glyphs": "http://127.0.0.1:5500/proxy/ztkfw/fls?SERVICE=FLS&VERSION=1.0&REQUEST=GetFont&FONTNAME={fontstack}&RANGE={range}.pbf"
+  },
+  "source": {
+    "id": "sourceId_qg_ded86080-0044-11ea-92f8-f1ff261981de",
+    "type": "vector",
+    "minzoom": 4,
+    "maxzoom": 9,
+    "tiles": [
+      "http://127.0.0.1:5500/proxy/qgqp/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=qg&FORMAT=protobuf&TILEMATRIXSET=qg_Matrix_0&WIDTH=256&HEIGHT=256&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    ],
+    "config": {
+      "alias": "qg",
+      "name": "qg",
+      "url": "http://172.17.0.181:9010/qgqp/wmts",
+      "version": "1.0.0",
+      "styles": [
+        "qgys.gmaox"
+      ],
+      "style": "qgys.gmaox",
+      "zoomOffset": 0,
+      "matrixSet": "qg_Matrix_0",
+      "matrixIds": [
+        {
+          "identifier": "4",
+          "scaleDenominator": 36978669.431820706,
+          "tileHeight": 256,
+          "tileWidth": 256
+        },
+        {
+          "identifier": "5",
+          "scaleDenominator": 18489334.715910353,
+          "tileHeight": 256,
+          "tileWidth": 256
+        },
+        {
+          "identifier": "6",
+          "scaleDenominator": 9244667.357955176,
+          "tileHeight": 256,
+          "tileWidth": 256
+        },
+        {
+          "identifier": "7",
+          "scaleDenominator": 4622333.678977588,
+          "tileHeight": 256,
+          "tileWidth": 256
+        },
+        {
+          "identifier": "8",
+          "scaleDenominator": 2311166.839488794,
+          "tileHeight": 256,
+          "tileWidth": 256
+        },
+        {
+          "identifier": "9",
+          "scaleDenominator": 1155583.419744397,
+          "tileHeight": 256,
+          "tileWidth": 256
+        }
+      ],
+      "format": "protobuf",
+      "formats": [
+        "image/png",
+        "image/jpeg",
+        "protobuf"
+      ],
+      "maxExtent": "73.4990129470899,3.83788855466543,135.087376878694,53.561657140165",
+      "minZoom": 4,
+      "maxZoom": 9,
+      "type": "VTS",
+      "visibility": true,
+      "opacity": 1,
+      "metadata": "",
+      "zoomRange": [
+        4,
+        9
+      ]
+    }
+  }
+}

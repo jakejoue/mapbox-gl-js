@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapbox GL JS debug page</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <link rel="stylesheet" href="../../dist/mapbox-gl.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <script src="../../dist/mapbox-gl-dev.js"></script>
+        <script src="../access_token_generated.js"></script>
+        <script>
+            var projection = new mapboxgl.proj.Projection({
+                code: "mapcrs",
+                extent: [
+                    -400,
+                    -599.7684084084086,
+                    599.7684084084084,
+                    399.9999999999998
+                ],
+                resolutions: [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    4.7589220116605604e-4,
+                    3.5691915087454206e-4,
+                    1.1897305029151401e-4,
+                    7.138383017490841e-5,
+                    4.758922011660561e-5,
+                    2.3794610058302804e-5,
+                    1.903568804664224e-5,
+                    1.1897305029151402e-5,
+                    null
+                ],
+                tileSize: 256
+            });
+            var map = (window.map = new mapboxgl.Map({
+                container: "map",
+                projection: projection,
+                center: [113.88568972200005, 22.900628151500058],
+                style: {
+                    version: 8,
+                    sources: {},
+                    layers: []
+                },
+                hash: false,
+                renderWorldCopies: true,
+                isIntScrollZoom: true,
+                skipLevelOfZooming: true
+            }));
+
+            map.on("load", function() {
+                var pointjson = {
+                    type: "geojson",
+                    data: {
+                        type: "Feature",
+                        geometry: {
+                            type: "Point",
+                            coordinates: [
+                                113.88568972200005,
+                                22.900628151500058
+                            ]
+                        },
+                        properties: {
+                            title: "add point",
+                            "marker-symbol": "monument",
+                            name: "pointjson"
+                        }
+                    }
+                };
+                var pointjson2 = {
+                    type: "geojson",
+                    data: {
+                        type: "Feature",
+                        geometry: {
+                            type: "Point",
+                            coordinates: [
+                                113.89464314460633,
+                                22.900933884416588
+                            ]
+                        },
+                        properties: {
+                            title: "add point",
+                            "marker-symbol": "monument",
+                            name: "pointjson2"
+                        }
+                    }
+                };
+
+                var multiPointSource = {
+                    type: "geojson",
+                    data: {
+                        type: "FeatureCollection",
+                        features: [
+                            {
+                                type: "Feature",
+                                geometry: {
+                                    type: "Point",
+                                    coordinates: [
+                                        113.88568972200005,
+                                        22.900628151500058
+                                    ]
+                                },
+                                properties: { name: "hello1" }
+                            },
+                            {
+                                type: "Feature",
+                                geometry: {
+                                    type: "Point",
+                                    coordinates: [
+                                        113.89464314460633,
+                                        22.900933884416588
+                                    ]
+                                },
+                                properties: { name: "hello2" }
+                            }
+                        ]
+                    }
+                };
+
+                var multiLineSource = {
+                    type: "geojson",
+                    data: {
+                        type: "FeatureCollection",
+                        features: [
+                            {
+                                type: "Feature",
+                                geometry: {
+                                    type: "LineString",
+                                    coordinates: [
+                                        [113.9630222045489, 22.987716424216046],
+                                        [
+                                            113.97682307839546,
+                                            22.905862965639358
+                                        ],
+                                        [113.92209547522168, 22.844472871687344]
+                                    ]
+                                },
+                                properties: { prop1: "value1" }
+                            },
+                            {
+                                type: "Feature",
+                                geometry: {
+                                    type: "LineString",
+                                    coordinates: [
+                                        [
+                                            113.65155075916289,
+                                            23.042919919612075
+                                        ],
+                                        [113.65535789670594, 22.99866194491517],
+                                        [
+                                            113.72103102053006,
+                                            23.001993190323844
+                                        ],
+                                        [
+                                            113.70913371545498,
+                                            22.942982557355606
+                                        ],
+                                        [
+                                            113.79764966492678,
+                                            22.961542353208756
+                                        ],
+                                        [113.88616561432048, 23.020552986138],
+                                        [113.85999154326453, 22.90062815146922],
+                                        [113.91805039176893, 22.83828627309248],
+                                        [
+                                            113.81668535295341,
+                                            22.781179208973697
+                                        ],
+                                        [113.94374857061268, 22.75690870668916],
+                                        [114.0817573090003, 22.788317591964187],
+                                        [
+                                            114.03845111868918,
+                                            22.873502295988317
+                                        ],
+                                        [114.05558323794412, 22.98152982566006],
+                                        [114.16218309101805, 22.907766534459654]
+                                    ]
+                                },
+                                properties: { prop2: "value2" }
+                            }
+                        ]
+                    }
+                };
+
+                var polygonSource = {
+                    type: "geojson",
+                    data: {
+                        type: "Feature",
+                        geometry: {
+                            type: "Polygon",
+                            coordinates: [
+                                [
+                                    [113.73610540578954, 22.944149340880074],
+                                    [113.71762812987015, 22.858036360862172],
+                                    [113.83191366434608, 22.844342941055856],
+                                    [113.83037457037005, 22.93606450002079],
+                                    [113.73610540578954, 22.944149340880074]
+                                ]
+                            ]
+                        },
+                        properties: {
+                            prop: "polygon"
+                        }
+                    }
+                };
+
+                map.addLayer({
+                    id: "point",
+                    type: "circle",
+                    source: pointjson,
+                    paint: {
+                        "circle-radius": 5,
+                        "circle-color": "green",
+                        "circle-opacity": 0.8,
+                        "circle-pitch-scale": "viewport"
+                    }
+                });
+
+                map.addLayer({
+                    id: "point2",
+                    type: "circle",
+                    source: pointjson2,
+                    paint: {
+                        "circle-radius": 5,
+                        "circle-color": "blue",
+                        "circle-opacity": 0.8,
+                        "circle-pitch-scale": "viewport"
+                    }
+                });
+
+                map.addLayer({
+                    id: "line",
+                    type: "line",
+                    source: multiLineSource,
+                    layout: {
+                        "line-join": "round",
+                        "line-cap": "round"
+                    },
+                    paint: {
+                        "line-color": "blue",
+                        "line-width": 3
+                    }
+                });
+
+                map.addLayer({
+                    id: "polygon",
+                    type: "fill",
+                    source: polygonSource,
+                    layout: {},
+                    paint: {
+                        "fill-color": "red",
+                        "fill-opacity": 0.8
+                    }
+                });
+
+                map.addLayer({
+                    id: "pointSymbol",
+                    type: "symbol",
+                    source: multiPointSource,
+                    paint: {
+                        "text-color": "rgb(255,0,0)"
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

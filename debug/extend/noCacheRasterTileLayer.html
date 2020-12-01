@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapbox GL JS debug page</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <link rel="stylesheet" href="../../dist/mapbox-gl.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <script src="../../dist/mapbox-gl-dev.js"></script>
+        <script src="../access_token_generated.js"></script>
+        <script>
+            var map = (window.map = new mapboxgl.Map({
+                container: "map",
+                projection: "EPSG:4326",
+                zoom: 16,
+                center: [118.61359335502925, 31.891743294807817],
+                style: {
+                    version: 8,
+                    sources: {
+                        tdt: {
+                            type: "raster",
+                            tiles: [
+                                "http://58.213.23.214:83/geostar/NJDLG_DT/wmts?LAYER=NJDLG_DT_10_20&FORMAT=image/tile&TILEMATRIXSET=NJDLG_DT_10_20_Matrix_0&VERSION=1.0.0&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&service=WMTS&request=GetTile"
+                            ],
+                            tileSize: 256,
+                            noFadingParent: true
+                        },
+                        tdtzj: {
+                            type: "raster",
+                            tiles: [
+                                "http://58.213.23.214:83/geostar/NJDLG_ZJ/wmts?LAYER=NJDLG_ZJ_10_20&FORMAT=image/tile&TILEMATRIXSET=NJDLG_ZJ_10_20_Matrix_0&VERSION=1.0.0&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&service=WMTS&request=GetTile"
+                            ],
+                            tileSize: 256,
+                            noFadingParent: true
+                        }
+                    },
+                    layers: [
+                        {
+                            id: "tdt",
+                            type: "raster",
+                            source: "tdt"
+                        },
+                        {
+                            id: "tdtzj",
+                            type: "raster",
+                            source: "tdtzj"
+                        }
+                    ]
+                },
+                hash: true,
+                renderWorldCopies: true,
+                isIntScrollZoom: true,
+                skipLevelOfZooming: true
+            }));
+        </script>
+    </body>
+</html>

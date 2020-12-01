@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapbox GL JS debug page</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <link rel="stylesheet" href="../../dist/mapbox-gl.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <script src="../../dist/mapbox-gl-dev.js"></script>
+        <script src="../access_token_generated.js"></script>
+        <script>
+            var map = (window.map = new mapboxgl.Map({
+                container: "map",
+                zoom: 12.5,
+                projection: "EPSG:4326",
+                center: [114.2933203, 30.5665867],
+                style: {
+                    version: 8,
+                    sources: {
+                        tdt: {
+                            type: "raster",
+                            tiles: [
+                                "http://t0.tianditu.com/vec_c/wmts?tk=9aebc7723eee1ef07a73f5ddfc0c1df4&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=c&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
+                            ],
+                            tileSize: 256,
+                            zoomOffset: 0
+                        }
+                    },
+                    layers: [
+                        {
+                            id: "tdt",
+                            type: "raster",
+                            layout: { visibility: "visible" },
+                            maxzoom: 19,
+                            metadata: { type: "WMTS" },
+                            minzoom: 1,
+                            name: "vec",
+                            paint: { "raster-opacity": 1 },
+                            source: "tdt"
+                        }
+                    ]
+                },
+                hash: true,
+                renderWorldCopies: true,
+                isIntScrollZoom: true,
+                skipLevelOfZooming: true
+            }));
+
+            fetch("./vts.json")
+                .then(data => data.json())
+                .then(data => {
+                    const { layer, source } = data;
+
+                    if (layer.sprite != null && layer.sprite !== "") {
+                        map.style.loadSprite(layer.sprite);
+                    }
+                    if (layer.glyphs != null && layer.glyphs !== "") {
+                        map.style.setGlyphs(layer.glyphs);
+                    }
+
+                    // 存在字体库添加矢量图层
+                    if (map.style.glyphManager.url !== "") {
+                        map.addSource(source.id, source);
+
+                        for (const key in layer.layerData) {
+                            map.addLayer(layer.layerData[key]);
+                        }
+                    } else {
+                        console.error("矢量图层加载：", "没有可用的字体服务！");
+                    }
+                });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mapbox GL JS debug page</title>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no"
+        />
+        <link rel="stylesheet" href="../../dist/mapbox-gl.css" />
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="map"></div>
+
+        <script src="./spritedata.js"></script>
+        <script src="../../dist/mapbox-gl-dev.js"></script>
+        <script src="../access_token_generated.js"></script>
+        <script>
+            var map = (window.map = new mapboxgl.Map({
+                container: "map",
+                zoom: 17,
+                projection: "EPSG:4326",
+                center: [114.38543155696385, 30.463460059381646],
+                style: {
+                    version: 8,
+                    sources: {
+                        tdt: {
+                            type: "raster",
+                            tiles: [
+                                "http://t0.tianditu.com/vec_c/wmts?tk=9aebc7723eee1ef07a73f5ddfc0c1df4&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=c&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles"
+                            ],
+                            tileSize: 256,
+                            zoomOffset: 0
+                        }
+                    },
+                    layers: [
+                        {
+                            id: "tdt",
+                            type: "raster",
+                            layout: { visibility: "visible" },
+                            maxzoom: 19,
+                            metadata: { type: "WMTS" },
+                            minzoom: 1,
+                            name: "vec",
+                            paint: { "raster-opacity": 1 },
+                            source: "tdt"
+                        }
+                    ]
+                },
+                renderWorldCopies: true,
+                isIntScrollZoom: true,
+                skipLevelOfZooming: true
+            }));
+
+            map.repaint = true;
+
+            map.on("load", function() {
+                map.addSource("spriteSource1", {
+                    type: "geojson",
+                    data: data1
+                });
+                map.addSource("spriteSource2", {
+                    type: "geojson",
+                    data: data2
+                });
+
+                map.addLayer({
+                    type: "sprite",
+                    source: "spriteSource1",
+                    id: "spriteLayer1",
+                    layout: {
+                        "sprite-cap": "round",
+                        "sprite-join": "round",
+                        visibility: "visible"
+                    },
+                    paint: {
+                        "sprite-color": "#00FFFF",
+                        "sprite-width": 5,
+                        "sprite-opacity": 1,
+                        "sprite-speed-factor": 1
+                    }
+                });
+
+                map.addLayer({
+                    type: "sprite",
+                    source: "spriteSource2",
+                    id: "spriteLayer2",
+                    layout: {
+                        "sprite-cap": "round",
+                        "sprite-join": "round",
+                        visibility: "visible"
+                    },
+                    paint: {
+                        "sprite-color": "#00FFFF",
+                        "sprite-width": 5,
+                        "sprite-opacity": 1,
+                        "sprite-speed-factor": 1
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
