@@ -37,12 +37,11 @@
             var map = (window.map = new mapboxgl.Map({
                 container: "map",
                 zoom: 3,
-                projection: projection,
+                projection,
                 center: [-77.01866, 38.888],
                 style: {
                     version: 8,
-                    // glyphs:
-                        // "http://127.0.0.1:5500/proxy/ztkfw/fls?SERVICE=FLS&VERSION=1.0&REQUEST=GetFont&FONTNAME={fontstack}&RANGE={range}.pbf",
+                    glyphs: "http://127.0.0.1:5500/proxy/ztkfw/fls?SERVICE=FLS&VERSION=1.0&REQUEST=GetFont&FONTNAME={fontstack}&RANGE={range}.pbf",
                     sources: {
                         tdt: {
                             type: "raster",
@@ -57,12 +56,12 @@
                         {
                             id: "tdt",
                             type: "raster",
-                            layout: { visibility: "visible" },
+                            layout: {visibility: "visible"},
                             maxzoom: 19,
-                            metadata: { type: "WMTS" },
+                            metadata: {type: "WMTS"},
                             minzoom: 1,
                             name: "vec",
-                            paint: { "raster-opacity": 1 },
+                            paint: {"raster-opacity": 1},
                             source: "tdt"
                         }
                     ]
