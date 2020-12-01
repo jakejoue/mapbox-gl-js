@@ -66,6 +66,9 @@ import type {CustomLayerInterface} from './style_layer/custom_style_layer';
 import type {Validator} from './validate_style';
 import type {OverscaledTileID} from '../source/tile_id';
 
+// GeoGlobal-tileSize-huangwei-191113
+import window from '../util/browser/window';
+
 const supportedDiffOperations = pick(diffOperations, [
     'addLayer',
     'removeLayer',
@@ -205,6 +208,9 @@ class Style extends Evented {
                 }
             }
         });
+
+        // GeoGlobal-proj-huangwei  workerproj 同步子线程坐标系
+        this.dispatcher.broadcast('setProjection', map.projection);
     }
 
     loadURL(url: string, options: {
@@ -571,9 +577,15 @@ class Style extends Evented {
             throw new Error(`The type property must be defined, but only the following properties were given: ${Object.keys(source).join(', ')}.`);
         }
 
+        // GeoGlobal-tileSize-huangwei 删除默认tileSize，避免因此验证失败
+        delete source.defaultTileSize;
+
         const builtIns = ['vector', 'raster', 'geojson', 'video', 'image'];
         const shouldValidate = builtIns.indexOf(source.type) >= 0;
         if (shouldValidate && this._validate(validateStyle.source, `sources.${id}`, source, null, options)) return;
+
+        // GeoGlobal-tileSize-huangwei 设置默认tileSize
+        source.defaultTileSize = window.GEOGLOBE_TILESIZE || this.map.projection.getTileSize();
 
         if (this.map && this.map._collectResourceTiming) (source: any).collectResourceTiming = true;
         const sourceCache = this.sourceCaches[id] = new SourceCache(id, source, this.dispatcher);

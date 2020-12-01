@@ -90,7 +90,9 @@ export type VectorSourceSpecification = {
     "maxzoom"?: number,
     "attribution"?: string,
     "promoteId"?: PromoteIdSpecification,
-    "volatile"?: boolean
+    "volatile"?: boolean,
+    // GeoGlobal-tileSize-huangwei
+    "defaultTileSize": number
 }
 
 export type RasterSourceSpecification = {
@@ -103,7 +105,9 @@ export type RasterSourceSpecification = {
     "tileSize"?: number,
     "scheme"?: "xyz" | "tms",
     "attribution"?: string,
-    "volatile"?: boolean
+    "volatile"?: boolean,
+    // GeoGlobal-tileSize-huangwei
+    "defaultTileSize": number
 }
 
 export type RasterDEMSourceSpecification = {
@@ -116,7 +120,9 @@ export type RasterDEMSourceSpecification = {
     "tileSize"?: number,
     "attribution"?: string,
     "encoding"?: "terrarium" | "mapbox",
-    "volatile"?: boolean
+    "volatile"?: boolean,
+    // GeoGlobal-tileSize-huangwei
+    "defaultTileSize": number
 }
 
 export type GeoJSONSourceSpecification = {|
@@ -134,7 +140,9 @@ export type GeoJSONSourceSpecification = {|
     "clusterProperties"?: mixed,
     "lineMetrics"?: boolean,
     "generateId"?: boolean,
-    "promoteId"?: PromoteIdSpecification
+    "promoteId"?: PromoteIdSpecification,
+    // GeoGlobal-tileSize-huangwei
+    "defaultTileSize": number
 |}
 
 export type VideoSourceSpecification = {|
@@ -142,13 +150,17 @@ export type VideoSourceSpecification = {|
     // GeoGlobal-video-huangwei
     "video": HTMLVideoElement,
     "urls": Array<string>,
-    "coordinates": [[number, number], [number, number], [number, number], [number, number]]
+    "coordinates": [[number, number], [number, number], [number, number], [number, number]],
+    // GeoGlobal-tileSize-huangwei
+    "defaultTileSize": number
 |}
 
 export type ImageSourceSpecification = {|
     "type": "image",
     "url": string,
-    "coordinates": [[number, number], [number, number], [number, number], [number, number]]
+    "coordinates": [[number, number], [number, number], [number, number], [number, number]],
+    // GeoGlobal-tileSize-huangwei
+    "defaultTileSize": number
 |}
 
 export type SourceSpecification =

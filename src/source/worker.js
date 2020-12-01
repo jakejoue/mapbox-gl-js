@@ -241,6 +241,11 @@ export default class Worker {
     enforceCacheSizeLimit(mapId: string, limit: number) {
         enforceCacheSizeLimit(limit);
     }
+
+    // GeoGlobal-proj-huangwei workerproj 同步子线程坐标系
+    setProjection(mapId: string, projection: Projection) {
+        this.projcetions[mapId] = projection;
+    }
 }
 
 /* global self, WorkerGlobalScope */

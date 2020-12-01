@@ -1239,7 +1239,7 @@ class Camera extends Evented {
     // If a path crossing the antimeridian would be shorter, extend the final coordinate so that
     // interpolating between the two endpoints will cross it.
     _normalizeCenter(center: LngLat) {
-        // GeoGlobal-proj-huangwei 地图范围
+        // GeoGlobal-proj-huangwei 坐标范围
         const tr = this.transform;
         if (!tr.renderWorldCopies || tr.lngRange) return;
 

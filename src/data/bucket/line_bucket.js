@@ -86,6 +86,9 @@ type GradientTexture = {
  * @private
  */
 class LineBucket implements Bucket {
+    // GeoGlobal-tileSize-huangwei
+    tileSize: number;
+
     distance: number;
     totalDistance: number;
     maxLineLength: number;
@@ -290,8 +293,9 @@ class LineBucket implements Bucket {
 
         if (join === 'bevel') miterLimit = 1.05;
 
+        // GeoGlobal-tileSize-huangwei
         const sharpCornerOffset = this.overscaling <= 16 ?
-            SHARP_CORNER_OFFSET * EXTENT / (512 * this.overscaling) :
+            SHARP_CORNER_OFFSET * EXTENT / (this.tileSize * this.overscaling) :
             0;
 
         // we could be more precise, but it would only save a negligible amount of space

@@ -53,6 +53,9 @@ function addVertex(vertexArray, x, y, nx, ny, nz, t, e) {
 }
 
 class FillExtrusionBucket implements Bucket {
+    // GeoGlobal-tileSize-huangwei
+    tileSize: number;
+
     index: number;
     zoom: number;
     overscaling: number;

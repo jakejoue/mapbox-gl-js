@@ -33,6 +33,9 @@ import type {FeatureStates} from '../../source/source_state';
 import type {ImagePosition} from '../../render/image_atlas';
 
 class FillBucket implements Bucket {
+    // GeoGlobal-tileSize-huangwei
+    tileSize: number;
+
     index: number;
     zoom: number;
     overscaling: number;

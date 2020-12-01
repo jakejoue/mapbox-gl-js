@@ -289,6 +289,9 @@ register('CollisionBuffers', CollisionBuffers);
  * @private
  */
 class SymbolBucket implements Bucket {
+    // GeoGlobal-tileSize-huangwei
+    tileSize: number;
+
     static MAX_GLYPHS: number;
     static addDynamicAttributes: typeof addDynamicAttributes;
 

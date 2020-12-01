@@ -76,7 +76,8 @@ class VectorTileSource extends Evented implements Source {
         this.minzoom = 0;
         this.maxzoom = 22;
         this.scheme = 'xyz';
-        this.tileSize = 512;
+        // GeoGlobal-tileSize-huangwei
+        this.tileSize = options.defaultTileSize;
         this.reparseOverscaled = true;
         this.isTileClipped = true;
         this._loaded = false;
@@ -86,9 +87,10 @@ class VectorTileSource extends Evented implements Source {
 
         this._collectResourceTiming = options.collectResourceTiming;
 
-        if (this.tileSize !== 512) {
-            throw new Error('vector tile sources must have a tileSize of 512');
-        }
+        // GeoGlobal-tileSize-huangwei 取消矢量瓦片tileSize限制
+        // if (this.tileSize !== 512) {
+        //     throw new Error('vector tile sources must have a tileSize of 512');
+        // }
 
         this.setEventedParent(eventedParent);
     }
@@ -191,6 +193,8 @@ class VectorTileSource extends Evented implements Source {
             tileID: tile.tileID,
             zoom: tile.tileID.overscaledZ,
             tileSize: this.tileSize * tile.tileID.overscaleFactor(),
+            // GeoGlobal-tileSize-huangwei 传递原始tileSize
+            originTileSize: this.tileSize,
             type: this.type,
             source: this.id,
             pixelRatio: browser.devicePixelRatio,

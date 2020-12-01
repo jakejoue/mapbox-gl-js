@@ -34,6 +34,8 @@ class WorkerTile {
     zoom: number;
     pixelRatio: number;
     tileSize: number;
+    // GeoGlobal-tileSize-huangwei 传递原始tileSize
+    originTileSize: number;
     source: string;
     promoteId: ?PromoteIdSpecification;
     overscaling: number;
@@ -55,6 +57,8 @@ class WorkerTile {
         this.zoom = params.zoom;
         this.pixelRatio = params.pixelRatio;
         this.tileSize = params.tileSize;
+        // GeoGlobal-tileSize-huangwei 传递原始tileSize
+        this.originTileSize = params.originTileSize || 512;
         this.source = params.source;
         this.overscaling = this.tileID.overscaleFactor();
         this.showCollisionBoxes = params.showCollisionBoxes;
@@ -123,6 +127,8 @@ class WorkerTile {
                     sourceLayerIndex,
                     sourceID: this.source
                 });
+                // GeoGlobal-tileSize-huangwei-191113 赋值bucket TileSzie属性
+                bucket.tileSize = this.originTileSize;
 
                 bucket.populate(features, options, this.tileID.canonical);
                 featureIndex.bucketLayerIDs.push(family.map((l) => l.id));

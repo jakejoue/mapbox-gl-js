@@ -190,9 +190,10 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
                         data = {type: 'FeatureCollection', features};
                     }
 
+                    // GeoGlobal-proj-huangwei workerproj
                     this._geoJSONIndex = params.cluster ?
                         new Supercluster(getSuperclusterOptions(params)).load(data.features) :
-                        geojsonvt(data, params.geojsonVtOptions);
+                        geojsonvt(data, params.geojsonVtOptions, this.projection);
                 } catch (err) {
                     return callback(err);
                 }

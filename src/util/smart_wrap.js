@@ -21,14 +21,17 @@ import type Transform from '../extend/geo/transform';
  * @private
  */
 export default function(lngLat: LngLat, priorPos: ?Point, transform: Transform): LngLat {
+    // GeoGlobal-proj-huangwei 坐标范围
+    const maxExtent = transform.projection.getMaxExtent();
+
     lngLat = new LngLat(lngLat.lng, lngLat.lat);
 
     // First, try shifting one world in either direction, and see if either is closer to the
     // prior position. This preserves object constancy when the map center is auto-wrapped
     // during animations.
     if (priorPos) {
-        const left  = new LngLat(lngLat.lng - 360, lngLat.lat);
-        const right = new LngLat(lngLat.lng + 360, lngLat.lat);
+        const left  = new LngLat(lngLat.lng - maxExtent, lngLat.lat);
+        const right = new LngLat(lngLat.lng + maxExtent, lngLat.lat);
         const delta = transform.locationPoint(lngLat).distSqr(priorPos);
         if (transform.locationPoint(left).distSqr(priorPos) < delta) {
             lngLat = left;
@@ -39,15 +42,15 @@ export default function(lngLat: LngLat, priorPos: ?Point, transform: Transform):
 
     // Second, wrap toward the center until the new position is on screen, or we can't get
     // any closer.
-    while (Math.abs(lngLat.lng - transform.center.lng) > 180) {
+    while (Math.abs(lngLat.lng - transform.center.lng) > (maxExtent / 2)) {
         const pos = transform.locationPoint(lngLat);
         if (pos.x >= 0 && pos.y >= 0 && pos.x <= transform.width && pos.y <= transform.height) {
             break;
         }
         if (lngLat.lng > transform.center.lng) {
-            lngLat.lng -= 360;
+            lngLat.lng -= maxExtent;
         } else {
-            lngLat.lng += 360;
+            lngLat.lng += maxExtent;
         }
     }
 

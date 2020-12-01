@@ -17,7 +17,9 @@ export type CanvasSourceSpecification = {|
     "type": "canvas",
     "coordinates": [[number, number], [number, number], [number, number], [number, number]],
     "animate"?: boolean,
-    "canvas": string | HTMLCanvasElement
+    "canvas": string | HTMLCanvasElement,
+    // GeoGlobal-tileSize-huangwei
+    "defaultTileSize": number
 |};
 
 /**

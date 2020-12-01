@@ -93,7 +93,8 @@ function drawDebugTile(painter, sourceCache, coord: OverscaledTileID) {
     const tileByteLength = (tileRawData && tileRawData.byteLength) || 0;
     const tileSizeKb = Math.floor(tileByteLength / 1024);
     const tileSize = sourceCache.getTile(coord).tileSize;
-    const scaleRatio = (512 / Math.min(tileSize, 512) * (coord.overscaledZ / painter.transform.zoom)) * 0.5;
+    // GeoGlobal-tileSize-huangwei
+    const scaleRatio = (painter.projection.getTileSize() / Math.min(tileSize, painter.projection.getTileSize()) * (coord.overscaledZ / painter.transform.zoom)) * 0.5;
     let tileIdText = coord.canonical.toString();
     if (coord.overscaledZ !== coord.canonical.z) {
         tileIdText += ` => ${coord.overscaledZ}`;
