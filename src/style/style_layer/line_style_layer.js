@@ -10,6 +10,7 @@ import properties from './line_style_layer_properties';
 import {extend, MAX_SAFE_INTEGER} from '../../util/util';
 import EvaluationParameters from '../evaluation_parameters';
 import {Transitionable, Transitioning, Layout, PossiblyEvaluated, DataDrivenProperty} from '../properties';
+import {vec4} from 'gl-matrix';
 
 import Step from '../../style-spec/expression/definitions/step';
 import type {FeatureState, ZoomConstantExpression} from '../../style-spec/expression';
@@ -94,7 +95,8 @@ class LineStyleLayer extends StyleLayer {
                            geometry: Array<Array<Point>>,
                            zoom: number,
                            transform: Transform,
-                           pixelsToTileUnits: number): boolean {
+                           pixelsToTileUnits: number,
+                           pixelPosMatrix: Float32Array): boolean {
         const translatedPolygon = translate(queryGeometry,
             this.paint.get('line-translate'),
             this.paint.get('line-translate-anchor'),
@@ -105,6 +107,16 @@ class LineStyleLayer extends StyleLayer {
         const lineOffset = this.paint.get('line-offset').evaluate(feature, featureState);
         if (lineOffset) {
             geometry = offsetLine(geometry, lineOffset * pixelsToTileUnits);
+        }
+
+        // GeoGlobal-line-height-huangwei
+        const z = this.paint.get('line-height').evaluate(feature, featureState);
+        if (z !== 0) {
+            return polygonIntersectsBufferedMultiLine(
+                projectQueryGeometry(translatedPolygon, pixelPosMatrix, transform, 0),
+                projectLine(geometry, z, pixelPosMatrix),
+                halfWidth / pixelsToTileUnits
+            );
         }
 
         return polygonIntersectsBufferedMultiLine(translatedPolygon, geometry, halfWidth);
@@ -147,4 +159,57 @@ function offsetLine(rings, offset) {
         newRings.push(newRing);
     }
     return newRings;
+}
+
+/**
+ * GeoGlobal-line-height-huangwei
+ * 三维线段坐标投影为像素坐标
+ * @private
+ */
+function projectLine(geometry: Array<Array<Point>>, z: number, m: Float32Array) {
+    const projectedTop = [];
+
+    const topXZ = m[8] * z;
+    const topYZ = m[9] * z;
+    const topZZ = m[10] * z;
+    const topWZ = m[11] * z;
+
+    for (const r of geometry) {
+        const ringTop = [];
+        for (const p of r) {
+            const x = p.x;
+            const y = p.y;
+
+            const sX = m[0] * x + m[4] * y + m[12];
+            const sY = m[1] * x + m[5] * y + m[13];
+            const sZ = m[2] * x + m[6] * y + m[14];
+            const sW = m[3] * x + m[7] * y + m[15];
+
+            const topX = sX + topXZ;
+            const topY = sY + topYZ;
+            const topZ = sZ + topZZ;
+            const topW = sW + topWZ;
+
+            const t = new Point(topX / topW, topY / topW);
+            t.z = topZ / topW;
+            ringTop.push(t);
+        }
+        projectedTop.push(ringTop);
+    }
+    return projectedTop;
+}
+
+/**
+ * GeoGlobal-line-height-huangwei
+ * extent坐标转为像素坐标
+ * @private
+ */
+function projectQueryGeometry(queryGeometry: Array<Point>, pixelPosMatrix: Float32Array, transform: Transform, z: number) {
+    const projectedQueryGeometry = [];
+    for (const p of queryGeometry) {
+        const v = [p.x, p.y, z, 1];
+        vec4.transformMat4(v, v, pixelPosMatrix);
+        projectedQueryGeometry.push(new Point(v[0] / v[3], v[1] / v[3]));
+    }
+    return projectedQueryGeometry;
 }

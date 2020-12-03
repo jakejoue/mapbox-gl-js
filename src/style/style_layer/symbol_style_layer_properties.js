@@ -126,6 +126,8 @@ export type PaintProps = {|
     "text-halo-blur": DataDrivenProperty<number>,
     "text-translate": DataConstantProperty<[number, number]>,
     "text-translate-anchor": DataConstantProperty<"map" | "viewport">,
+    // GeoGlobal-symbol-height-huangwei
+    "symbol-height": DataDrivenProperty<number>,
 |};
 
 const paint: Properties<PaintProps> = new Properties({
@@ -143,6 +145,8 @@ const paint: Properties<PaintProps> = new Properties({
     "text-halo-blur": new DataDrivenProperty(styleSpec["paint_symbol"]["text-halo-blur"]),
     "text-translate": new DataConstantProperty(styleSpec["paint_symbol"]["text-translate"]),
     "text-translate-anchor": new DataConstantProperty(styleSpec["paint_symbol"]["text-translate-anchor"]),
+    // GeoGlobal-symbol-height-huangwei
+    "symbol-height": new DataDrivenProperty(styleSpec["paint_symbol"]["symbol-height"]),
 });
 
 // Note: without adding the explicit type annotation, Flow infers weaker types

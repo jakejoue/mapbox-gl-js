@@ -223,7 +223,9 @@ export type LineLayerSpecification = {|
         "line-blur"?: DataDrivenPropertyValueSpecification<number>,
         "line-dasharray"?: PropertyValueSpecification<Array<number>>,
         "line-pattern"?: DataDrivenPropertyValueSpecification<ResolvedImageSpecification>,
-        "line-gradient"?: ExpressionSpecification
+        "line-gradient"?: ExpressionSpecification,
+        // GeoGlobal-line-height-huangwei
+        "line-height"?: DataDrivenPropertyValueSpecification<number>
     |}
 |}
 
@@ -294,7 +296,9 @@ export type SymbolLayerSpecification = {|
         "text-halo-width"?: DataDrivenPropertyValueSpecification<number>,
         "text-halo-blur"?: DataDrivenPropertyValueSpecification<number>,
         "text-translate"?: PropertyValueSpecification<[number, number]>,
-        "text-translate-anchor"?: PropertyValueSpecification<"map" | "viewport">
+        "text-translate-anchor"?: PropertyValueSpecification<"map" | "viewport">,
+        // GeoGlobal-symbol-height-huangwei
+        "symbol-height"?: DataDrivenPropertyValueSpecification<number>
     |}
 |}
 

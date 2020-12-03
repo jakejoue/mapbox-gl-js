@@ -47,6 +47,8 @@ export type PaintProps = {|
     "line-dasharray": CrossFadedProperty<Array<number>>,
     "line-pattern": CrossFadedDataDrivenProperty<ResolvedImage>,
     "line-gradient": ColorRampProperty,
+    // GeoGlobal-line-height-huangwei
+    "line-height": DataDrivenProperty<number>,
 |};
 
 const paint: Properties<PaintProps> = new Properties({
@@ -61,6 +63,8 @@ const paint: Properties<PaintProps> = new Properties({
     "line-dasharray": new CrossFadedProperty(styleSpec["paint_line"]["line-dasharray"]),
     "line-pattern": new CrossFadedDataDrivenProperty(styleSpec["paint_line"]["line-pattern"]),
     "line-gradient": new ColorRampProperty(styleSpec["paint_line"]["line-gradient"]),
+    // GeoGlobal-line-height-huangwei
+    "line-height": new DataDrivenProperty(styleSpec["paint_line"]["line-height"]),
 });
 
 // Note: without adding the explicit type annotation, Flow infers weaker types

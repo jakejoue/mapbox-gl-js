@@ -391,8 +391,9 @@ class SymbolBucket implements Bucket {
     }
 
     createArrays() {
-        this.text = new SymbolBuffers(new ProgramConfigurationSet(this.layers, this.zoom, property => /^text/.test(property)));
-        this.icon = new SymbolBuffers(new ProgramConfigurationSet(this.layers, this.zoom, property => /^icon/.test(property)));
+        // GeoGlobal-symbol-height-huangwei
+        this.text = new SymbolBuffers(new ProgramConfigurationSet(this.layers, this.zoom, property => /^(text|symbol)/.test(property)));
+        this.icon = new SymbolBuffers(new ProgramConfigurationSet(this.layers, this.zoom, property => /^(icon|symbol)/.test(property)));
 
         this.glyphOffsetArray = new GlyphOffsetArray();
         this.lineVertexArray = new SymbolLineVertexArray();
