@@ -106,7 +106,8 @@ function drawFillTiles(painter, sourceCache, layer, coords, depthMode, colorMode
             segments = bucket.segments;
             uniformValues = image ?
                 fillPatternUniformValues(tileMatrix, painter, crossfade, tile) :
-                fillUniformValues(tileMatrix);
+                // GeoGlobal-fillwater-huangwei
+                fillUniformValues(tileMatrix, layer.paint.get('fill-water'));
         } else {
             indexBuffer = bucket.indexBuffer2;
             segments = bucket.segments2;

@@ -17,7 +17,10 @@ import type {CrossfadeParameters} from '../../style/evaluation_parameters';
 import type Tile from '../../source/tile';
 
 export type FillUniformsType = {|
-    'u_matrix': UniformMatrix4f
+    'u_matrix': UniformMatrix4f,
+    // GeoGlobal-fillwater-huangwei
+    'u_type'?: Uniform1i,
+    'u_time'?: Uniform1f
 |};
 
 export type FillOutlineUniformsType = {|
@@ -49,7 +52,10 @@ export type FillOutlinePatternUniformsType = {|
 |};
 
 const fillUniforms = (context: Context, locations: UniformLocations): FillUniformsType => ({
-    'u_matrix': new UniformMatrix4f(context, locations.u_matrix)
+    'u_matrix': new UniformMatrix4f(context, locations.u_matrix),
+    // GeoGlobal-fillwater-huangwei
+    'u_type': new Uniform1i(context, locations.u_type),
+    'u_time': new Uniform1f(context, locations.u_time)
 });
 
 const fillPatternUniforms = (context: Context, locations: UniformLocations): FillPatternUniformsType => ({
@@ -79,9 +85,28 @@ const fillOutlinePatternUniforms = (context: Context, locations: UniformLocation
     'u_fade': new Uniform1f(context, locations.u_fade)
 });
 
-const fillUniformValues = (matrix: Float32Array): UniformValues<FillUniformsType> => ({
-    'u_matrix': matrix
-});
+// GeoGlobal-fillwater-huangwei
+const fillUniformValues = (matrix: Float32Array, water?: string): UniformValues<FillUniformsType> => {
+
+    // 如果没传入water选项
+    if (water === undefined) {
+        return {
+            'u_matrix': matrix,
+        };
+    }
+
+    // 0 默认 1 water特效
+    let uType = 0;
+    if (water === 'water') {
+        uType = 1;
+    }
+
+    return {
+        'u_matrix': matrix,
+        'u_type': uType,
+        'u_time': performance.now() / 1e3
+    };
+};
 
 const fillPatternUniformValues = (
     matrix: Float32Array,

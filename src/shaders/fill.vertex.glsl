@@ -1,3 +1,4 @@
+/*
 attribute vec2 a_pos;
 
 uniform mat4 u_matrix;
@@ -8,6 +9,23 @@ uniform mat4 u_matrix;
 void main() {
     #pragma mapbox: initialize highp vec4 color
     #pragma mapbox: initialize lowp float opacity
+
+    gl_Position = u_matrix * vec4(a_pos, 0, 1);
+}
+*/
+
+attribute vec2 a_pos;
+
+uniform mat4 u_matrix;
+
+#pragma mapbox: define highp vec4 color
+#pragma mapbox: define lowp float opacity
+#pragma mapbox: define highp vec4 water_color
+
+void main() {
+    #pragma mapbox: initialize highp vec4 color
+    #pragma mapbox: initialize lowp float opacity
+    #pragma mapbox: initialize highp vec4 water_color
 
     gl_Position = u_matrix * vec4(a_pos, 0, 1);
 }

@@ -191,7 +191,10 @@ export type FillLayerSpecification = {|
         "fill-outline-color"?: DataDrivenPropertyValueSpecification<ColorSpecification>,
         "fill-translate"?: PropertyValueSpecification<[number, number]>,
         "fill-translate-anchor"?: PropertyValueSpecification<"map" | "viewport">,
-        "fill-pattern"?: DataDrivenPropertyValueSpecification<ResolvedImageSpecification>
+        "fill-pattern"?: DataDrivenPropertyValueSpecification<ResolvedImageSpecification>,
+        // GeoGlobal-fillwater-huangwei
+        "fill-water"?: "water" | "none",
+        "fill-water-color"?: DataDrivenPropertyValueSpecification<ColorSpecification>,
     |}
 |}
 

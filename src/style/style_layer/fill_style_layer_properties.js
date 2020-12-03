@@ -35,6 +35,9 @@ export type PaintProps = {|
     "fill-translate": DataConstantProperty<[number, number]>,
     "fill-translate-anchor": DataConstantProperty<"map" | "viewport">,
     "fill-pattern": CrossFadedDataDrivenProperty<ResolvedImage>,
+    // GeoGlobal-fillwater-huangwei
+    "fill-water": DataConstantProperty<"water" | "none">,
+    "fill-water-color": DataDrivenProperty<Color>,
 |};
 
 const paint: Properties<PaintProps> = new Properties({
@@ -45,6 +48,9 @@ const paint: Properties<PaintProps> = new Properties({
     "fill-translate": new DataConstantProperty(styleSpec["paint_fill"]["fill-translate"]),
     "fill-translate-anchor": new DataConstantProperty(styleSpec["paint_fill"]["fill-translate-anchor"]),
     "fill-pattern": new CrossFadedDataDrivenProperty(styleSpec["paint_fill"]["fill-pattern"]),
+    // GeoGlobal-fillwater-huangwei
+    "fill-water": new DataConstantProperty(styleSpec["paint_fill"]["fill-water"]),
+    "fill-water-color": new DataDrivenProperty(styleSpec["paint_fill"]["fill-water-color"]),
 });
 
 // Note: without adding the explicit type annotation, Flow infers weaker types
