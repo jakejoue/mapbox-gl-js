@@ -371,7 +371,12 @@ export type FillExtrusionLayerSpecification = {|
         "fill-extrusion-pattern"?: DataDrivenPropertyValueSpecification<ResolvedImageSpecification>,
         "fill-extrusion-height"?: DataDrivenPropertyValueSpecification<number>,
         "fill-extrusion-base"?: DataDrivenPropertyValueSpecification<number>,
-        "fill-extrusion-vertical-gradient"?: PropertyValueSpecification<boolean>
+        "fill-extrusion-vertical-gradient"?: PropertyValueSpecification<boolean>,
+        // GeoGlobal-fill-extrusion-huangwei
+        "fill-extrusion-intensity"?: DataDrivenPropertyValueSpecification<number>,
+        "fill-extrusion-bottom-color"?: DataDrivenPropertyValueSpecification<ColorSpecification>,
+        // GeoGlobal-fill-extrusion-pattern-huangwei
+        "fill-extrusion-pattern-repeat"?: PropertyValueSpecification<boolean>
     |}
 |}
 
