@@ -51,7 +51,7 @@ class LngLat {
     /**
      * Returns a new `LngLat` object whose longitude is wrapped to the range (-180, 180).
      *
-     * @param {any} projection
+     * @param {any} projection 坐标系
      * @returns {LngLat} The wrapped `LngLat` object.
      * @example
      * var ll = new mapboxgl.LngLat(286.0251, 40.7736);
