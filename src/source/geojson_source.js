@@ -16,6 +16,59 @@ import type {Callback} from '../types/callback';
 import type {GeoJSON, GeoJSONFeature} from '@mapbox/geojson-types';
 import type {GeoJSONSourceSpecification, PromoteIdSpecification} from '../style-spec/types';
 
+// GeoGlobal-GeoJsonExt-huangwei
+function filter2Func(filter: any) {
+    const [property: string, value, relation = '=='] = filter;
+
+    let func: any = null;
+
+    try {
+        // 表达式模式
+        let str = `return !!(v ${relation} ${value});`;
+
+        // like模式
+        if (relation === 'like') {
+            str = `if (v === undefined || v === null) { return false; };
+                return (v + '').indexOf(${value} + '') !== -1;`;
+        }
+
+        func = new Function('v', str);
+    } catch (err) {
+        func = new Function(`return false;`);
+    }
+
+    // 进行方法包装，总是返回一个有效的flag
+    return (f: any) => {
+        try {
+            const v = f.properties[property] !== undefined ? f.properties[property] : f[property];
+            return func(v);
+        } catch (err) {
+            return false;
+        }
+    };
+}
+function toFeatureCollection(data: any) {
+    // 深层拷贝
+    data = JSON.parse(JSON.stringify(data));
+
+    // 非geojson对象
+    if (!data.type) return data;
+
+    if (data.type === 'Feature') {
+        data = {
+            type: 'FeatureCollection',
+            features: [data]
+        };
+    } else if (data.type !== 'FeatureCollection') {
+        data = {
+            type: 'FeatureCollection',
+            features: [{type: 'Feature', geometry: data, properties: {}}]
+        };
+    }
+
+    return data;
+}
+
 /**
  * A source containing GeoJSON.
  * (See the [Style Specification](https://www.mapbox.com/mapbox-gl-style-spec/#sources-geojson) for detailed documentation of options.)
@@ -199,6 +252,59 @@ class GeoJSONSource extends Evented implements Source {
         });
 
         return this;
+    }
+
+    // GeoGlobal-GeoJsonExt-huangwei
+    addData(features: Array<GeoJSONFeature>) {
+        const data = toFeatureCollection(this._data);
+        if (data.features) {
+            data.features.push(...features);
+            this.setData(data);
+        } else {
+            this.fire(new ErrorEvent(new Error('this source is not a GeoJson data source!')));
+        }
+    }
+
+    // GeoGlobal-GeoJsonExt-huangwei
+    removeData(filter: any) {
+        const data = toFeatureCollection(this._data);
+        if (data.features) {
+            if (Array.isArray(filter)) {
+                const func = filter2Func(filter);
+
+                data.features = data.features.filter(f => {
+                    const flag = func(f);
+                    return !flag;
+                });
+            } else if (typeof (filter) === 'number') {
+                data.features.splice(filter, 1);
+            }
+
+            this.setData(data);
+        } else {
+            this.fire(new ErrorEvent(new Error('this source is not a GeoJson data source!')));
+        }
+    }
+
+    // GeoGlobal-GeoJsonExt-huangwei
+    editData(filter: any, feature: GeoJSONFeature) {
+        const data = toFeatureCollection(this._data);
+        if (data.features) {
+            if (Array.isArray(filter)) {
+                const func = filter2Func(filter);
+
+                data.features = data.features.map(f => {
+                    const flag = func(f);
+                    return flag ? feature : f;
+                });
+            } else if (typeof (filter) === 'number') {
+                data.features.splice(filter, 1, feature);
+            }
+
+            this.setData(data);
+        } else {
+            this.fire(new ErrorEvent(new Error('this source is not a GeoJson data source!')));
+        }
     }
 
     /**
