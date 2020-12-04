@@ -19,11 +19,14 @@ function getPixelPosMatrix(transform, tileID) {
     return mat4.multiply(t, t, transform.calculatePosMatrix(tileID.toUnwrapped()));
 }
 
+// GeoGlobal-3dLayers-huangwei 3D类型图层
+const THREEDLAYERS = ['fill-extrusion', 'line'];
+
 function queryIncludes3DLayer(layers?: Array<string>, styleLayers: {[_: string]: StyleLayer}, sourceID: string) {
     if (layers) {
         for (const layerID of layers) {
             const layer = styleLayers[layerID];
-            if (layer && layer.source === sourceID && layer.type === 'fill-extrusion') {
+            if (layer && layer.source === sourceID && THREEDLAYERS.includes(layer.type)) {
                 return true;
             }
         }

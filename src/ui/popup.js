@@ -19,7 +19,10 @@ const defaultOptions = {
     closeOnClick: true,
     focusAfterOpen: true,
     className: '',
-    maxWidth: "240px"
+    maxWidth: "240px",
+    // GeoGlobal-popup-huangwei
+    showArrow: true,
+    contentClass: ''
 };
 
 export type Offset = number | PointLike | {[_: Anchor]: PointLike};
@@ -32,7 +35,10 @@ export type PopupOptions = {
     anchor?: Anchor,
     offset?: Offset,
     className?: string,
-    maxWidth?: string
+    maxWidth?: string,
+    // GeoGlobal-popup-huangwei
+    showArrow?: boolean,
+    contentClass?: string
 };
 
 const focusQuerySelector = [
@@ -419,7 +425,10 @@ export default class Popup extends Evented {
                 }
             }
         } else {
-            this._content = DOM.create('div', 'mapboxgl-popup-content', this._container);
+            // this._content = DOM.create('div', 'mapboxgl-popup-content', this._container);
+            // GeoGlobal-popup-huangwei
+            const className = this.options.contentClass ? ` mapboxgl-popup-content-${this.options.contentClass}` : '';
+            this._content = DOM.create('div', `mapboxgl-popup-content${className}`, this._container);
         }
 
         // The close button should be the last tabbable element inside the popup for a good keyboard UX.
@@ -518,7 +527,11 @@ export default class Popup extends Evented {
 
         if (!this._container) {
             this._container = DOM.create('div', 'mapboxgl-popup', this._map.getContainer());
-            this._tip       = DOM.create('div', 'mapboxgl-popup-tip', this._container);
+            // this._tip       = DOM.create('div', 'mapboxgl-popup-tip', this._container);
+            // GeoGlobal-popup-huangwei
+            if (this.options.showArrow) {
+                this._tip = DOM.create('div', 'mapboxgl-popup-tip', this._container);
+            }
             this._container.appendChild(this._content);
             if (this.options.className) {
                 this.options.className.split(' ').forEach(name =>

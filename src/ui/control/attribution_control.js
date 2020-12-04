@@ -8,7 +8,9 @@ import type Map from '../map';
 
 type Options = {
     compact?: boolean,
-    customAttribution?: string | Array<string>
+    customAttribution?: string | Array<string>,
+    // GeoGlobal-attribute-huangwei 自定义dom内容
+    map_attr?: string
 };
 
 /**
@@ -142,6 +144,13 @@ class AttributionControl {
 
     _updateAttributions() {
         if (!this._map.style) return;
+
+        // GeoGlobal-attribute-huangwei 自定义dom内容
+        if (this.options.map_attr) {
+            this._container.innerHTML = this.options.map_attr;
+            return;
+        }
+
         let attributions: Array<string> = [];
         if (this.options.customAttribution) {
             if (Array.isArray(this.options.customAttribution)) {

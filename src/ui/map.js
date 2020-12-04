@@ -1324,7 +1324,11 @@ class Map extends Camera {
             queryGeometry = [tl, new Point(br.x, tl.y), br, new Point(tl.x, br.y), tl];
         }
 
-        return this.style.queryRenderedFeatures(queryGeometry, options, this.transform);
+        return this.style.queryRenderedFeatures(queryGeometry, options, this.transform).map(f => {
+            // GeoGlobal-vector2geojson-huangwei
+            f._projection = this.projection;
+            return f.toJSON();
+        });
     }
 
     /**
@@ -1365,7 +1369,11 @@ class Map extends Camera {
      * @see [Highlight features containing similar data](https://www.mapbox.com/mapbox-gl-js/example/query-similar-features/)
      */
     querySourceFeatures(sourceId: string, parameters: ?{sourceLayer: ?string, filter: ?Array<any>, validate?: boolean}) {
-        return this.style.querySourceFeatures(sourceId, parameters);
+        return this.style.querySourceFeatures(sourceId, parameters).map(f => {
+            // GeoGlobal-vector2geojson-huangwei
+            f._projection = this.projection;
+            return f.toJSON();
+        });
     }
 
     /**
