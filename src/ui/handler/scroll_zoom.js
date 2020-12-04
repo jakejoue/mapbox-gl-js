@@ -254,8 +254,19 @@ class ScrollZoomHandler {
                 scale = 1 / scale;
             }
 
-            const fromScale = typeof this._targetZoom === 'number' ? tr.zoomScale(this._targetZoom) : tr.scale;
-            this._targetZoom = Math.min(tr.maxZoom, Math.max(tr.minZoom, tr.scaleZoom(fromScale * scale)));
+            // GeoGlobal-intZoom-huangwei
+            // const fromScale = typeof this._targetZoom === 'number' ? this.zoomScale(this._targetZoom) : tr.scale;
+            const fromScale = typeof this._targetZoom === 'number' ? this.zoomScale(this._targetZoom) : this.zoomScale(tr.zoom);
+            this._targetZoom = Math.min(tr.maxZoom, Math.max(tr.minZoom, this.scaleZoom(fromScale * scale)));
+
+            // GeoGlobal-intZoom-huangwei
+            if (this._map._intScrollZoom) {
+                if (this._delta > 0) {
+                    this._targetZoom = Math.ceil(tr.zoom + 1);
+                } else if (this._delta < 0) {
+                    this._targetZoom = Math.floor(tr.zoom - 1);
+                }
+            }
 
             // if this is a mouse wheel, refresh the starting zoom and easing
             // function we're using to smooth out the zooming between wheel
@@ -340,6 +351,14 @@ class ScrollZoomHandler {
 
     reset() {
         this._active = false;
+    }
+
+    // GeoGlobal-intZoom-huangwei
+    zoomScale(zoom: number) {
+        return Math.pow(2, zoom);
+    }
+    scaleZoom(scale: number) {
+        return Math.log(scale) / Math.LN2;
     }
 }
 
