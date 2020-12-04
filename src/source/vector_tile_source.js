@@ -55,6 +55,9 @@ class VectorTileSource extends Evented implements Source {
     tileSize: number;
     promoteId: ?PromoteIdSpecification;
 
+    // GeoGlobal-skipEmptyTile-huangwei
+    skipEmptyTile: boolean;
+
     _options: VectorSourceSpecification;
     _collectResourceTiming: boolean;
     dispatcher: Dispatcher;
@@ -82,7 +85,8 @@ class VectorTileSource extends Evented implements Source {
         this.isTileClipped = true;
         this._loaded = false;
 
-        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'promoteId']));
+        // GeoGlobal-skipEmptyTile-huangwei
+        extend(this, pick(options, ['url', 'scheme', 'tileSize', 'promoteId', 'skipEmptyTile']));
         this._options = extend({type: 'vector'}, options);
 
         this._collectResourceTiming = options.collectResourceTiming;
@@ -218,6 +222,11 @@ class VectorTileSource extends Evented implements Source {
 
             if (tile.aborted)
                 return callback(null);
+
+            // GeoGlobal-skipEmptyTile-huangwei
+            if (err && !this.skipEmptyTile) {
+                return callback(err);
+            }
 
             if (err && err.status !== 404) {
                 return callback(err);
