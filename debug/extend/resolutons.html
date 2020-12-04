@@ -70,10 +70,12 @@
                     layers: []
                 },
                 hash: false,
-                renderWorldCopies: true,
+                renderWorldCopies: false,
                 isIntScrollZoom: true,
                 skipLevelOfZooming: true
             }));
+
+            map.showTileBoundaries = true;
 
             map.on("load", function() {
                 var pointjson = {
