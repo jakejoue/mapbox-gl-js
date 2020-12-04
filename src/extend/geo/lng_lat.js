@@ -91,18 +91,24 @@ class LngLat {
     }
 
     /**
-     * TODO-GEO: PROJ
      * Returns the approximate distance between a pair of coordinates in meters
      * Uses the Haversine Formula (from R.W. Sinnott, "Virtues of the Haversine", Sky and Telescope, vol. 68, no. 2, 1984, p. 159)
      *
      * @param {LngLat} lngLat coordinates to compute the distance to
+     * @param {string} unit // GeoGlobe-measure-huangwei 测距单位
      * @returns {number} Distance in meters between the two coordinates.
      * @example
      * var new_york = new mapboxgl.LngLat(-74.0060, 40.7128);
      * var los_angeles = new mapboxgl.LngLat(-118.2437, 34.0522);
      * new_york.distanceTo(los_angeles); // = 3935751.690893987, "true distance" using a non-spherical approximation is ~3966km
      */
-    distanceTo(lngLat: LngLat) {
+    distanceTo(lngLat: LngLat, unit: ? string) {
+        if (unit && unit !== 'degrees') {
+            return Math.sqrt(
+                Math.pow(lngLat.lng - this.lng, 2) +
+                Math.pow(lngLat.lat - this.lat, 2)
+            );
+        }
         const rad = Math.PI / 180;
         const lat1 = this.lat * rad;
         const lat2 = lngLat.lat * rad;
