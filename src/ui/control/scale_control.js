@@ -94,7 +94,7 @@ function updateScale(map, container, options) {
     const y = map._container.clientHeight / 2;
     const left = map.unproject([0, y]);
     const right = map.unproject([maxWidth, y]);
-    // GeoGlobe-measure-huangwei
+    // GeoGlobal-measure-huangwei
     const maxMeters = left.distanceTo(right, map.projection.getUnits());
     // The real distance corresponding to 100px scale length is rounded off to
     // near pretty number and the scale length for the same is found out.

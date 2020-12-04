@@ -527,7 +527,7 @@ class Map extends Camera {
         if (options.attributionControl)
             this.addControl(new AttributionControl({customAttribution: options.customAttribution}));
 
-        // GeoGlobe-logo-huangwei
+        // GeoGlobal-logo-huangwei
         if (options.logoControl)
             this.addControl(new LogoControl(), options.logoPosition);
 

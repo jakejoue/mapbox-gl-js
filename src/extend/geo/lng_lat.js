@@ -95,7 +95,7 @@ class LngLat {
      * Uses the Haversine Formula (from R.W. Sinnott, "Virtues of the Haversine", Sky and Telescope, vol. 68, no. 2, 1984, p. 159)
      *
      * @param {LngLat} lngLat coordinates to compute the distance to
-     * @param {string} unit // GeoGlobe-measure-huangwei 测距单位
+     * @param {string} unit // GeoGlobal-measure-huangwei 测距单位
      * @returns {number} Distance in meters between the two coordinates.
      * @example
      * var new_york = new mapboxgl.LngLat(-74.0060, 40.7128);
