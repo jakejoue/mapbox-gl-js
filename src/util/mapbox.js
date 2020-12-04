@@ -94,8 +94,16 @@ export class RequestManager {
     normalizeSpriteURL(url: string, format: string, extension: string, accessToken?: string): string {
         const urlObject = parseUrl(url);
         if (!isMapboxURL(url)) {
-            urlObject.path += `${format}${extension}`;
-            return formatUrl(urlObject);
+            // urlObject.path += `${format}${extension}`;
+            // return formatUrl(urlObject);
+            // GeoGlobal-projext-huangwei 修改获取字体和图片的url拼接方式
+            const url = formatUrl(urlObject);
+            if (/token=/i.test(url)) {
+                const urls = url.split('?');
+                const query = urls.pop();
+                return `${urls.join('?')}${format}${extension}?${query}`;
+            }
+            return url + format + extension;
         }
         urlObject.path = `/styles/v1${urlObject.path}/sprite${format}${extension}`;
         return this._makeAPIURL(urlObject, this._customAccessToken || accessToken);
@@ -206,7 +214,9 @@ function isMapboxHTTPURL(url: string): boolean {
 }
 
 function hasCacheDefeatingSku(url: string) {
-    return url.indexOf('sku=') > 0 && isMapboxHTTPURL(url);
+    // return url.indexOf('sku=') > 0 && isMapboxHTTPURL(url);
+    // GeoGlobal-cache-huangwei
+    return (url.indexOf('sku=') > 0 && isMapboxHTTPURL(url)) || !isMapboxHTTPURL(url);
 }
 
 function getAccessToken(params: Array<string>): string | null {

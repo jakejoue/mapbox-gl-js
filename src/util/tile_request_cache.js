@@ -1,6 +1,7 @@
 // @flow
 
 import {warnOnce, parseCacheControl} from './util';
+import {isMapboxHTTPURL} from './mapbox';
 import window from './window';
 
 import type Dispatcher from './dispatcher';
@@ -86,9 +87,17 @@ export function cachePut(request: Request, response: Response, requestTime: numb
     });
 }
 
+// GeoGlobal-cache-huangwei
 function stripQueryParameters(url: string) {
-    const start = url.indexOf('?');
-    return start < 0 ? url : url.slice(0, start);
+    if (isMapboxHTTPURL(url)) {
+        const start = url.indexOf('?');
+        return start < 0 ? url : url.slice(0, start);
+    } else {
+        // 去除可能存在的proxy和特殊字符转义
+        const urlArr = url.split('?');
+        const newUrl = urlArr.length > 2 ? urlArr.slice(1).join('?') : url;
+        return decodeURI(newUrl);
+    }
 }
 
 export function cacheGet(request: Request, callback: (error: ?any, response: ?Response, fresh: ?boolean) => void) {
