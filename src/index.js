@@ -31,6 +31,21 @@ import {PerformanceUtils} from './util/performance';
 import * as proj from './extend/proj';
 import * as extent from './extend/extent';
 
+// GeoGlobal-layergroup-huangwei 导入图层组相关
+import LayerGroup from './extend/extension/layer_group';
+// GeoGlobal-routefly-huangwei 分析路径
+import RouteFly from './extend/extension/route_fly';
+// GeoGlobal-boxhandler-huangwei 框选
+import BoxHandler from './extend/extension/box';
+// GeoGlobal-util-huangwei 工具类
+import * as util from './util/util';
+
+// GeoGlobal-customLayer-huangwei CustomLayer
+import CustomLayer from './extend/layer/custom_layer';
+import RadarLayer from './extend/layer/radar_layer';
+import ShieldLayer from './extend/layer/shield_layer';
+import ImageCircle from './extend/layer/image_circle_layer';
+
 const exported = {
     version,
     supported,
@@ -52,9 +67,25 @@ const exported = {
     Evented,
     config,
 
-    // GeoGlobal-proj-huangwei-191015 proj 导入坐标系相关
+    // GeoGlobal-proj-huangwei proj 导入坐标系相关
     proj,
     extent,
+    // GeoGlobal-layergroup-huangwei 图层组
+    LayerGroup,
+    // GeoGlobal-routefly-huangwei 分析路径
+    RouteFly,
+    // GeoGlobal-boxhandler-huangwei 框选
+    BoxHandler,
+    // GeoGlobal-util-huangwei 工具类
+    util,
+
+    // GeoGlobal-customLayer-huangwei-200511 CustomLayer
+    CustomLayer,
+    custom: {
+        RadarLayer,
+        ShieldLayer,
+        ImageCircle
+    },
 
     /**
      * Initializes resources like WebWorkers that can be shared across maps to lower load
