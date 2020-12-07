@@ -2,6 +2,8 @@
 import type FillStyleLayer from '../../style/style_layer/fill_style_layer';
 import type FillExtrusionStyleLayer from '../../style/style_layer/fill_extrusion_style_layer';
 import type LineStyleLayer from '../../style/style_layer/line_style_layer';
+// GeoGlobal-sprite-huangwei
+import type SpriteStyleLayer from '../../style/style_layer/sprite_style_layer';
 
 import type {
     BucketFeature,
@@ -11,7 +13,9 @@ import type {
 type PatternStyleLayers =
     Array<LineStyleLayer> |
     Array<FillStyleLayer> |
-    Array<FillExtrusionStyleLayer>;
+    Array<FillExtrusionStyleLayer> |
+    // GeoGlobal-sprite-huangwei
+    Array<SpriteStyleLayer>;
 
 export function hasPattern(type: string, layers: PatternStyleLayers, options: PopulateParameters) {
     const patterns = options.patternDependencies;

@@ -6,6 +6,8 @@ import type FillExtrusionStyleLayer from './fill_extrusion_style_layer';
 import type HeatmapStyleLayer from './heatmap_style_layer';
 import type HillshadeStyleLayer from './hillshade_style_layer';
 import type LineStyleLayer from './line_style_layer';
+// GeoGlobal-sprite-huangwei
+import type SpriteStyleLayer from './sprite_style_layer';
 import type SymbolStyleLayer from './symbol_style_layer';
 
 export type TypedStyleLayer = CircleStyleLayer |
@@ -14,4 +16,6 @@ export type TypedStyleLayer = CircleStyleLayer |
     HeatmapStyleLayer |
     HillshadeStyleLayer |
     LineStyleLayer |
-    SymbolStyleLayer;
+    SymbolStyleLayer |
+    // GeoGlobal-sprite-huangwei
+    SpriteStyleLayer;

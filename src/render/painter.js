@@ -29,6 +29,8 @@ import symbol from './draw_symbol';
 import circle from './draw_circle';
 import heatmap from './draw_heatmap';
 import line from './draw_line';
+// GeoGlobal-sprite-huangwei
+import sprite from './draw_sprite';
 import fill from './draw_fill';
 import fillExtrusion from './draw_fill_extrusion';
 import hillshade from './draw_hillshade';
@@ -42,6 +44,8 @@ const draw = {
     circle,
     heatmap,
     line,
+    // GeoGlobal-sprite-huangwei
+    sprite,
     fill,
     'fill-extrusion': fillExtrusion,
     hillshade,

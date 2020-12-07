@@ -12,6 +12,8 @@ import {lineUniforms, lineGradientUniforms, linePatternUniforms, lineSDFUniforms
 import {rasterUniforms} from './raster_program';
 import {symbolIconUniforms, symbolSDFUniforms, symbolTextAndIconUniforms} from './symbol_program';
 import {backgroundUniforms, backgroundPatternUniforms} from './background_program';
+// GeoGlobal-sprite-huangwei
+import {spriteUniforms} from './sprite_program';
 
 export const programUniforms = {
     fillExtrusion: fillExtrusionUniforms,
@@ -38,5 +40,7 @@ export const programUniforms = {
     symbolSDF: symbolSDFUniforms,
     symbolTextAndIcon: symbolTextAndIconUniforms,
     background: backgroundUniforms,
-    backgroundPattern: backgroundPatternUniforms
+    backgroundPattern: backgroundPatternUniforms,
+    // GeoGlobal-sprite-huangwei
+    sprite: spriteUniforms,
 };

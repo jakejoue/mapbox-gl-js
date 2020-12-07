@@ -55,6 +55,10 @@ import symbolSDFVert from './symbol_sdf.vertex.glsl';
 import symbolTextAndIconFrag from './symbol_text_and_icon.fragment.glsl';
 import symbolTextAndIconVert from './symbol_text_and_icon.vertex.glsl';
 
+// GeoGlobal-sprite-huangwei
+import spriteFrag from './sprite.fragment.glsl';
+import spriteVert from './sprite.vertex.glsl';
+
 export const prelude = compile(preludeFrag, preludeVert);
 export const background = compile(backgroundFrag, backgroundVert);
 export const backgroundPattern = compile(backgroundPatternFrag, backgroundPatternVert);
@@ -81,6 +85,9 @@ export const raster = compile(rasterFrag, rasterVert);
 export const symbolIcon = compile(symbolIconFrag, symbolIconVert);
 export const symbolSDF = compile(symbolSDFFrag, symbolSDFVert);
 export const symbolTextAndIcon = compile(symbolTextAndIconFrag, symbolTextAndIconVert);
+
+// GeoGlobal-sprite-huangwei
+export const sprite = compile(spriteFrag, spriteVert);
 
 // Expand #pragmas to #ifdefs.
 
