@@ -18,6 +18,7 @@ import type {PaddingOptions} from './edge_insets';
 
 // GeoGlobal-proj-huangwei
 import {Projection} from '../proj';
+import tileCover from '../tile_cover';
 
 /**
  * A single transform, generally used for a single tile to be
@@ -379,6 +380,20 @@ class Transform {
         const centerCoord = MercatorCoordinate.fromLngLat(this.center, 0, this.projection);
         // GeoGlobal-proj-huangwei resolutions
         const numTiles = Math.round(this.zoomScale(z));
+
+        // GeoGlobal-proj-huangwei resolutions 旧版切图方案
+        if (this.projection.resolutions_) {
+            const centerPoint = new Point(numTiles * centerCoord.x - 0.5, numTiles * centerCoord.y - 0.5);
+            const cornerCoords = [
+                this.pointCoordinate(new Point(0, 0)),
+                this.pointCoordinate(new Point(this.width, 0)),
+                this.pointCoordinate(new Point(this.width, this.height)),
+                this.pointCoordinate(new Point(0, this.height))
+            ];
+            return tileCover(numTiles, z, cornerCoords, options.reparseOverscaled ? actualZ : z, this._renderWorldCopies)
+                .sort((a, b) => centerPoint.dist(a.canonical) - centerPoint.dist(b.canonical));
+        }
+
         const centerPoint = [numTiles * centerCoord.x, numTiles * centerCoord.y, 0];
         const cameraFrustum = Frustum.fromInvProjectionMatrix(this.invProjMatrix, this.worldSize, z);
 
