@@ -7,7 +7,10 @@ import toGeoJSON from '../extend/toGeoJson';
 class Feature {
     type: 'Feature';
     _geometry: ?GeoJSONGeometry;
-    properties: {};
+    properties: {
+        _metadataId: ?any,
+        _metadata: ?any
+    };
     id: number | string | void;
 
     // GeoGlobal-vector2geojson-huangwei 坐标系
@@ -23,7 +26,7 @@ class Feature {
         (vectorTileFeature: any)._x = x;
         (vectorTileFeature: any)._y = y;
 
-        this.properties = vectorTileFeature.properties;
+        this.properties = (vectorTileFeature.properties: any);
         this.id = id;
     }
 

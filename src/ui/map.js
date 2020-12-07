@@ -2830,6 +2830,21 @@ class Map extends Camera {
      */
 
     get version(): string { return version; }
+
+    // GeoGlobal-boundary-huangwei
+    setVisibleBoundary(boundary: any, sourceId: string) {
+        const sourceCaches = this.style.sourceCaches;
+
+        if (sourceId) {
+            const sourceCache = sourceCaches[sourceId];
+            if (sourceCache) {
+                const source = sourceCache.getSource();
+                if (source.setBoundary) {
+                    source.setBoundary(boundary);
+                }
+            }
+        }
+    }
 }
 
 export default Map;

@@ -9,6 +9,8 @@ import TileBounds from './tile_bounds';
 import {ResourceType} from '../util/ajax';
 import browser from '../util/browser';
 import {cacheEntryPossiblyAdded} from '../util/tile_request_cache';
+// GeoGlobal-boundary-huangwei
+import BoundaryLayer from '../extend/boundary_layer';
 
 import type {Source} from './source';
 import type {OverscaledTileID} from './tile_id';
@@ -45,7 +47,7 @@ import type {VectorSourceSpecification, PromoteIdSpecification} from '../style-s
  * @see [Add a vector tile source](https://docs.mapbox.com/mapbox-gl-js/example/vector-source/)
  * @see [Add a third party vector tile source](https://docs.mapbox.com/mapbox-gl-js/example/third-party/)
  */
-class VectorTileSource extends Evented implements Source {
+class VectorTileSource extends BoundaryLayer implements Source {
     type: 'vector';
     id: string;
     minzoom: number;

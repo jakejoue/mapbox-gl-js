@@ -71,6 +71,10 @@ export interface Source {
     serialize(): Object;
 
     +prepare?: () => void;
+
+    // GeoGlobal-boundary-huangwei
+    +hasTileExt?: (tileID: OverscaledTileID) => boolean;
+    +setBoundary?: (boundary: any) => void;
 }
 
 type SourceStatics = {

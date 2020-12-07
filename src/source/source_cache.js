@@ -508,6 +508,10 @@ class SourceCache extends Evented {
             if (this._source.hasTile) {
                 idealTileIDs = idealTileIDs.filter((coord) => (this._source.hasTile: any)(coord));
             }
+            // GeoGlobal-boundary-huangwei
+            if (this._source.hasTileExt) {
+                idealTileIDs = idealTileIDs.filter((coord) => (this._source.hasTileExt: any)(coord));
+            }
         }
 
         // Determine the overzooming/underzooming amounts.

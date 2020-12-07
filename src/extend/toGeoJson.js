@@ -1,4 +1,4 @@
-// @flow
+/* eslint-disable flowtype/require-valid-file-annotation */
 // GeoGlobal-vector2geojson-huangwei
 import {get} from "./proj";
 import {VectorTileFeature} from "@mapbox/vector-tile";

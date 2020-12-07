@@ -10,6 +10,8 @@ import TileBounds from './tile_bounds';
 import Texture from '../render/texture';
 
 import {cacheEntryPossiblyAdded} from '../util/tile_request_cache';
+// GeoGlobal-boundary-huangwei
+import BoundaryLayer from '../extend/boundary_layer';
 
 import type {Source} from './source';
 import type {OverscaledTileID} from './tile_id';
@@ -23,7 +25,7 @@ import type {
     RasterDEMSourceSpecification
 } from '../style-spec/types';
 
-class RasterTileSource extends Evented implements Source {
+class RasterTileSource extends BoundaryLayer implements Source {
     type: 'raster' | 'raster-dem';
     id: string;
     minzoom: number;
@@ -35,9 +37,6 @@ class RasterTileSource extends Evented implements Source {
     // GeoGlobal-raster-huangwei 支持百度瓦片和Arcgis瓦片
     rasterType: string;
     zoomOffset: number;
-    // GeoGlobal-boundary-huangwei
-    // boundary: Feature;
-    // featureBounds: FeatureBounds;
     // GeoGlobal-noFadingParent-huangwei 禁用上级瓦片缓存，始终返回一张透明的瓦片
     noFadingParent: boolean;
 
