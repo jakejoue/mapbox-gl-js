@@ -504,7 +504,7 @@ class Transform {
     }
 
     project(lnglat: LngLat) {
-        const lat = clamp(lnglat.lat, -this.maxValidLatitude, this.maxValidLatitude);
+        const lat = clamp(lnglat.lat, this.minValidLatitude, this.maxValidLatitude);
         // GeoGlobal-proj-huangwei coord
         return new Point(
                 this.projection.getTransform().mercatorXfromLng(lnglat.lng) * this.worldSize,
@@ -655,7 +655,7 @@ class Transform {
             this._constrain();
         } else {
             this.lngRange = null;
-            this.latRange = [-this.maxValidLatitude, this.maxValidLatitude];
+            this.latRange = [this.minValidLatitude, this.maxValidLatitude];
         }
     }
 
