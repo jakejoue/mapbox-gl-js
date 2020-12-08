@@ -31,6 +31,9 @@ import {PerformanceUtils} from './util/performance';
 import * as proj from './extend/proj';
 import * as extent from './extend/extent';
 
+// GeoGlobal-freeCrsMap-huangwei
+import FreeCRSMap from './ui/freecrsmap';
+
 // GeoGlobal-layergroup-huangwei 导入图层组相关
 import LayerGroup from './extend/extension/layer_group';
 // GeoGlobal-routefly-huangwei 分析路径
@@ -70,6 +73,9 @@ const exported = {
     // GeoGlobal-proj-huangwei proj 导入坐标系相关
     proj,
     extent,
+    // GeoGlobal-freeCrsMap-huangwei
+    FreeCRSMap,
+
     // GeoGlobal-layergroup-huangwei 图层组
     LayerGroup,
     // GeoGlobal-routefly-huangwei 分析路径
