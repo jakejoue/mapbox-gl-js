@@ -26,7 +26,7 @@ import type {
 } from '../style-spec/types';
 import type {CustomLayerInterface} from './style_layer/custom_style_layer';
 import type Map from '../ui/map';
-import type {StyleSetterOptions} from './style';
+import type Style, {StyleSetterOptions} from './style';
 
 const TRANSITION_SUFFIX = '-transition';
 
@@ -181,9 +181,18 @@ class StyleLayer extends Evented {
         return false;
     }
 
-    isHidden(zoom: number) {
+    // GeoGlobal-isHidden-huangwei 根据实际请求的瓦片层级计算可见性，修改下界判断
+    isHidden(zoom: number, style: ?Style) {
+        if (style && this.source) {
+            const souceCache = style.sourceCaches[this.source];
+            zoom = style.map.transform.coveringZoomLevel({
+                tileSize: souceCache._source.tileSize,
+                roundZoom: souceCache._source.roundZoom,
+            });
+        }
         if (this.minzoom && zoom < this.minzoom) return true;
-        if (this.maxzoom && zoom >= this.maxzoom) return true;
+        if (this.maxzoom && zoom > this.maxzoom) return true;
+        // if (this.maxzoom && zoom >= this.maxzoom) return true;
         return this.visibility === 'none';
     }
 

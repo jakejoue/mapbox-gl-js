@@ -1,3 +1,8 @@
 {
   "javascript.validate.enable": false,
+  "liveServer.settings.proxy": {
+    "enable": true,
+    "baseUri": "/emap",
+    "proxyUri": "http://172.17.0.184:83/app/emap"
+  }
 }

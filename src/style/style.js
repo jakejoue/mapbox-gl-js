@@ -431,7 +431,8 @@ class Style extends Evented {
             const layer = this._layers[layerId];
 
             layer.recalculate(parameters, this._availableImages);
-            if (!layer.isHidden(parameters.zoom) && layer.source) {
+            // GeoGlobal-isHidden-huangwei
+            if (!layer.isHidden(parameters.zoom, this) && layer.source) {
                 this.sourceCaches[layer.source].used = true;
             }
         }

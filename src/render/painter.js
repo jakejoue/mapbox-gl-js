@@ -414,7 +414,8 @@ class Painter {
 
         for (const layerId of layerIds) {
             const layer = this.style._layers[layerId];
-            if (!layer.hasOffscreenPass() || layer.isHidden(this.transform.zoom)) continue;
+            // GeoGlobal-isHidden-huangwei
+            if (!layer.hasOffscreenPass() || layer.isHidden(this.transform.zoom, this.style)) continue;
 
             const coords = coordsDescending[layer.source];
             if (layer.type !== 'custom' && !coords.length) continue;
@@ -468,7 +469,8 @@ class Painter {
             let sourceCache;
             const layers = values(this.style._layers);
             layers.forEach((layer) => {
-                if (layer.source && !layer.isHidden(this.transform.zoom)) {
+                // GeoGlobal-isHidden-huangwei
+                if (layer.source && !layer.isHidden(this.transform.zoom, this.style)) {
                     if (layer.source !== (sourceCache && sourceCache.id)) {
                         sourceCache = this.style.sourceCaches[layer.source];
                     }
@@ -492,7 +494,8 @@ class Painter {
     }
 
     renderLayer(painter: Painter, sourceCache: SourceCache, layer: StyleLayer, coords: Array<OverscaledTileID>) {
-        if (layer.isHidden(this.transform.zoom)) return;
+        // GeoGlobal-isHidden-huangwei
+        if (layer.isHidden(this.transform.zoom, this.style)) return;
         if (layer.type !== 'background' && layer.type !== 'custom' && !coords.length) return;
         this.id = layer.id;
 
