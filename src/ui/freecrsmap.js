@@ -31,7 +31,7 @@ export default class FreeCRSMap extends Map {
                     extent: topTileExtent || [-180, -90, 180, 90],
                     resolutions,
                     validlatRange,
-                    tileSize: tileSize || window.GEOGLOBE_TILESIZE || 512
+                    tileSize: window.GEOGLOBE_TILESIZE || tileSize || 512
                 });
             }
         }
