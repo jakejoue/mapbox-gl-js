@@ -19,7 +19,7 @@ const defaultOptions = {
     closeOnClick: true,
     focusAfterOpen: true,
     className: '',
-    maxWidth: "auto",
+    maxWidth: "none",
     // GeoGlobal-popup-huangwei
     showArrow: true,
     contentClass: ''
