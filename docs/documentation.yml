@@ -1,0 +1,87 @@
+toc:
+  - Map
+  - FreeCRSMap
+  - name: Properties and options
+    description: | 
+      Mapbox GL JS's global properties and options that you can access while 
+      initializing your map or accessing information about its status.
+  - accessToken
+  - baseApiUrl
+  - workerCount
+  - maxParallelImageRequests
+  - supported
+  - version
+  - setRTLTextPlugin
+  - getRTLTextPluginStatus
+  - clearStorage
+  - AnimationOptions
+  - CameraOptions
+  - PaddingOptions
+  - RequestParameters
+  - StyleImageInterface
+  - CustomLayerInterface
+  - prewarm
+  - clearPrewarmedResources
+  - name: Markers and controls
+    description: | 
+      User interface elements that can be added to the map. The items in this 
+      section exist outside of the map's `canvas` element.
+  - Marker
+  - Popup
+  - IControl
+  - NavigationControl
+  - GeolocateControl
+  - AttributionControl
+  - ScaleControl
+  - FullscreenControl
+  - name: Geography and geometry
+    description: | 
+      General utilities and types that relate to working with and manipulating 
+      geographic information or geometries.
+  - LngLat
+  - LngLatLike
+  - LngLatBounds
+  - LngLatBoundsLike
+  - Point
+  - PointLike
+  - MercatorCoordinate
+  - EdgeInsets
+  - Projection
+  - CoordTransform
+  - name: User interaction handlers
+    description: | 
+      Items related to the ways in which the map responds to user input.
+  - BoxZoomHandler
+  - ScrollZoomHandler
+  - DragPanHandler
+  - DragRotateHandler
+  - KeyboardHandler
+  - DoubleClickZoomHandler
+  - TouchZoomRotateHandler
+  - TouchPitchHandler
+  - name: Sources
+    description: | 
+      The source types Mapbox GL JS can handle in addition to the ones described 
+      in the Mapbox Style Specification.
+  - GeoJSONSource
+  - VideoSource
+  - ImageSource
+  - CanvasSource
+  - CanvasSourceOptions
+  - VectorTileSource
+  - name: Events
+    description: | 
+      The different types of events that Mapbox GL JS can raise.
+      You can also find additional event documentation for: `Map`, `Marker`, `Popup`, and `GeolocationControl`.
+  - Evented
+  - MapMouseEvent
+  - MapTouchEvent
+  - MapBoxZoomEvent
+  - MapDataEvent
+  - MapWheelEvent
+  - name: 扩展
+    description: | 
+      二次开发扩展类
+  - LayerGroup
+  - RouteFly
+  - BoxHandler
